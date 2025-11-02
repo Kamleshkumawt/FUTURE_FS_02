@@ -4,6 +4,7 @@ import http from 'http'
 import morgan from 'morgan'
 import rateLimit from 'express-rate-limit'
 import connectDB from './config/db.js'
+import routes from './routes/index.js'
 import { notFound, errorHandler } from './middlewares/index.js'
 
 
@@ -32,6 +33,8 @@ if (process.env.NODE_ENV === 'development') {
 } else {
   app.use(morgan('combined'));
 }
+
+app.use('/api/xyz', routes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -65,7 +68,7 @@ const startServer = async () => {
                 port: PORT,
                 environment: process.env.NODE_ENV || 'development',
                 healthCheck: `http://localhost:${PORT}/health`,
-                apiBase: `http://localhost:${PORT}/api/v1`
+                apiBase: `http://localhost:${PORT}/api/xyz`
             });
         });
     } catch (error) {
