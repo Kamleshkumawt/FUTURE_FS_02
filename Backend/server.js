@@ -3,6 +3,7 @@ import 'dotenv/config.js'
 import http from 'http'
 import morgan from 'morgan'
 import rateLimit from 'express-rate-limit'
+import connectDB from './config/db.js'
 
 
 const app = express();
@@ -50,8 +51,9 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 8000;
 
-const startServer = () => {
+const startServer = async () => {
     try {
+        await connectDB();
         const server = http.createServer(app);
         server.listen(PORT, () => {
             console.log('Server started successfully', {
