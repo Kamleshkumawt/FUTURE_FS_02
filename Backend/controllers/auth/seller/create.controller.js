@@ -169,7 +169,7 @@ export const logoutSellerController = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const SellerPassController = asyncHandler(async (req, res, next) => {
+export const sellerPassController = asyncHandler(async (req, res, next) => {
   const { oldPassword, newPassword } = req.body;
   const userId = req.user?._id;
 
@@ -220,7 +220,7 @@ export const updateSellerController = asyncHandler(async (req, res, next) => {
     return next(new AppError("At least one field is required to update", 400, "VALIDATION_ERROR"));
   }
 
-  let store_image = null;
+  let storeImage = null;
 
   if (req.file?.path) {
     const result = await uploadOnCloudinary(req.file.path);
@@ -228,7 +228,7 @@ export const updateSellerController = asyncHandler(async (req, res, next) => {
       return next(new AppError("Failed to upload store image", 400, "IMAGE_UPLOAD_FAILED"));
     }
 
-    store_image = {
+    storeImage = {
       url: result.secure_url,
       publicId: result.public_id,
       width: result.width,
@@ -246,7 +246,7 @@ export const updateSellerController = asyncHandler(async (req, res, next) => {
     ...(bankDetails && { bankDetails }),
     ...(policies && { policies }),
     ...(fullName && { fullName }),
-    ...(store_image && { store_image }),
+    ...(storeImage && { storeImage }),
   };
 
   const seller = await sellerModel.findOneAndUpdate(
