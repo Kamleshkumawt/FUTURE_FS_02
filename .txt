@@ -1,1 +1,0 @@
-npm i express dotenv mongoose express-validator cookie-parser morgan bcryptjs jsonwebtoken  express-rate-limit compression multer cors helmet 
