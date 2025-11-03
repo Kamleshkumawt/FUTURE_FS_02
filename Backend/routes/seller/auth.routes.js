@@ -16,3 +16,5 @@ router.put("/update", upload.single("storeImage"), protect, updateSellerControll
 router.get("/me", protect, getSellerProfileController);
 router.put("/update-pass", protect, sellerPassController);
 router.get("/logout", protect, logoutSellerController);
+
+export default router;
