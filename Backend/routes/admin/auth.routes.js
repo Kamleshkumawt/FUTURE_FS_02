@@ -61,7 +61,7 @@ router.post(
 
 router.get("/me", protect, getAdmin);
 
-router.get("/logout", protect, logoutAdmin);
+router.post("/logout", protect, logoutAdmin);
 
 router.put("/update-details", protect, updateAdmin);
 

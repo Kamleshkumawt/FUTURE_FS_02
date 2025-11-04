@@ -80,5 +80,5 @@ sellerSchema.methods.generateJWT = function () {
 
 sellerSchema.index({ storeName: "text", "storeAddress.city": 1 });
 
-const Seller = model("Seller", sellerSchema);
+const Seller = model("seller", sellerSchema);
 export default Seller;

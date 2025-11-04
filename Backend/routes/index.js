@@ -5,8 +5,8 @@ import adminRoutes from './admin/index.js'
 
 const router = Router();
 
-router.use('/users', userRoutes);
-router.use('/sellers', sellerRoutes);
+router.use('/user', userRoutes);
+router.use('/seller', sellerRoutes);
 router.use('/admin', adminRoutes);
 
 export default router;

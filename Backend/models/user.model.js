@@ -98,9 +98,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-/* -----------------------------------------------------
-   🧠 MIDDLEWARES
------------------------------------------------------ */
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -113,7 +110,6 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-
 userSchema.pre("save", function (next) {
   if (typeof this.profile_picture === "string") {
     this.profile_picture = {
@@ -124,10 +120,6 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-
-/* -----------------------------------------------------
-   🔐 METHODS
------------------------------------------------------ */
 userSchema.methods.isValidPassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
@@ -147,16 +139,11 @@ userSchema.methods.toJSON = function () {
   return obj;
 };
 
-
-/* -----------------------------------------------------
-   ⚙️ STATIC METHODS
------------------------------------------------------ */
 userSchema.statics.hashPassword = async function (password) {
   const salt = await bcrypt.genSalt(12);
   return bcrypt.hash(password, salt);
 };
 
-// Auto index build optimization
 userSchema.set("autoIndex", process.env.NODE_ENV !== "production");
 
 const User = mongoose.model("user", userSchema);

@@ -13,6 +13,7 @@ router.post('/login', sellerLoginController);
 
 router.put("/update", upload.single("storeImage"), protect, updateSellerController);
 
+router.post("/logout", protect, logoutSellerController);
 router.get("/me", protect, getSellerProfileController);
 router.put("/update-pass", protect, sellerPassController);
 router.get("/logout", protect, logoutSellerController);

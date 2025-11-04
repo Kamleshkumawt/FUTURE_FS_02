@@ -68,6 +68,6 @@ adminSchema.methods.updateLastActive = async function () {
   await this.save();
 };
 
-const Admin = mongoose.model("Admin", adminSchema);
+const Admin = mongoose.model("admin", adminSchema);
 
 export default Admin;
