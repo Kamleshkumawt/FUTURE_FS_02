@@ -4,7 +4,9 @@ import {
  clearCart,
  createReview,
  deleteReview,
+ getAllCategories,
  getCart,
+ getCategoryById,
  getReviewsByProductId,
  removeCartItem,
  updateCartItem
