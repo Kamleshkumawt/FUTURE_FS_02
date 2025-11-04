@@ -17,3 +17,4 @@ export const adminApi = baseApi.injectEndpoints({
 });
 
 export const { useGetAllUsersQuery, useDeleteUserMutation } = adminApi;
+

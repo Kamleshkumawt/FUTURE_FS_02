@@ -1,10 +1,8 @@
-// src/redux/api/productApi.js
 import { baseApi } from "./baseApi";
 
 export const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // =
-
     getProducts: builder.query({
       query: (params) => {
         const queryString = new URLSearchParams(params).toString();
@@ -29,7 +27,6 @@ export const productApi = baseApi.injectEndpoints({
     }),
 
     // =
-
     getProductsBySeller: builder.query({
       query: () => `/products/seller/me`,
       providesTags: ["SellerProducts"],
@@ -41,7 +38,6 @@ export const productApi = baseApi.injectEndpoints({
     }),
 
     // =
-    
     createProduct: builder.mutation({
       query: (formData) => ({
         url: `/products`,
