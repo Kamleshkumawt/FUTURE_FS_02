@@ -397,4 +397,112 @@ export const getProductsByStatusForSeller = asyncHandler(async (req, res) => {
   });
 });
 
+// ====== Update Product ======
+export const updateProduct = asyncHandler(async (req, res) => {
+  const {
+    name,
+    description,
+    quantity,
+    color,
+    tags,
+    weight,
+    dimensions,
+    productId,
+  } = req.body;
+
+  const sellerId = req.user._id;
+
+  const product = await productModel.findById(productId);
+  if (!product) throw new AppError('Product not found', 404);
+
+  if (product.sellerId.toString() !== sellerId.toString()) {
+    throw new AppError('You are not authorized to update this product', 403);
+  }
+
+  // Handle front image upload
+  if (req.files?.frontImage?.length) {
+    const result = await uploadOnCloudinary(req.files.frontImage[0].path);
+    if (!result.success) throw new AppError('Front image upload failed', 500);
+
+    product.frontImage = {
+      url: result.secure_url,
+      publicId: result.public_id,
+      width: result.width,
+      height: result.height,
+      format: result.format,
+      bytes: result.bytes,
+    };
+  }
+
+  // Handle additional images
+  if (req.files && req.files.length > 0) {
+    const imageFiles = req.files.filter(f => f.fieldname !== 'frontImage');
+    const uploadPromises = imageFiles.map(file => uploadOnCloudinary(file.path));
+    const results = await Promise.all(uploadPromises);
+
+    results.forEach(result => {
+      if (result.success) {
+        product.images.push({
+          url: result.secure_url,
+          publicId: result.public_id,
+          width: result.width,
+          height: result.height,
+          format: result.format,
+          bytes: result.bytes,
+        });
+      }
+    });
+  }
+
+  // Update other fields
+  if (name) product.name = name;
+  if (description) product.description = description;
+  if (quantity !== undefined) product.quantity = quantity;
+  if (color) product.color = color;
+  if (tags) product.tags = tags;
+  if (weight) product.weight = weight;
+  if (dimensions) product.dimensions = dimensions;
+
+  const updatedProduct = await product.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Product updated successfully',
+    product: {
+      id: updatedProduct._id,
+      name: updatedProduct.name,
+      slug: updatedProduct.slug,
+      description: updatedProduct.description,
+      price: updatedProduct.price,
+      finalPrice: updatedProduct.finalPrice,
+      discount: updatedProduct.discount?.percentage || 0,
+      stockStatus: updatedProduct.stockStatus,
+      frontImage: updatedProduct.frontImage?.url,
+      images: updatedProduct.images?.map(img => img.url),
+      tags: updatedProduct.tags,
+      category: updatedProduct.categoryId,
+      updatedAt: updatedProduct.updatedAt,
+    },
+  });
+});
+
+// ====== Delete Product ======
+export const deleteProduct = asyncHandler(async (req, res) => {
+  const productId = req.params.id;
+  const sellerId = req.user._id;
+
+  const product = await productModel.findById(productId);
+  if (!product) throw new AppError('Product not found', 404);
+
+  if (product.sellerId.toString() !== sellerId.toString()) {
+    throw new AppError('You are not authorized to delete this product', 403);
+  }
+
+  await productModel.findByIdAndDelete(productId);
+
+  res.status(200).json({
+    success: true,
+    message: 'Product deleted successfully',
+  });
+});
 
