@@ -1,5 +1,5 @@
 // src/features/seller/sellerAuthApi.js
-import { baseApi } from '../../app/baseApi';
+import { baseApi } from '../baseApi';
 
 export const sellerAuthApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({

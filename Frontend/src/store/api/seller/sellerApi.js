@@ -1,11 +1,15 @@
 // src/features/seller/sellerApi.js
-import { baseApi } from '../../app/baseApi';
+import { baseApi } from '../baseApi';
 
 export const sellerApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getSellerProducts: builder.query({
       query: () => '/seller/products',
       providesTags: ['Product'],
+    }),
+    getSellerProfile: builder.mutation({
+      query: () => '/user/profile',
+      providesTags: ['User'],
     }),
     addProduct: builder.mutation({
       query: (productData) => ({
@@ -18,4 +22,4 @@ export const sellerApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetSellerProductsQuery, useAddProductMutation } = sellerApi;
+export const { useGetSellerProductsQuery, useGetSellerProfileMutation, useAddProductMutation } = sellerApi;

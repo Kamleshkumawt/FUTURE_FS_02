@@ -1,7 +1,7 @@
 
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setCategories } from '../store/slices/categorySlice';
+import { setCategories } from '../../store/slices/categorySlice';
 
 const HomePageCard = ({data}) => {
   const navigate = useNavigate();

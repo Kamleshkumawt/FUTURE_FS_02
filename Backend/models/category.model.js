@@ -53,7 +53,6 @@ const categorySchema = new Schema(
     sortOrder: {
       type: Number,
       default: 0,
-      index: true,
     },
   },
   {

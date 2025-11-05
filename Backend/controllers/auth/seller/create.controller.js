@@ -1,6 +1,6 @@
 import sellerModel from "../../../models/seller.model.js";
 import { asyncHandler } from "../../../middlewares/errorHandler.js";
-import { AppError } from "../../utils/appError.js";
+import { AppError } from "../../../utils/appError.js";
 
 export const createSeller = asyncHandler(async (req, res) => {
   const { phoneNumber, password } = req.body;

@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
-import uploadOnCloudinary from '../../db/cloudinary.js';
-import Review from '../../models/reviews.model.js';
+import uploadOnCloudinary from '../../config/cloudinary.js';
+import Review from '../../models/review.model.js';
 import Product from '../../models/product.model.js';
-import { asyncHandler } from '../../middleware/errorMiddleware.js';
+import { asyncHandler } from '../../middlewares/errorHandler.js';
 import { AppError } from '../../utils/appError.js';
 
 export const createReview = asyncHandler(async (req, res, next) => {

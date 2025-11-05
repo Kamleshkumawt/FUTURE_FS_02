@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import Cart from '../models/cart.model.js';
-import Product from '../models/product.model.js';
-import { asyncHandler } from '../../middleware/errorMiddleware.js';
+import Cart from '../../models/cart.model.js';
+import Product from '../../models/product.model.js';
+import { asyncHandler } from '../../middlewares/errorHandler.js';
 import { AppError } from '../../utils/appError.js';
 
 export const getCart = asyncHandler(async (req, res, next) => {

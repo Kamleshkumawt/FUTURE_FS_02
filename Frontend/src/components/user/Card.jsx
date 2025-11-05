@@ -1,9 +1,5 @@
-import React, { useState, useCallback } from "react";
+import React  from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  useAddToWishlistProductMutation,
-  useRemoveFromWishlistProductMutation,
-} from "../store/api/userApi";
 
 /**
  * Product Card Component
@@ -13,38 +9,7 @@ import {
  */
 const Card = React.memo(({ data }) => {
   const navigate = useNavigate();
-  const [isAddedToWishlist, setIsAddedToWishlist] = useState(
-    data?.isInWishlist || false
-  );
-
-  const [addToWishlistProduct, { isLoading: adding }] =
-    useAddToWishlistProductMutation();
-  const [removeFromWishlistProduct, { isLoading: removing }] =
-    useRemoveFromWishlistProductMutation();
-
-  const handleWishlistToggle = useCallback(
-    async (productId) => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/signIn");
-        return;
-      }
-
-      try {
-        if (isAddedToWishlist) {
-          await removeFromWishlistProduct({ productId }).unwrap();
-          setIsAddedToWishlist(false);
-        } else {
-          await addToWishlistProduct({ productId }).unwrap();
-          setIsAddedToWishlist(true);
-        }
-      } catch (error) {
-        console.error("Wishlist action failed:", error);
-      }
-    },
-    [isAddedToWishlist, navigate, addToWishlistProduct, removeFromWishlistProduct]
-  );
-
+  
   const discountedPrice =
     data?.price - (data?.price * data?.discount?.percentage) / 100;
 
@@ -60,7 +25,6 @@ const Card = React.memo(({ data }) => {
     maximumFractionDigits: 0,
   });
 
-  const isProcessing = adding || removing;
 
   return (
     <article
@@ -85,7 +49,7 @@ const Card = React.memo(({ data }) => {
         />
 
         {/* Wishlist Button */}
-        <button
+        {/* <button
           aria-label={
             isAddedToWishlist ? "Remove from wishlist" : "Add to wishlist"
           }
@@ -94,9 +58,7 @@ const Card = React.memo(({ data }) => {
             e.stopPropagation();
             handleWishlistToggle(data?._id);
           }}
-          className={`absolute top-3 right-3 transition-colors ${
-            isAddedToWishlist ? "text-red-600" : "text-gray-400 hover:text-red-500"
-          }`}
+          className={`absolute top-3 right-3 transition-colors text-gray-400 `}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -112,7 +74,7 @@ const Card = React.memo(({ data }) => {
               d="M9.75 16.982l-1.32-1.222C4.68 11.48 2 8.98 2 5.75 2 3.403 3.903 1.5 6.25 1.5c1.474 0 2.895.657 3.75 1.707A4.8 4.8 0 0 1 13.75 1.5C16.097 1.5 18 3.403 18 5.75c0 3.23-2.68 5.73-6.43 10.01l-1.32 1.222z"
             />
           </svg>
-        </button>
+        </button> */}
       </div>
 
       {/* Product Info */}

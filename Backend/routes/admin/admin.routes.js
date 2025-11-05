@@ -5,7 +5,7 @@ import {
   deleteCategory,
   getProductsBySellerId,
 } from "../../controllers/index.js";
-import protect from "../middlewares/authMiddleware.js";
+import {protect} from "../../middlewares/authHandler.js";
 
 const router = express.Router();
 

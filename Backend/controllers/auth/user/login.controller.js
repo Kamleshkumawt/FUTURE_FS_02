@@ -1,6 +1,6 @@
-import { asyncHandler } from "../../middleware/errorMiddleware.js";
-import { AppError } from "../../utils/appError.js";
-import userModel from "../../models/user.model.js";
+import { asyncHandler } from "../../../middlewares/errorHandler.js";
+import { AppError } from "../../../utils/appError.js";
+import userModel from "../../../models/user.model.js";
 
 export const loginController = asyncHandler(async (req, res, next) => {
   const { email, phone, password } = req.body;

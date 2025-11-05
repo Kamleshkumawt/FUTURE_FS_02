@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { setCategories } from "../store/slices/categorySlice";
+import { setCategories } from "../../store/slices/categorySlice";
 import { useDispatch } from "react-redux";
 
 const CarouselCard = ({ data }) => {

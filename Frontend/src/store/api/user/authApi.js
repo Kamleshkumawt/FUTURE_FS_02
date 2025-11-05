@@ -1,5 +1,5 @@
 // src/features/user/userAuthApi.js
-import { baseApi } from '../../app/baseApi';
+import { baseApi } from '../baseApi';
 
 export const userAuthApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({

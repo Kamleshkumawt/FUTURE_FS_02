@@ -5,8 +5,8 @@ import HomePageCard from "../components/user/HomePageCard";
 import ManualCarousel from "../components/user/Carousel";
 import CategorySideBar from "../components/user/CategorySidebar";
 import Loading from "../components/Loading";
-import { useGetAllProductsQuery } from "../store/api/productApi";
-import { useGetCategoriesQuery } from "../store/api/userApi";
+import {useGetProductsQuery } from "../store/api/seller/productApi";
+import { useGetAllCategoriesQuery } from "../store/api/user/categoryApi";
 
 // ✅ Helper — unique products by category
 const getUniqueCategoryProducts = (products, limit = 8) => {
@@ -26,8 +26,8 @@ const getUniqueCategoryProducts = (products, limit = 8) => {
 
 const Home = () => {
   // ✅ Data fetching using RTK Query (no manual state)
-  const { data, isLoading } = useGetAllProductsQuery();
-  const { data: categoryData } = useGetCategoriesQuery();
+  const { data, isLoading } = useGetProductsQuery();
+  const { data: categoryData } = useGetAllCategoriesQuery();
 
   const products = data?.products || [];
   const categories = categoryData?.categories || [];
@@ -159,7 +159,7 @@ const Home = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <div className="w-full min-h-screen px-4 bg-gray-50 pt-30">
+    <div className="w-full min-h-screen px-4 bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-gray-100 pt-30">
       {/* Hero Banner */}
       <div>
         <img

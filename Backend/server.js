@@ -6,14 +6,24 @@ import rateLimit from 'express-rate-limit'
 import connectDB from './config/db.js'
 import routes from './routes/index.js'
 import { notFound, errorHandler } from './middlewares/index.js'
+import Product from './models/product.model.js';
+import data from './products.json' with { type: 'json' };
+import categories from './categories.json' with { type: 'json' };
+import Category from './models/category.model.js';
+import cors from 'cors';
 
 
 const app = express();
 
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 app.use(express.json({limit: '10mb'}));
 app.use(express.urlencoded({extended : true, limit: '10mb'}));
-
 
 
 // Rate limiting
@@ -62,6 +72,15 @@ const PORT = process.env.PORT || 8000;
 const startServer = async () => {
     try {
         await connectDB();
+        // await Product.insertMany(data);
+console.log('✅ Sample products inserted successfully');
+// Clear existing
+    // await Category.deleteMany({});
+    // console.log("🧹 Existing categories cleared");
+
+    // // Insert new
+    // await Category.insertMany(categories);
+    // console.log("✅ Categories inserted successfully");
         const server = http.createServer(app);
         server.listen(PORT, () => {
             console.log('Server started successfully', {

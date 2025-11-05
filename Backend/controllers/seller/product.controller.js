@@ -1,8 +1,8 @@
-import productModel from '../../models/products.model.js';
-import categoryModel from '../../models/categories.model.js';
-import sellerModel from '../../models/sellers.model.js';
-import uploadOnCloudinary from '../../db/cloudinary.js';
-import { asyncHandler } from '../../middleware/errorHandler.js';
+import productModel from '../../models/product.model.js';
+import categoryModel from '../../models/category.model.js';
+import sellerModel from '../../models/seller.model.js';
+import uploadOnCloudinary from '../../config/cloudinary.js';
+import { asyncHandler } from '../../middlewares/errorHandler.js';
 import { AppError } from '../../utils/appError.js';
 import slugify from 'slugify';
 

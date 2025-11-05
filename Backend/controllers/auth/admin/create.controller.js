@@ -1,6 +1,6 @@
-import asyncHandler from "express-async-handler";
-import Admin from "../models/adminModel.js";
-import AppError from "../utils/appError.js";
+import { asyncHandler } from "../../../middlewares/errorHandler.js";
+import Admin from "../../../models/admin.model.js";
+import { AppError} from "../../../utils/appError.js";
 
 export const createAdmin = asyncHandler(async (req, res, next) => {
   const { phone, password, username } = req.body;

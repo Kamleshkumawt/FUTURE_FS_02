@@ -1,6 +1,6 @@
-import userModel from "../../models/user.model.js";
-import { asyncHandler } from "../../middleware/errorMiddleware.js";
-import { AppError } from "../../utils/appError.js";
+import userModel from "../../../models/user.model.js";
+import { asyncHandler } from "../../../middlewares/errorHandler.js";
+import { AppError } from "../../../utils/appError.js";
 
 export const logoutController = asyncHandler(async (req, res, next) => {
   const userId = req.user?._id;

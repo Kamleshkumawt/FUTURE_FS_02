@@ -1,12 +1,12 @@
-import asyncHandler from "express-async-handler";
-import Admin from "../models/adminModel.js";
-import AppError from "../utils/appError.js";
+import { asyncHandler } from "../../../middlewares/errorHandler.js";
+import adminModel from "../../../models/admin.model.js";
+import { AppError} from "../../../utils/appError.js";
 
 export const getAdmin = asyncHandler(async (req, res, next) => {
   const adminId = req.user?._id;
   if (!adminId) return next(new AppError("Unauthorized access", 401, "UNAUTHORIZED"));
 
-  const admin = await Admin.findById(adminId);
+  const admin = await adminModel.findById(adminId);
   if (!admin) return next(new AppError("Admin not found", 404, "NOT_FOUND"));
 
   const token = admin.generateJWT();

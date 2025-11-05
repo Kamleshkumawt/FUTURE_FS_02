@@ -1,4 +1,4 @@
-import { baseApi } from './baseApi';
+import { baseApi } from '../baseApi';
 
 export const categoryApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -10,10 +10,15 @@ export const categoryApi = baseApi.injectEndpoints({
       query: (id) => `/categories/${id}`,
       providesTags: ['Categories'],
     }),
+    getCategoryByParentId: builder.query({
+      query: (id) => `/categories/parentId/${id}`,
+      providesTags: ['Categories'],
+    }),
   }),
 });
 
 export const {
   useGetAllCategoriesQuery,
   useGetCategoryByIdQuery,
+  useGetCategoryByParentIdQuery,
 } = categoryApi;

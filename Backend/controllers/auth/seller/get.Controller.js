@@ -1,7 +1,7 @@
 import sellerModel from "../../../models/seller.model.js";
 import { asyncHandler } from "../../../middlewares/errorHandler.js";
-import { AppError } from "../../utils/appError.js";
-import {uploadOnCloudinary} from "../../../config/cloudinary.js";
+import { AppError } from "../../../utils/appError.js";
+import uploadOnCloudinary from "../../../config/cloudinary.js";
 
 export const getSellerProfileController = asyncHandler(async (req, res, next) => {
   const userId = req.user?._id;

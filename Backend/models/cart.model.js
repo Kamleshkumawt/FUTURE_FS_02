@@ -9,7 +9,6 @@ const cartItemSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Product',
       required: [true, 'Product ID is required'],
-      index: true, // improves lookup performance
     },
     quantity: {
       type: Number,
@@ -25,9 +24,8 @@ const cartSchema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'user',
       required: [true, 'User ID is required'],
-      index: true,
       unique: true,
     },
     items: {

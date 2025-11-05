@@ -1,4 +1,4 @@
-import { baseApi } from "./baseApi";
+import { baseApi } from "../baseApi";
 
 export const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -32,7 +32,7 @@ export const productApi = baseApi.injectEndpoints({
       providesTags: ["SellerProducts"],
     }),
 
-    getProductStatusForSeller: builder.query({
+    getProductStatusForSeller: builder.mutation({
       query: () => `/products/seller/me/status`,
       providesTags: ["SellerProducts"],
     }),
@@ -72,7 +72,7 @@ export const {
   useGetProductsByCategoryQuery,
   useSearchProductsQuery,
   useGetProductsBySellerQuery,
-  useGetProductStatusForSellerQuery,
+  useGetProductStatusForSellerMutation,
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,

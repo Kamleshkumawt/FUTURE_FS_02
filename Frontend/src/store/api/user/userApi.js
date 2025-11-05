@@ -1,5 +1,5 @@
 // src/features/user/userApi.js
-import { baseApi } from '../../app/baseApi';
+import { baseApi } from '../baseApi';
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -15,7 +15,15 @@ export const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
+    updateUserProfilePassword: builder.mutation({
+      query: (data) => ({
+        url: '/user/profile',
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
 });
 
-export const { useGetUserProfileQuery, useUpdateUserProfileMutation } = userApi;
+export const { useGetUserProfileQuery, useUpdateUserProfileMutation, useUpdateUserProfilePasswordMutation} = userApi;
