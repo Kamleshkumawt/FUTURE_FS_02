@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { setCategories } from "../../store/slices/categorySlice";
 import { useDispatch } from "react-redux";
+import { formatAmount } from "../../lib/formatAmount";
 
 const CarouselCard = ({ data }) => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const CarouselCard = ({ data }) => {
       <div className="w-full h-48 flex items-center justify-center">
         <img
           // src="https://rukminim1.flixcart.com/image/420/420/xif0q/headphone/3/m/u/nb111-wireless-headphone-magnetic-neckband-250h-standby-200mah-original-imah77cwrvwjzbyt.jpeg?q=60"
-          src={data?.frontImage.url}
+          src={data?.frontImage}
           alt={data?.name}
           className="h-full object-contain"
         />
@@ -40,14 +41,7 @@ const CarouselCard = ({ data }) => {
         </span>
         <span className="text-sm font-semibold text-gray-900">
           From{" "}
-          {Number(
-            String(data?.price)?.replace(/[^0-9.-]+/g, "")
-          ).toLocaleString("en-IN", {
-            style: "currency",
-            currency: "INR",
-            maximumFractionDigits: 0,
-          })}
-          *
+          {formatAmount(data?.price)}*
         </span>
       </div>
     </div>

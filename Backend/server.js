@@ -6,14 +6,19 @@ import rateLimit from 'express-rate-limit'
 import connectDB from './config/db.js'
 import routes from './routes/index.js'
 import { notFound, errorHandler } from './middlewares/index.js'
-import Product from './models/product.model.js';
-import data from './products.json' with { type: 'json' };
-import categories from './categories.json' with { type: 'json' };
-import Category from './models/category.model.js';
+import cookieParser from 'cookie-parser';
+// import Product from './models/product.model.js';
+// import data from './products.json' with { type: 'json' };
+// import categories from './categories.json' with { type: 'json' };
+// import Category from './models/category.model.js';
 import cors from 'cors';
 
 
 const app = express();
+
+
+// Middleware
+app.use(cookieParser());
 
 app.use(cors({
   origin: 'http://localhost:5173',

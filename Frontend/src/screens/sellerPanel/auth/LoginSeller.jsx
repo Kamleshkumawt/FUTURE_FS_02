@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { setSellerUser } from "../../../store/slices/authSlice";
 import { useDispatch } from "react-redux";
-import { useSellerLoginMutation } from "../../../store/api/sellerAuthApi";
+import { useSellerLoginMutation } from "../../../store/api/seller/authApi";
 
 const LoginSeller = () => {
   const [contact, setContact] = useState("");
@@ -13,7 +13,7 @@ const LoginSeller = () => {
 
   const handleLogin = async() => {
     try{       
-       const response = await sellerLogin({ store_phone:contact, password }).unwrap();
+       const response = await sellerLogin({ phoneNumber:contact, password }).unwrap();
       //  console.log("Logged in user:", response);
       localStorage.setItem("token", response.token);
        dispatch(setSellerUser(response.seller));
@@ -27,9 +27,9 @@ const LoginSeller = () => {
   
   
   return (
-    <div className="h-[100vh] w-full flex flex-col items-center justify-center bg-[#fdecef]">
+    <div className="h-[100vh] w-full flex flex-col items-center justify-center bg-[#fdecef] dark:bg-[#2A1C20] text-gray-900 dark:text-gray-100">
       <h1 className="text-2xl font-medium mb-5">ApanaStore</h1>
-      <div className=" w-full max-w-sm bg-white rounded-sm overflow-hidden flex flex-col  gap-2">
+      <div className=" w-full max-w-sm bg-white dark:bg-gray-900 rounded-sm overflow-hidden flex flex-col  gap-2">
         {/* <div className="w-full h-48">
           <img
             className="w-full h-full object-cover"
@@ -109,7 +109,7 @@ const LoginSeller = () => {
   <span className="mx-3 text-gray-600 whitespace-nowrap">New to ApanaStore?</span>
   <span className="flex-grow border-b border-gray-500"></span>
 </div>
-<div onClick={()=>{navigate('/sellerSignUp');scrollTo(0,0)}} className="border border-purple-500 text-purple-500 p-2 px-4 rounded-sm w-full max-w-xs text-center focus-within:bg-purple-300 transition-all duration-300 cursor-pointer ">Create Your Account</div>
+<div onClick={()=>{navigate('/seller/SignUp');scrollTo(0,0)}} className="border border-purple-500 text-purple-500 p-2 px-4 rounded-sm w-full max-w-xs text-center focus-within:bg-purple-300 transition-all duration-300 cursor-pointer ">Create Your Account</div>
       </div>
     </div>
   );

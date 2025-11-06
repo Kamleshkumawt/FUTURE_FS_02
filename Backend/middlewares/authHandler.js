@@ -2,6 +2,8 @@
 import jwt from "jsonwebtoken";
 import { AppError } from "../utils/appError.js";
 import User from "../models/user.model.js";
+import Seller from "../models/seller.model.js";
+import Admin from "../models/admin.model.js";
 
 export const protect = async (req, res, next) => {
   try {
@@ -11,8 +13,6 @@ export const protect = async (req, res, next) => {
       (req.headers.authorization?.startsWith("Bearer ")
         ? req.headers.authorization.split(" ")[1]
         : null);
-
-
     if (!token) {
       return next(new AppError("Unauthorized access. Token missing.", 401, "AUTH_NO_TOKEN"));
     }
@@ -24,8 +24,21 @@ export const protect = async (req, res, next) => {
       return next(new AppError("Invalid or expired token.", 401, "AUTH_INVALID_TOKEN"));
     }
 
+    let user;
 
-    const user = await User.findById(decoded._id).select("_id email role isDisabled");
+switch (decoded.role) {
+  case 'user':
+    user = await User.findById(decoded._id).select("_id email role isDisabled");
+    break;
+  case 'seller':
+    user = await Seller.findById(decoded._id).select("_id email role isDisabled");
+    break;
+  case 'admin':
+    user = await Admin.findById(decoded._id).select("_id email role isDisabled");
+    break;
+  default:
+    return next(new AppError("Invalid role in token.", 401, "AUTH_INVALID_ROLE"));
+}
 
     if (!user) {
       return next(new AppError("User not found.", 404, "USER_NOT_FOUND"));

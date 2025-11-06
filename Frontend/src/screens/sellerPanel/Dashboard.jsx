@@ -20,6 +20,7 @@ const Dashboard = () => {
   const [getSellerProfile, { data, isLoading }] = useGetSellerProfileMutation();
   const [getIncomeBySellerId, { data: idData }] =
     useGetProductStatusForSellerMutation();
+    
   const [getProductStatusForSeller, { data: PTRs }] =
     useGetProductStatusForSellerMutation();
 
@@ -47,60 +48,60 @@ const Dashboard = () => {
   useEffect(() => {
     if (data) {
       // console.log('data : ',data);
-      dispatch(setSellerUser(data.seller));
+      dispatch(setSellerUser(data.data));
     }
   }, [data, dispatch]);
 
   useEffect(() => {
     if (idData) {
-      // console.log("data for income  : ", idData.stats);
+      console.log("data for income  : ", idData);
 
-      const statsFromDB = idData?.stats[0]; // example: Delivered status
-      // console.log("totalAmount : ", idData?.stats[0].totalIncome);
-      // console.log("totalAmount : ", idData?.stats[0].totalSales);
-      setTotalIncome(Number(idData?.stats[0].totalIncome));
-      setTotalSales(Number(idData?.stats[0].totalSales));
+      // const statsFromDB = idData?.stats[0]; // example: Delivered status
+      // // console.log("totalAmount : ", idData?.stats[0].totalIncome);
+      // // console.log("totalAmount : ", idData?.stats[0].totalSales);
+      // setTotalIncome(Number(idData?.stats[0].totalIncome));
+      // setTotalSales(Number(idData?.stats[0].totalSales));
 
-      // Initialize chart data with 0s
-      const baseChartData = months.map((month) => ({
-        month,
-        income: 0,
-        sales: 0,
-      }));
+      // // Initialize chart data with 0s
+      // const baseChartData = months.map((month) => ({
+      //   month,
+      //   income: 0,
+      //   sales: 0,
+      // }));
 
-      // Fill in the actual data from stats
-      statsFromDB.monthly.forEach((m) => {
-        const index = m.month - 1; // MongoDB $month returns 1-12
-        baseChartData[index].income = m.totalAmount;
-        baseChartData[index].sales = m.sales;
-      });
+      // // Fill in the actual data from stats
+      // statsFromDB.monthly.forEach((m) => {
+      //   const index = m.month - 1; // MongoDB $month returns 1-12
+      //   baseChartData[index].income = m.totalAmount;
+      //   baseChartData[index].sales = m.sales;
+      // });
 
-      // console.log("for income : ", baseChartData);
-      setIncomeChartData(baseChartData);
+      // // console.log("for income : ", baseChartData);
+      // setIncomeChartData(baseChartData);
     }
   }, [idData, dispatch]);
 
   useEffect(() => {
     if (PTRs) {
-      // console.log("data : ", PTRs?.data);
-      setProducts(PTRs?.data.products);
-      const orderChartData = months.map((month, index) => {
-        const monthNumber = index + 1;
-        const getCount = (key) => {
-          const found = PTRs?.data.response[key]?.monthly?.find(
-            (m) => m.month === monthNumber
-          );
-          return found ? found.count : 0;
-        };
+      console.log("data : ", PTRs?.products);
+      setProducts(PTRs?.products);
+      // const orderChartData = months.map((month, index) => {
+      //   const monthNumber = index + 1;
+      //   const getCount = (key) => {
+      //     const found = PTRs?.response[key]?.monthly?.find(
+      //       (m) => m.month === monthNumber
+      //     );
+      //     return found ? found.count : 0;
+      //   };
 
-        return {
-          month,
-          cancelled: getCount("cancelled"),
-          delivered: getCount("delivered"),
-        };
-      });
+      //   return {
+      //     month,
+      //     cancelled: getCount("cancelled"),
+      //     delivered: getCount("delivered"),
+      //   };
+      // });
 
-      setOrderChartData(orderChartData);
+      // setOrderChartData(orderChartData);
     }
   }, [PTRs, dispatch]);
 

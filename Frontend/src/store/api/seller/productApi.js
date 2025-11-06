@@ -16,6 +16,10 @@ export const productApi = baseApi.injectEndpoints({
       providesTags: ["Products"],
     }),
 
+    getAllProducts: builder.query({
+      query: () => `/product/get/all`,
+      providesTags: ["Products"],
+    }),
     getProductsByCategory: builder.query({
       query: (categoryId) => `/products/category/${categoryId}`,
       providesTags: ["Products"],
@@ -28,19 +32,19 @@ export const productApi = baseApi.injectEndpoints({
 
     // =
     getProductsBySeller: builder.query({
-      query: () => `/products/seller/me`,
+      query: () => `/product/get/sellerId`,
       providesTags: ["SellerProducts"],
     }),
 
     getProductStatusForSeller: builder.mutation({
-      query: () => `/products/seller/me/status`,
+      query: () => `/product/getProduct/status`,
       providesTags: ["SellerProducts"],
     }),
 
     // =
     createProduct: builder.mutation({
       query: (formData) => ({
-        url: `/products`,
+        url: `/product/update/create-product`,
         method: "POST",
         body: formData, // multipart/form-data
       }),
@@ -49,7 +53,7 @@ export const productApi = baseApi.injectEndpoints({
 
     updateProduct: builder.mutation({
       query: (formData) => ({
-        url: `/products`,
+        url: `/product/update/update-product`,
         method: "PUT",
         body: formData,
       }),
@@ -58,7 +62,7 @@ export const productApi = baseApi.injectEndpoints({
 
     deleteProduct: builder.mutation({
       query: (id) => ({
-        url: `/products/${id}`,
+        url: `/product/update/delete-product/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Products", "SellerProducts"],
@@ -68,6 +72,7 @@ export const productApi = baseApi.injectEndpoints({
 
 export const {
   useGetProductsQuery,
+  useGetAllProductsQuery,
   useGetProductBySlugQuery,
   useGetProductsByCategoryQuery,
   useSearchProductsQuery,

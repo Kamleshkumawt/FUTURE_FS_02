@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useUpdateSellerMutation } from "../../../store/api/sellerAuthApi";
 import { setSellerUser } from "../../../store/slices/authSlice";
+import { useUpdateSellerProfileMutation } from "../../../store/api/seller/sellerApi";
 
 const inputClass =
   "peer w-full border-b-2 border-gray-300 px-4 pt-5 pb-2 text-sm focus:outline-none focus:border-purple-600";
@@ -22,7 +22,7 @@ const BankDetails = () => {
   const [ifscCode, setIFSCCode] = useState("");
   const [bankName, setBankName] = useState("");
 
-  const [updateSeller, { isLoading, error }] = useUpdateSellerMutation();
+  const [updateSellerProfile, { isLoading, error }] = useUpdateSellerProfileMutation();
 
   const navigate = useNavigate();
 
@@ -40,15 +40,14 @@ const BankDetails = () => {
     } 
 
     const bankDetails = {
-      account_holder_name: accountHolderName,
-      bank_name: bankName,
-      account_number: accountNumber,
-      confirmAccountNumber: confirmAccountNumber,
-      ifsc_code: ifscCode,
+      accountHolderName,
+      bankName,
+      accountNumber,
+      ifscCode,
     };
 
     try {
-      const response = await updateSeller({bank_details:bankDetails}).unwrap();
+      const response = await updateSellerProfile({bankDetails}).unwrap();
       // console.log("update : ", response);
       dispatch(setSellerUser(response.user));
       navigate("/sellerSignUp/details");
@@ -58,7 +57,7 @@ const BankDetails = () => {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col items-center justify-start bg-[#fdecef] p-5 px-10">
+    <div className="h-screen w-full flex flex-col items-center justify-start bg-[#fdecef] dark:bg-[#2A1C20] text-gray-900 dark:text-gray-100 p-5 px-10">
       <div className=" flex w-full items-center justify-start">
         <h1 className="text-purple-400 text-2xl font-medium">ApanaStore</h1>
       

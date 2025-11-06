@@ -1,5 +1,6 @@
 import React  from "react";
 import { useNavigate } from "react-router-dom";
+import {formatAmount} from '../../lib/formatAmount';
 
 /**
  * Product Card Component
@@ -11,19 +12,8 @@ const Card = React.memo(({ data }) => {
   const navigate = useNavigate();
   
   const discountedPrice =
-    data?.price - (data?.price * data?.discount?.percentage) / 100;
-
-  const formattedPrice = discountedPrice?.toLocaleString("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  });
-
-  const originalPrice = data?.price?.toLocaleString("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  });
+    data?.price - (data?.price * data?.discount) / 100;
+  const originalPrice = data?.price;
 
 
   return (
@@ -41,7 +31,7 @@ const Card = React.memo(({ data }) => {
         className="relative w-full h-48 flex items-center justify-center cursor-pointer p-2"
       >
         <img
-          src={data?.frontImage?.url}
+          src={data?.frontImage}
           alt={data?.name || "Product Image"}
           className="object-contain h-full w-full"
           loading="lazy"
@@ -106,7 +96,7 @@ const Card = React.memo(({ data }) => {
             </div>
           )}
           <span className="text-sm text-gray-500 font-medium">
-            {data?.reviews_count || 0} Reviews
+            {data?.numOfReviews || 0} Reviews
           </span>
         </div>
 
@@ -118,14 +108,14 @@ const Card = React.memo(({ data }) => {
               itemProp="price"
               content={discountedPrice}
             >
-              {formattedPrice}
+              {formatAmount(discountedPrice)}
             </span>
             <span className="line-through text-xs text-gray-500">
-              {originalPrice}
+              {formatAmount(originalPrice)}
             </span>
-            {data?.discount?.percentage > 0 && (
+            {data?.discount && (
               <span className="text-green-700 font-medium text-sm">
-                {data?.discount?.percentage}% off
+                {data?.discount}% off
               </span>
             )}
           </div>

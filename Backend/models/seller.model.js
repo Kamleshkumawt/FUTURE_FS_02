@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 const { Schema, model } = mongoose;
 
 const storeImageSchema = new Schema({
-  url: { type: String, required: true, trim: true },
+  url: { type: String, trim: true },
   publicId: String,
   width: Number,
   height: Number,
@@ -41,13 +41,13 @@ const policiesSchema = new Schema({
 
 const sellerSchema = new Schema(
   {
-    fullName: { type: String, required: true, trim: true }, // Seller name
-    storeName: { type: String, required: true, trim: true },
+    fullName: { type: String, trim: true },
+    storeName: { type: String, trim: true },
     storeDescription: { type: String, trim: true },
     storeImage: storeImageSchema,
     storeAddress: addressSchema,
     phoneNumber: { type: String, required: true, trim: true, unique: true },
-    email: { type: String, required: true, trim: true, unique: true },
+    email: { type: String, trim: true, },
     password: { type: String, required: true },
     gstNumber: { type: String, trim: true },
     bankDetails: bankDetailsSchema,

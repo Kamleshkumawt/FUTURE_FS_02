@@ -4,6 +4,7 @@ import { AppError } from "../../../utils/appError.js";
 
 export const registerController = asyncHandler(async (req, res, next) => {
   const { email, phone, password, name } = req.body;
+  console.log('req.body',req.body);
 
   if (!name || !password) {
     return next(new AppError("All fields are required.", 400, "VALIDATION_ERROR"));
@@ -32,10 +33,16 @@ export const registerController = asyncHandler(async (req, res, next) => {
   }
 
 
-  const existingUser = await userModel.findOne({
-    $or: [{ email }, { phone }],
-  });
+  const query = [];
 
+if (email) query.push({ email });
+if (phone) query.push({ phone });
+
+const existingUser = query.length
+  ? await userModel.findOne({ $or: query })
+  : null;
+
+  console.log('existingUser',existingUser);
   if (existingUser) {
     if (existingUser.email === email && existingUser.phone === phone) {
       return next(new AppError("User with this email and phone already exists.", 400, "DUPLICATE_USER"));
@@ -46,20 +53,23 @@ export const registerController = asyncHandler(async (req, res, next) => {
     }
   }
 
-  const hashedPassword = await userModel.hashPassword(password);
-  if (!hashedPassword) {
-    return next(new AppError("Error hashing password.", 500, "HASHING_ERROR"));
-  }
+  // const hashedPassword = await userModel.hashPassword(password);
+  // if (!hashedPassword) {
+  //   return next(new AppError("Error hashing password.", 500, "HASHING_ERROR"));
+  // }
 
 
   const baseUsername = name.trim().toLowerCase().replace(/\s+/g, "_");
   const username = `${baseUsername}_${Math.floor(Math.random() * 10000)}`;
 
+  console.log('phone',phone);
+  console.log('password',password);
+  // console.log('password',hashedPassword);
   const user = await userModel.create({
     username,
     email,
     phone,
-    password: hashedPassword,
+    password,
     fullName: name,
   });
 

@@ -3,7 +3,6 @@ import Category from '../../models/category.model.js';
 import { asyncHandler } from '../../middlewares/errorHandler.js';
 import { AppError } from '../../utils/appError.js';
 
-
 export const createCategory = asyncHandler(async (req, res, next) => {
   const {
     name,
@@ -50,26 +49,27 @@ export const createCategory = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const getAllCategories = asyncHandler(async (req, res) => {
-  const { includeSub = false, status } = req.query;
-
-  const filter = {};
-  if (status) filter.status = status;
-
-  const query = Category.find(filter)
+export const getAllCategoriesForSeller = asyncHandler(async (req, res) => {
+  const categories = await Category.find({parentCategory : null})
     .sort({ sortOrder: 1, name: 1 })
     .lean();
-
-  if (includeSub === 'true') {
-    query.populate('subCategories', 'name slug status');
-  }
-
-  const categories = await query;
 
   res.status(200).json({
     success: true,
     count: categories.length,
     data: categories,
+  });
+});
+
+export const getAllCategories = asyncHandler(async (req, res) => {
+  const categories = await Category.find()
+    .sort({ sortOrder: 1, name: 1 })
+    .lean();
+
+  res.status(200).json({
+    success: true,
+    count: categories.length,
+    categories,
   });
 });
 

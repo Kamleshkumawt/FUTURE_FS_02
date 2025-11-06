@@ -25,16 +25,16 @@ router.get('/search/:id', searchProducts);
 // ================== Seller Routes ==================
 
 // Get products for logged-in seller
-router.get('/seller/me', protect, getProductsBySeller);
+router.get('/product/me', protect, getProductsBySeller);
 
 // Get product status counts for logged-in seller
-router.get('/seller/me/status', protect, getProductsByStatusForSeller);
+router.get('/product/me/status', protect, getProductsByStatusForSeller);
 
 // ================== Protected / Admin Routes ==================
 
 // Create product
 router.post(
-  '/',
+  '/create-product',
   protect,
   upload.fields([
     { name: 'frontImage', maxCount: 1 },

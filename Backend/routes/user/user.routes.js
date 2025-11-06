@@ -45,8 +45,8 @@ router.delete('/:id', protect, deleteReview);
 
 // Public routes
 router.get('/', getAllCategories); // Get all categories, optional query: includeSub, status
-router.get('/:id', getCategoryById); // Get category by ID
-router.get('/parentId/:id', getCategoriesByParentId); // Get category by ID
+router.get('/category/:id', getCategoryById); // Get category by ID
+router.get('/category/parentId/:id', getCategoriesByParentId); // Get category by ID
 
 
 

@@ -33,11 +33,11 @@ const Navbar = () => {
 
   const navigate = useNavigate();
 
- const [searchTrigger, setSearchTrigger] = useState(""); // trigger RTK Query manually
+  const [searchTrigger, setSearchTrigger] = useState(""); // trigger RTK Query manually
 
   // RTK Query
   const { data, isLoading } = useSearchProductsQuery(searchTrigger, {
-    skip: searchTrigger.length < 1
+    skip: searchTrigger.length < 1,
   });
 
   // Load from localStorage
@@ -101,12 +101,19 @@ const Navbar = () => {
     item.toLowerCase().includes(query.toLowerCase())
   );
 
-
   return !isLoading ? (
     <div className="fixed w-full z-50 bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-gray-100">
-      <ThemeToggle /> 
+      <ThemeToggle />
       <div className=" w-full h-[70px] flex items-center justify-between px-20 py-2 border-b-2 border-gray-300 dark:border-gray-600 z-50">
-        <span onClick={()=>{navigate("/");scrollTo(0,0);}} className="text-2xl cursor-pointer ">ApanaStore</span>
+        <span
+          onClick={() => {
+            navigate("/");
+            scrollTo(0, 0);
+          }}
+          className="text-2xl cursor-pointer "
+        >
+          ApanaStore
+        </span>
         <div
           className="relative w-full max-w-2xl mx-auto px-4"
           ref={containerRef}
@@ -222,7 +229,15 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center justify-between gap-7">
-          <span onClick={()=> {navigate('/sellerSignUp');scrollTo(0,0)}} className="text-[16px] cursor-pointer">Become a Supplier</span>
+          <span
+            onClick={() => {
+              navigate("/seller/SignUp");
+              scrollTo(0, 0);
+            }}
+            className="text-[16px] cursor-pointer"
+          >
+            Become a Supplier
+          </span>
           <span className=" h-9 w-[1px] bg-gray-300 dark:bg-gray-400"></span>
           {/* <span className="text-[16px] cursor-pointer">Investor Relations</span>
           <span className="w-[2px] h-9 bg-gray-300"></span> */}
@@ -233,47 +248,46 @@ const Navbar = () => {
               className="flex flex-col items-center  group"
               aria-label="Profile"
             >
-              
-              <ProfileDropdown/>
+              <ProfileDropdown />
             </div>
 
             {/* Cart Icon */}
-            <Link 
+            <Link
               to="/cart"
               className="flex flex-col items-center gap-1 cursor-pointer"
               aria-label="Cart"
             >
               <svg
-  viewBox="0 0 20 20"
-  fill="none"
-  width="20"
-  height="20"
-  xmlns="http://www.w3.org/2000/svg"
-  className="text-gray-900 dark:text-gray-300"
->
-  <path
-    d="m4.987 5.469 1.848 7.2a1 1 0 0 0 .968.752h8.675a1 1 0 0 0 .962-.726l1.697-5.952a1 1 0 0 0-.962-1.274H4.987Zm0 0-.943-3.248a1 1 0 0 0-.96-.721H1"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-  />
-  <ellipse
-    cx="9.421"
-    cy="16.744"
-    rx="1.243"
-    ry="1.256"
-    stroke="currentColor"
-    strokeWidth="1.5"
-  />
-  <ellipse
-    cx="15.221"
-    cy="16.744"
-    rx="1.243"
-    ry="1.256"
-    stroke="currentColor"
-    strokeWidth="1.5"
-  />
-</svg>
+                viewBox="0 0 20 20"
+                fill="none"
+                width="20"
+                height="20"
+                xmlns="http://www.w3.org/2000/svg"
+                className="text-gray-900 dark:text-gray-300"
+              >
+                <path
+                  d="m4.987 5.469 1.848 7.2a1 1 0 0 0 .968.752h8.675a1 1 0 0 0 .962-.726l1.697-5.952a1 1 0 0 0-.962-1.274H4.987Zm0 0-.943-3.248a1 1 0 0 0-.96-.721H1"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+                <ellipse
+                  cx="9.421"
+                  cy="16.744"
+                  rx="1.243"
+                  ry="1.256"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                />
+                <ellipse
+                  cx="15.221"
+                  cy="16.744"
+                  rx="1.243"
+                  ry="1.256"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                />
+              </svg>
 
               <span>Cart</span>
             </Link>
@@ -281,7 +295,9 @@ const Navbar = () => {
         </div>
       </div>
     </div>
-  ) : <Loading/>
+  ) : (
+    <Loading />
+  );
 };
 
 export default Navbar;

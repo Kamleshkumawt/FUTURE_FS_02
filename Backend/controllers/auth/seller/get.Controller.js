@@ -18,11 +18,13 @@ export const getSellerProfileController = asyncHandler(async (req, res, next) =>
     return next(new AppError("Seller profile not found", 404, "SELLER_NOT_FOUND"));
   }
 
+  // console.log('seller',seller);
+
   const responseData = {
     id: seller._id,
-    shopName: seller.shopName,
-    businessType: seller.businessType,
-    address: seller.address || null,
+    fullName: seller.fullName,
+    shopName: seller.storeName,
+    storeImage: seller.storeImage?.url,
     createdAt: seller.createdAt,
     updatedAt: seller.updatedAt,
   };
@@ -49,7 +51,8 @@ export const sellerPassController = asyncHandler(async (req, res, next) => {
   const isMatch = await seller.isValidPassword(oldPassword);
   if (!isMatch) return next(new AppError("Old password is incorrect", 400, "INVALID_OLD_PASSWORD"));
 
-  seller.password = await seller.hashPassword(newPassword);
+  // seller.password = await seller.hashPassword(newPassword);
+  seller.password = newPassword;
   await seller.save();
 
   res.status(200).json({
@@ -72,6 +75,18 @@ export const updateSellerController = asyncHandler(async (req, res, next) => {
     fullName,
   } = req.body;
 
+// console.log('req.body before parsing policies', req.body);
+
+// Safely parse policies if it's a string
+let parsedPolicies = policies;
+if (typeof policies === 'string') {
+  try {
+    parsedPolicies = JSON.parse(policies); // Single parse
+  } catch (err) {
+    return next(new AppError("Invalid policies format", 400, "INVALID_POLICIES"));
+  }
+}
+
   if (
     !storeName &&
     !storeDescription &&
@@ -87,12 +102,14 @@ export const updateSellerController = asyncHandler(async (req, res, next) => {
 
   let storeImage = null;
 
+  // console.log("req.file", req.file);
+
   if (req.file?.path) {
     const result = await uploadOnCloudinary(req.file.path);
+    // console.log("result", result);
     if (!result?.secure_url) {
       return next(new AppError("Failed to upload store image", 400, "IMAGE_UPLOAD_FAILED"));
     }
-
     storeImage = {
       url: result.secure_url,
       publicId: result.public_id,
@@ -109,7 +126,7 @@ export const updateSellerController = asyncHandler(async (req, res, next) => {
     ...(storeAddress && { storeAddress }),
     ...(gstNumber && { gstNumber }),
     ...(bankDetails && { bankDetails }),
-    ...(policies && { policies }),
+    ...(policies && { parsedPolicies }),
     ...(fullName && { fullName }),
     ...(storeImage && { storeImage }),
   };

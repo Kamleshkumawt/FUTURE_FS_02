@@ -29,13 +29,15 @@ export const createProduct = asyncHandler(async (req, res) => {
     gstNumber,
     manufacturerAddr,
     packerAddr,
+    keywords,
+    gender,
   } = req.body;
 
   const sellerId = req.user?._id;
 
   if (!name || !price || !description || !category || !quantity || !color || !brand ||
       !weight || !dimensions || !size || !material || !battery || !age ||
-      !hsnCode || !comboType || !manufacturerAddr || !packerAddr) {
+      !hsnCode || !comboType || !manufacturerAddr || !packerAddr || !gender || !gstNumber || !keywords) {
     throw new AppError('Please provide all required fields', 400);
   }
 
@@ -46,12 +48,13 @@ export const createProduct = asyncHandler(async (req, res) => {
     throw new AppError('Price and quantity must be positive numbers', 400);
 
   const store = await sellerModel.findById(sellerId);
+  // console.log('store', store)
   if (!store) throw new AppError('Seller not found', 404);
 
-  if (store.store_name.trim() !== brand.trim())
+  if (store.storeName !== brand.trim())
     throw new AppError('Brand mismatch with seller store name', 400);
 
-  if (store.gstNumber.trim() !== gstNumber.trim())
+  if (store.gstNumber !== gstNumber.trim())
     throw new AppError('GST number mismatch with seller record', 400);
 
   const uploadImage = async (file) => {
@@ -92,6 +95,10 @@ export const createProduct = asyncHandler(async (req, res) => {
   const slug = slugify(name, { lower: true, strict: true });
 
 
+  const dimensionss = JSON.parse(dimensions);
+  const manufacturerAddrs = JSON.parse(manufacturerAddr);
+  const packerAddrs = JSON.parse(packerAddr);
+
   const product = await productModel.create({
     sellerId,
     name: name.trim(),
@@ -113,19 +120,21 @@ export const createProduct = asyncHandler(async (req, res) => {
     battery,
     hsnCode,
     styleCode,
-    manufacturerAddr,
-    packerAddr,
-    returnPolicyDays: store.policies?.return_policy || 7,
-    shippingTimeDays: store.policies?.shipping_policy || 4,
+    manufacturerAddr:manufacturerAddrs,
+    packerAddr:packerAddrs,
+    returnPolicyDays: store.policies?.returnPolicy || 7,
+    shippingTimeDays: store.policies?.shippingPolicy || 4,
     dimensions: {
-      width: dimensions.width,
-      height: dimensions.height,
-      depth: dimensions.depth,
+      width: dimensionss.width,
+      height: dimensionss.height,
+      depth: dimensionss.depth,
     },
     comboType,
     metaTitle: `${name.trim()} | ${brand.trim()}`,
     metaDescription: description.trim().substring(0, 160),
     keywords: cleanTags,
+    gender,
+    sku:'TSHIRT-001',
   });
 
   res.status(201).json({
@@ -198,26 +207,18 @@ export const getProductById = asyncHandler(async (req, res) => {
 });
 
 export const getProducts = asyncHandler(async (req, res) => {
-  let { page = 1, limit = 20, search, category } = req.query;
+  let  page = 1; 
+  let limit = 50 ;
   page = parseInt(page);
   limit = parseInt(limit);
 
-  const query = {};
-  if (search) {
-    query.$text = { $search: search };
-  }
-  if (category) {
-    query.categoryId = category;
-  }
-
   const products = await productModel
-    .find(query)
-    .populate('categoryId', 'name description')
+    .find()
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
     .limit(limit);
 
-  const total = await productModel.countDocuments(query);
+  const total = await productModel.countDocuments();
 
   res.status(200).json({
     success: true,
@@ -233,11 +234,16 @@ export const getProducts = asyncHandler(async (req, res) => {
       slug: product.slug,
       price: product.price,
       finalPrice: product.finalPrice,
+      numOfReviews: product.numOfReviews,
+      rating: product.averageRating,
       discount: product.discount?.percentage || 0,
-      brand: product.brand,
+      material:product.material,
       color: product.color,
+      comboType: product.comboType,
+      gender: product.gender,
+      size: product.size,
       frontImage: product.frontImage?.url,
-      category: product.categoryId?.name,
+      category: product.categoryId,
       tags: product.tags,
       stockStatus: product.stockStatus,
       metaTitle: product.metaTitle,
@@ -328,9 +334,13 @@ export const getProductsBySeller = asyncHandler(async (req, res) => {
     products: products.map(p => ({
       id: p._id,
       name: p.name,
-      slug: p.slug,
       price: p.price,
-      finalPrice: p.finalPrice,
+      quantity: p.quantity,
+      stockStatus: p.stockStatus,
+      averageRating: p.averageRating,
+      color: p.color,
+      numOfReviews: p.numOfReviews,
+      weight: p.weight,
       discount: p.discount?.percentage || 0,
       brand: p.brand,
       frontImage: p.frontImage?.url,

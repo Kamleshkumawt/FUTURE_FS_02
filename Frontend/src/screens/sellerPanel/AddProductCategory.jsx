@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Title from "../../components/sellerPanel/Title";
 import {
-  useGetAllCategoriesQuery,
+  useGetAllCategoriesForSellerQuery,
   useGetCategoryByParentIdQuery,
 } from "../../store/api/user/categoryApi";
 import { useDispatch } from "react-redux";
@@ -23,9 +23,10 @@ const AddProductCategory = () => {
   const navigate = useNavigate();
 
   // ---------- API ----------
-  const { data: allCategoriesDatas } = useGetAllCategoriesQuery();
+  const { data: allCategoriesDatas } = useGetAllCategoriesForSellerQuery();
 
-  const shouldSkipSubCategoriesFetch = currentParentId === null || selectedPath.length >= 4;
+  const shouldSkipSubCategoriesFetch =
+    currentParentId === null || selectedPath.length >= 4;
 
   const { data: subCategoriesData } = useGetCategoryByParentIdQuery(
     currentParentId,
@@ -37,17 +38,9 @@ const AddProductCategory = () => {
   // ---------- Fetch All Categories on Mount ----------
   useEffect(() => {
     if (allCategoriesDatas) {
-      setAllCategoriesDate(allCategoriesDatas.categories);
+      setAllCategoriesDate(allCategoriesDatas.data);
     }
   }, []);
-
-  // ---------- Initialize root categories in categoryTree ----------
-  // useEffect(() => {
-  //   if (allCategoriesData.length) {
-  //     const rootCategories = allCategoriesData.filter((cat) => !cat.parentId);
-  //     setCategoryTree({ 0: rootCategories });
-  //   }
-  // }, [allCategoriesData]);
 
   useEffect(() => {
     if (allCategoriesData.length) {
@@ -63,30 +56,20 @@ const AddProductCategory = () => {
 
       setCategoryTree({ 0: filteredCategories });
     }
-  }, [allCategoriesData, query]);
+  }, [allCategoriesData, query, dispatch]);
 
-  // ---------- Update categoryTree when subcategories fetched ----------
-//   useEffect(() => {
-//     if (subCategoriesData?.categories) {
-//       const level = selectedPath.length;
-//       setCategoryTree((prev) => ({
-//         ...prev,
-//         [level]: subCategoriesData.categories,
-//       }));
-//     }
-//   }, [subCategoriesData]);
-
-useEffect(() => {
-  if (subCategoriesData?.categories) {
-    const level = selectedPath.length;
-    if (level < 4) {   // <-- Add this check
-      setCategoryTree((prev) => ({
-        ...prev,
-        [level]: subCategoriesData.categories,
-      }));
+  useEffect(() => {
+    if (subCategoriesData?.categories) {
+      const level = selectedPath.length;
+      if (level < 4) {
+        // <-- Add this check
+        setCategoryTree((prev) => ({
+          ...prev,
+          [level]: subCategoriesData.categories,
+        }));
+      }
     }
-  }
-}, [subCategoriesData]);
+  }, [subCategoriesData]);
 
   // ---------- Handle selection change ----------
   const handleSelectChangeCategory = (level, categoryId) => {
@@ -106,46 +89,49 @@ useEffect(() => {
   };
 
   const getSelectedCategoryPath = () => {
-  let path = [];
+    let path = [];
 
-  Object.entries(selectedPath).forEach(([level, categoryId]) => {
-    const categoriesAtLevel = categoryTree[level];
-    const category = categoriesAtLevel?.find((cat) => cat._id === categoryId);
-    if (category) {
-      path.push(category.name);
+    Object.entries(selectedPath).forEach(([level, categoryId]) => {
+      const categoriesAtLevel = categoryTree[level];
+      const category = categoriesAtLevel?.find((cat) => cat._id === categoryId);
+      if (category) {
+        path.push(category.name);
+      }
+    });
+
+    return path;
+  };
+
+  const handleAddProductCategory = () => {
+    // console.log("Selected Category Path:", sendImage, selectedPath);
+    dispatch(
+      setCategoryAndFrontImage({
+        image: sendImage,
+        category: selectedPath[selectedPath.length - 1],
+      })
+    );
+    navigate("/seller/add-product");
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setSendImage(file);
+      setShowImage(imageUrl);
     }
-  });
+  };
 
-  return path;
-};
-
-const handleAddProductCategory = () => {
-  // console.log("Selected Category Path:", sendImage, selectedPath);
-  dispatch(setCategoryAndFrontImage({
-  image: sendImage,
-  category: selectedPath[selectedPath.length - 1]
-}));
-navigate("/seller/add-product");
-};
-
-const handleImageUpload = (e) => {
-  const file = e.target.files[0];
-
-  if (file) {
-    const imageUrl = URL.createObjectURL(file);
-    setSendImage(file);
-    setShowImage(imageUrl);
-  }
-};
-
-if (!categoryTree || Object.keys(categoryTree).length === 0) return <Loading/>
+  if (!categoryTree || Object.keys(categoryTree).length === 0)
+    return <Loading />;
 
   return (
     <>
       <Title text1="Add" text2="Category" />
 
       {/* Search Bar */}
-      <div className="w-full border border-gray-400 rounded-sm flex items-center gap-2 shadow-sm shadow-gray-300 p-[10px] bg-white mt-3">
+      <div className="w-full border border-gray-400 rounded-sm flex items-center gap-2 shadow-sm shadow-gray-300 p-[10px] bg-white dark:bg-[#2A1C20] text-gray-900 dark:text-gray-100 mt-3">
         {/* Left Icon */}
         <svg
           width="20"
@@ -195,99 +181,133 @@ if (!categoryTree || Object.keys(categoryTree).length === 0) return <Loading/>
       <div className="w-full flex flex-col sm:flex-row  gap-5  mt-4">
         <div className="max-w-6xl">
           <div className="w-full flex flex-col sm:flex-row gap-5 overflow-x-auto">
-            {Object.entries(categoryTree).filter(([level]) => Number(level) < 4).map(([level, categories]) => (
-              <div
-                key={level}
-                className="w-full flex flex-col bg-white rounded-sm min-w-[200px]"
-              >
-                <h1 className={`text-lg font-medium text-center border-b border-gray-300 py-3 ${Number(level) === 0 ? 'block' : ' hidden'}`}>
-                  {Number(level) === 0
-                    ? "Your Category"
-                    : ``}   
-                    {/* //Subcategories (Level ${level}) */}
-                </h1>
-
-                {categories.map((category) => (
-                  <div
-                    key={category._id}
-                    onClick={() =>
-                      handleSelectChangeCategory(Number(level), category._id)
-                    }
-                    className={`flex items-center p-2 cursor-pointer border-b border-gray-300 ${
-                      selectedPath[Number(level)] === category._id
-                        ? "bg-purple-300/40"
-                        : ""
+            {Object.entries(categoryTree)
+              .filter(([level]) => Number(level) < 4)
+              .map(([level, categories]) => (
+                <div
+                  key={level}
+                  className="w-full flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-sm min-w-[200px]"
+                >
+                  <h1
+                    className={`text-lg font-medium text-center border-b border-gray-300 dark:border-gray-400 py-3 ${
+                      Number(level) === 0 ? "block" : " hidden"
                     }`}
                   >
-                    {category.name}
-                  </div>
-                ))}
-              </div>
-            ))}
+                    {Number(level) === 0 ? "Your Category" : ``}
+                    {/* //Subcategories (Level ${level}) */}
+                  </h1>
+
+                  {categories.map((category) => (
+                    <div
+                      key={category._id}
+                      onClick={() =>
+                        handleSelectChangeCategory(Number(level), category._id)
+                      }
+                      className={`flex items-center p-2 cursor-pointer border-b border-gray-300 ${
+                        selectedPath[Number(level)] === category._id
+                          ? "bg-purple-300/40"
+                          : ""
+                      }`}
+                    >
+                      {category.name}
+                    </div>
+                  ))}
+                </div>
+              ))}
           </div>
 
           {/* ---------- Final Selected Category ---------- */}
-          {/* {selectedPath.length > 0 && (
+          {selectedPath.length > 0 && (
             <div className="mt-6 bg-gray-100 p-4 rounded">
               <p className="font-semibold text-lg">Selected Category ID:</p>
               <p>{selectedPath[selectedPath.length - 1]}</p>
             </div>
-          )} */}
-
+          )}
         </div>
-          {Object.keys(selectedPath).length === Object.keys(categoryTree).length && (
-        <div className="max-w-xl bg-white rounded-sm flex flex-col items-center gap-5">
-          <div className="bg-gray-200 w-full text-center p-2 max-w-sm">
-            {getSelectedCategoryPath().join(" / ")}
-          </div>
-             {/* <div className="text-lg text-purple-600">
+        {Object.keys(selectedPath).length ===
+          Object.keys(categoryTree).length && (
+          <div className="max-w-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-sm flex flex-col items-center gap-5">
+            <div className="bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-200 w-full text-center p-2 max-w-sm">
+              {getSelectedCategoryPath().join(" / ")}
+            </div>
+            {/* <div className="text-lg text-purple-600">
             Final Category: {getSelectedCategoryPath().slice(-1)[0]}
           </div> */}
-        <div className="w-full flex flex-col  p-5 gap-5">
-          <div className="grid grid-cols-2 gap-2">
-            <img className="w-42 object-cover h-full" src="https://tse1.explicit.bing.net/th/id/OIP.AIVPgfM9nP5f3dC5-tFytQHaE8?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" alt="img" />
-            <img className="w-42 object-cover h-full" src="https://www.shutterstock.com/image-photo/mens-casual-outfit-fashion-clothing-260nw-1592874139.jpg" alt="img" />
-            <img className="w-42 object-cover h-full" src="https://img.freepik.com/premium-photo/flat-lay-men-fashion-casual-outfits-with-accessories-gray-background_1207718-134286.jpg" alt="img" />
-          <img className="w-42 object-cover h-full" src="https://tse4.mm.bing.net/th/id/OIP.-ckcGXBRnQjSTAjiLKO2NgHaFL?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" alt="img" />
-          </div>
-           <p>Please provide only front image for each product</p>
-         <div onClick={() => setOpenAddProductImage(true)} className="bg-purple-600 max-w-xs p-2 px-4 text-center rounded-sm font-medium text-white text-lg cursor-pointer">
-          Add Product Images
-         </div>
-        </div>
-        </div>
-        )}
-        </div>
-
-        {openAddProductImage && (
-          <div className="absolute top-0 left-0 w-screen h-screen bg-gray-500/50 flex items-center justify-center">
-            <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-5 min-w-xs">
-              <h2 className="text-lg font-semibold mb-4 w-full flex items-center justify-between">Add Product Image  <span onClick={() => setOpenAddProductImage(false)} className="text-xl cursor-pointer hover:text-red-500">&times;</span></h2>
-              <div style={{ display: "flex", gap: 10, marginTop: 10 }} className="relative w-40 h-40 border border-gray-300 flex items-center justify-center">
+            <div className="w-full flex flex-col  p-5 gap-5">
+              <div className="grid grid-cols-2 gap-2">
                 <img
-                  src={showImage}
-                  alt={showImage}
-                  // onLoad={() => URL.revokeObjectURL(showImage)}
-                  className="mb-4 absolute top-0 left-0 w-full h-full object-cover"
+                  className="w-42 object-cover h-full"
+                  src="https://tse1.explicit.bing.net/th/id/OIP.AIVPgfM9nP5f3dC5-tFytQHaE8?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3"
+                  alt="img"
                 />
-                <h1>Click to Upload</h1>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="mb-4 absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                </div>
-
-              <button
-                onClick={handleAddProductCategory}
-                className="bg-purple-600 text-white py-2 px-4 rounded cursor-pointer"
+                <img
+                  className="w-42 object-cover h-full"
+                  src="https://www.shutterstock.com/image-photo/mens-casual-outfit-fashion-clothing-260nw-1592874139.jpg"
+                  alt="img"
+                />
+                <img
+                  className="w-42 object-cover h-full"
+                  src="https://img.freepik.com/premium-photo/flat-lay-men-fashion-casual-outfits-with-accessories-gray-background_1207718-134286.jpg"
+                  alt="img"
+                />
+                <img
+                  className="w-42 object-cover h-full"
+                  src="https://tse4.mm.bing.net/th/id/OIP.-ckcGXBRnQjSTAjiLKO2NgHaFL?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3"
+                  alt="img"
+                />
+              </div>
+              <p>Please provide only front image for each product</p>
+              <div
+                onClick={() => setOpenAddProductImage(true)}
+                className="bg-purple-600 max-w-xs p-2 px-4 text-center rounded-sm font-medium text-white text-lg cursor-pointer"
               >
-                Add Image
-              </button>
+                Add Product Images
+              </div>
             </div>
           </div>
         )}
+      </div>
+
+      {openAddProductImage && (
+        <div className="absolute top-0 left-0 w-screen h-screen bg-gray-500/50 flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200  rounded-lg p-6 flex flex-col items-center gap-5 min-w-xs">
+            <h2 className="text-lg font-semibold mb-4 w-full flex items-center justify-between">
+              Add Product Image{" "}
+              <span
+                onClick={() => setOpenAddProductImage(false)}
+                className="text-xl cursor-pointer hover:text-red-500"
+              >
+                &times;
+              </span>
+            </h2>
+            <div
+              style={{ display: "flex", gap: 10, marginTop: 10 }}
+              className="relative w-40 h-40 border border-gray-300 flex items-center justify-center"
+            >
+              <img
+                src={showImage}
+                alt={showImage}
+                // onLoad={() => URL.revokeObjectURL(showImage)}
+                className="mb-4 absolute top-0 left-0 w-full h-full object-cover"
+              />
+              <h1>Click to Upload</h1>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="mb-4 absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+              />
+            </div>
+
+            <button
+              onClick={handleAddProductCategory}
+              className="bg-purple-600 text-white py-2 px-4 rounded cursor-pointer"
+            >
+              Add Image
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useCreateSellerAccountMutation } from "../../../store/api/sellerAuthApi";
 import { setSellerUser } from "../../../store/slices/authSlice";
+import { useSellerRegisterMutation } from "../../../store/api/seller/authApi";
+import ThemeToggle from "../../../components/user/ThemeToggle";
 
 const CreateSellerAccount = () => {
   const [contact, setContact] = useState("");
   const [password, setPassword] = useState("");
 
-  const [createSellerAccount, { isLoading, error }] =
-    useCreateSellerAccountMutation();
+  const [sellerRegister, { isLoading, error }] =
+    useSellerRegisterMutation();
 
   const navigate = useNavigate();
 
@@ -27,7 +28,7 @@ const CreateSellerAccount = () => {
     }
     
     try {
-      const response = await createSellerAccount({store_phone: contact, password}).unwrap();
+      const response = await sellerRegister({phoneNumber: contact, password}).unwrap();
       console.log("Registered user:", response);
       localStorage.setItem("token", response.token);
       dispatch(setSellerUser(response.seller));
@@ -39,14 +40,15 @@ const CreateSellerAccount = () => {
 
 
   return (
-    <div className="h-screen w-full flex flex-col items-center justify-start bg-[#fdecef] p-5 px-10">
+    <div className="h-screen w-full flex flex-col items-center justify-start bg-[#fdecef] dark:bg-[#2A1C20] text-gray-900 dark:text-gray-100 p-5 px-10">
+      <ThemeToggle/>
       <div className=" flex w-full items-center justify-between">
         <h1 className="text-purple-400 text-2xl font-medium">ApanaStore</h1>{" "}
         <div className="flex items-center gap-4">
           <span>Already a user?</span>
           <button
             onClick={() => {
-              navigate("/sellerSignIn");
+              navigate("/seller/SignIn");
               scrollTo(0, 0);
             }}
             className="border border-purple-400 p-1 font-medium px-4 text-purple-400 rounded-sm cursor-pointer"

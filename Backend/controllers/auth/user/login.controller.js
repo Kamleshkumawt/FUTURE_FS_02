@@ -32,8 +32,10 @@ export const loginController = asyncHandler(async (req, res, next) => {
     return next(new AppError("Your account has been disabled. Please contact support.", 403, "USER_DISABLED"));
   }
 
-
+  console.log('user', user);
+  console.log('password', password);
   const isMatch = await user.isValidPassword(password);
+  console.log('isMatch', isMatch);
   if (!isMatch) {
     return next(new AppError("Invalid credentials. Password does not match.", 401, "INVALID_PASSWORD"));
   }

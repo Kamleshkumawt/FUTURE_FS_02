@@ -2,6 +2,7 @@ import { LayoutDashboardIcon, ListCollapseIcon, ListIcon, PlusSquareIcon, Settin
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useSellerLogoutMutation } from '../../store/api/seller/authApi';
 import { useDispatch } from 'react-redux';
+import { clearSellerUser } from '../../store/slices/authSlice';
 
 
 const Sidebar = () => {
@@ -14,7 +15,7 @@ const Sidebar = () => {
     const logoutHandler = async () => {
     try {
       await sellerLogout().unwrap();
-      //  dispatch(clearSellerUser()); 
+       dispatch(clearSellerUser()); 
        localStorage.removeItem('token');
       navigate('/');
     } catch (error) {

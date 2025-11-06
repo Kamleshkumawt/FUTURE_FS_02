@@ -8,8 +8,24 @@ export const sellerApi = baseApi.injectEndpoints({
       providesTags: ['Product'],
     }),
     getSellerProfile: builder.mutation({
-      query: () => '/user/profile',
+      query: () => '/seller/auth/me',
       providesTags: ['User'],
+    }),
+    updateSellerProfile: builder.mutation({
+      query: (data) => ({
+        url: '/seller/auth/update',
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['Seller'],
+    }),
+    updateSellerPass: builder.mutation({
+      query: (data) => ({
+        url: '/seller/auth/update-pass',
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['Seller'],
     }),
     addProduct: builder.mutation({
       query: (productData) => ({
@@ -22,4 +38,4 @@ export const sellerApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetSellerProductsQuery, useGetSellerProfileMutation, useAddProductMutation } = sellerApi;
+export const { useGetSellerProductsQuery, useGetSellerProfileMutation, useAddProductMutation, useUpdateSellerProfileMutation, useUpdateSellerPassMutation } = sellerApi;

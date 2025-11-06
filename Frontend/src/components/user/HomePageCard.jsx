@@ -34,7 +34,7 @@ const HomePageCard = ({data}) => {
   <div className="w-full h-48 flex items-center justify-center bg-white ">
     <img
       // src="https://rukminim1.flixcart.com/image/420/420/xif0q/headphone/3/m/u/nb111-wireless-headphone-magnetic-neckband-250h-standby-200mah-original-imah77cwrvwjzbyt.jpeg?q=60"
-      src={data?.frontImage.url}
+      src={data?.frontImage}
       alt={data?.name}
       className="h-full object-contain"
     />
@@ -43,7 +43,7 @@ const HomePageCard = ({data}) => {
   {/* Text content */}
   <div className="flex flex-col items-start gap-1 ">
     <span className="text-black">{data?.name.slice(0, 20)}</span>
-    <span className="text-lg font-semibold text-green-600">Min.{data?.discount?.percentage}% off</span>
+    <span className="text-lg font-semibold text-green-600">Min.{data?.discount}% off</span>
   </div>
 </div>
 

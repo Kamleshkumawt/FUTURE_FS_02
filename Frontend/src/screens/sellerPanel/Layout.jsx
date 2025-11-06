@@ -18,15 +18,15 @@ const Layout = () => {
 
   useEffect(() => {
       if(data){
-          // console.log('data : ',data);
-          dispatch(setSellerUser(data.seller));
+          // console.log('data : ',data.data);
+          dispatch(setSellerUser(data.data));
       }
   },[data, dispatch]);
 
   return !isLoading ? (
     <>
     <Navbar />
-    <div className='flex bg-gray-100'>
+    <div className='flex bg-gray-100 dark:bg-[#2A1C20] text-gray-900 dark:text-gray-100'>
         <Sidebar/>
         <div className='flex-1 px-4 py-10 md:px-10 h-[calc(100vh-64px)] overflow-y-auto'>
             <Outlet />

@@ -5,7 +5,7 @@ import HomePageCard from "../components/user/HomePageCard";
 import ManualCarousel from "../components/user/Carousel";
 import CategorySideBar from "../components/user/CategorySidebar";
 import Loading from "../components/Loading";
-import {useGetProductsQuery } from "../store/api/seller/productApi";
+import {useGetAllProductsQuery } from "../store/api/seller/productApi";
 import { useGetAllCategoriesQuery } from "../store/api/user/categoryApi";
 
 // ✅ Helper — unique products by category
@@ -26,7 +26,7 @@ const getUniqueCategoryProducts = (products, limit = 8) => {
 
 const Home = () => {
   // ✅ Data fetching using RTK Query (no manual state)
-  const { data, isLoading } = useGetProductsQuery();
+  const { data, isLoading } = useGetAllProductsQuery();
   const { data: categoryData } = useGetAllCategoriesQuery();
 
   const products = data?.products || [];
@@ -114,7 +114,7 @@ const Home = () => {
       // discount filter
       if (
         selectedDiscounts.length > 0 &&
-        !selectedDiscounts.includes(discount?.percentage)
+        !selectedDiscounts.includes(discount)
       )
         return false;
 

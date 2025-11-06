@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Title from "../../components/sellerPanel/Title";
 import {
-  useGetProductByIdQuery,
+  useGetProductBySlugQuery,
   useUpdateProductMutation,
-} from "../../store/api/productApi";
+} from "../../store/api/seller/productApi";
 import Loading from "../../components/Loading";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
@@ -58,7 +58,7 @@ const EditProduct = () => {
   const { id } = useParams();
 
   // ---------- API ----------
-  const { data, isLoading } = useGetProductByIdQuery(id, {
+  const { data, isLoading } = useGetProductBySlugQuery(id, {
     skip: !id,
   });
 
@@ -171,7 +171,7 @@ const EditProduct = () => {
 
   useEffect(() => {
     if (data) {
-      console.log("data", data);
+      console.log("data fatching :", data);
       setProduct(data.product);
       setHsn(data.product.hsnCode);
       setStyleCode(data.product.styleCode);

@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setSellerUser } from "../../../store/slices/authSlice";
-import { useUpdateSellerMutation } from "../../../store/api/sellerAuthApi";
+import { useUpdateSellerProfileMutation } from "../../../store/api/seller/sellerApi";
 
 const BusinessDetails = () => {
   const [gst, setGst] = useState("");
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const [updateSeller, { isLoading, error }] = useUpdateSellerMutation();
+  const [updateSellerProfile, { isLoading, error }] = useUpdateSellerProfileMutation();
 
   const navigate = useNavigate();
 
@@ -21,7 +21,7 @@ const BusinessDetails = () => {
     }
 
     try {
-      const response = await updateSeller({ gst_number : gst }).unwrap();
+      const response = await updateSellerProfile({ gstNumber : gst }).unwrap();
       // console.log("updated :", response);
       dispatch(setSellerUser(response.seller));
       navigate("/sellerSignUp/address");
@@ -32,7 +32,7 @@ const BusinessDetails = () => {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col items-center justify-start bg-[#fdecef] p-5 px-10">
+    <div className="h-screen w-full flex flex-col items-center justify-start bg-[#fdecef] dark:bg-[#2A1C20] text-gray-900 dark:text-gray-100 p-5 px-10">
       <div className=" flex w-full items-center justify-start">
         <h1 className="text-purple-400 text-2xl font-medium">ApanaStore</h1>
       </div>

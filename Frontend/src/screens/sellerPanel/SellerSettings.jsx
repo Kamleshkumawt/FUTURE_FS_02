@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Title from "../../components/sellerPanel/Title";
 import { useDispatch } from "react-redux";
-import { useChangeSellerPasswordMutation, useUpdateSellerMutation } from "../../store/api/sellerAuthApi";
 import { setSellerUser } from "../../store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
+import { useUpdateSellerPassMutation, useUpdateSellerProfileMutation } from "../../store/api/seller/sellerApi";
 
 const inputClass =
   "peer w-full border-b-2 border-gray-300 px-4 pt-5 pb-2 text-sm focus:outline-none focus:border-purple-600";
@@ -27,8 +27,8 @@ const SellerSettings = () => {
     "https://tse3.mm.bing.net/th/id/OIP.Ip2y_2_KabgvNaHIZhYoJgHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3"
   );
 
-  const [updateSeller, { isLoading, error }] = useUpdateSellerMutation();
-  const [changeSellerPassword, { loading, isError }] = useChangeSellerPasswordMutation();
+  const [updateSellerProfile, { isLoading, error }] = useUpdateSellerProfileMutation();
+  const [updateSellerPass, { loading, isError }] = useUpdateSellerPassMutation();
 
   const navigate = useNavigate();
 
@@ -48,18 +48,18 @@ const SellerSettings = () => {
 
   const updateHandle = async () => {
     const policies = {
-      return_policy:returnProductDay,
-      shipping_policy:shipping
+      returnPolicy:returnProductDay,
+      shippingPolicy:shipping
     }
 
     try {
       const formData = new FormData();
-      formData.append("mangerName", holderName);
-      formData.append("store_image", profileImage);
-      formData.append("store_description", description);
-      formData.append("policies", policies);
+      formData.append("fullName", holderName);
+      formData.append("storeImage", profileImage);
+      formData.append("storeDescription", description);
+      formData.append("policies", JSON.stringify(policies));
 
-      const response = await updateSeller(formData).unwrap();
+      const response = await updateSellerProfile(formData).unwrap();
       console.log("update : ", response);
       dispatch(setSellerUser(response.user));
       navigate("/seller");
@@ -79,7 +79,7 @@ const SellerSettings = () => {
     }
    
     try {
-      const response = await changeSellerPassword({ oldPassword, newPassword}).unwrap();
+      const response = await updateSellerPass({ oldPassword, newPassword}).unwrap();
       // console.log("update : ", response);
       dispatch(setSellerUser(response.user));
       navigate("/seller");
@@ -193,7 +193,7 @@ const SellerSettings = () => {
               scrollTo(0, 0);
             }}
             className={`max-w-xs w-full text-center p-2 px-4 rounded-sm text-white font-medium  mt-2 mb-10 ${
-               (holderName.length > 0 || description.length > 0 || shipping.length > 0 || returnProductDay.length > 0 || profileImage.length > 0)
+               (holderName.length > 0 || description.length > 0 || shipping.length > 0 || returnProductDay.length > 0 || profileImage)
                 ? "bg-purple-800 cursor-pointer"
                 : "bg-gray-300 cursor-not-allowed"
             }`}

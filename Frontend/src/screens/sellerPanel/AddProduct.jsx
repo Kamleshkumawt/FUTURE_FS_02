@@ -65,9 +65,12 @@ const AddProduct = () => {
   const [length, setLength] = useState("");
   const [comboType, setComboType] = useState("");
   const [tags, setTags] = useState([]);
+  const [keywords, setKeywords] = useState([]);
   const [images, setImages] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [isFocusedKeywords, setIsFocusedKeywords] = useState(false);
+  const [inputValueKeywords, setInputValueKeywords] = useState("");
   // const [discountPer, setDiscountPer] = useState("");
   // const [discountDate, setDiscountDate] = useState("");
   const [showImage, setShowImage] = useState(null);
@@ -76,6 +79,7 @@ const AddProduct = () => {
   const [battery, setBattery] = useState("");
   const [material, setMaterial] = useState("");
   const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
   const [manufacturerName, setManufacturerName] = useState("");
   const [manufacturerAdd, setManufacturerAdd] = useState("");
   const [manufacturerPin, setManufacturerPin] = useState("");
@@ -98,6 +102,9 @@ const AddProduct = () => {
   // ---------- Handlers ----------
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
+  };
+  const handleInputChangeKeywords = (e) => {
+    setInputValueKeywords(e.target.value);
   };
 
   const toggleSize = (size) => {
@@ -123,6 +130,21 @@ const AddProduct = () => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
+  const handleKeyDownKeywords = (e) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      const newTag = inputValueKeywords.trim();
+      if (newTag && !keywords.includes(newTag)) {
+        setKeywords([...keywords, newTag]);
+      }
+      setInputValueKeywords("");
+    }
+  };
+
+  const removeTagKeywords = (tagToRemove) => {
+    setKeywords(keywords.filter((keyword) => keyword !== tagToRemove));
+  };
+
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     // setImages(files);
@@ -146,21 +168,22 @@ const AddProduct = () => {
       formData.append("frontImage", image || frontImage);
       formData.append(
         "category",
-        subCategoriesData?.categories?.name || "Smartphone"
+        subCategoriesData?.categories?.name || "Women's Clothing"
       );
-      formData.append("gst_number", gst);
+      formData.append("gstNumber", gst);
       formData.append("hsnCode", hsn);
       formData.append("styleCode", styleCode);
       formData.append("size", selectedSizes);
       formData.append("battery", battery);
       formData.append("material", material);
       formData.append("age", age);
-      formData.append("manufacturerName", manufacturerName);
-      formData.append("manufacturerAdd", manufacturerAdd);
-      formData.append("manufacturerPin", manufacturerPin);
-      formData.append("packerName", packerName);
-      formData.append("packerAdd", packerAdd);
-      formData.append("packerPin", packerPin);
+      formData.append("gender", gender);
+      // formData.append("manufacturerName", manufacturerName);
+      // formData.append("manufacturerAddr", manufacturerAdd);
+      // formData.append("manufacturerPin", manufacturerPin);
+      // formData.append("packerName", packerName);
+      // formData.append("packerAdd", packerAdd);
+      // formData.append("packerPin", packerPin);
       formData.append("comboType", comboType);
 
       const dimensions = {
@@ -181,10 +204,11 @@ const AddProduct = () => {
         postalCode: packerPin,
       };
 
-      formData.append("manufacturerAddr", manufacturerAddr);
-      formData.append("packerAddr", packerAddr);
+      formData.append("manufacturerAddr", JSON.stringify(manufacturerAddr));
+      formData.append("packerAddr", JSON.stringify(packerAddr));
       formData.append("dimensions", JSON.stringify(dimensions));
       formData.append("tags", JSON.stringify(tags));
+      formData.append("keywords", JSON.stringify(keywords));
 
       images.forEach((file) => {
         formData.append("images", file);
@@ -217,10 +241,10 @@ const AddProduct = () => {
 
       <div className=" flex flex-col sm:flex-row items-start w-full gap-10 mb-10">
         <div className="w-full flex flex-col items-start">
-          <h1 className="text-lg font-medium  text-gray-600 py-3 mt-2 border-b border-gray-400/30 w-full">
+          <h1 className="text-lg font-medium  text-gray-600 dark:text-gray-200 py-3 mt-2 border-b border-gray-400/30 w-full">
             Product,Size and Inventory
           </h1>
-          <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-3">
+          <div className="max-w-7xl w-full grid  md:grid-cols-1 xl:grid-cols-3 gap-5 mt-3">
             {/* GST Number */}
             <div className="relative">
               <input
@@ -322,11 +346,11 @@ const AddProduct = () => {
 
               {/* Options dropdown */}
               {open && (
-                <div className="absolute left-0 right-0 border mt-1 bg-white z-10 max-h-40 overflow-auto hide-scrollbar scrollbar-none rounded shadow-lg">
+                <div className="absolute left-0 right-0 border-b-2 border-b-gray-300 mt-1 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 dark:border-gray-400 z-10 max-h-40 overflow-auto hide-scrollbar scrollbar-none rounded shadow-lg">
                   {sizeOptions.map((size) => (
                     <div
                       key={size}
-                      className="px-2 py-1 hover:bg-pink-100 cursor-pointer flex items-center gap-2"
+                      className="px-2 py-1 hover:bg-pink-100 dark:hover:bg-gray-400 cursor-pointer flex items-center gap-2"
                       onClick={() => toggleSize(size)}
                     >
                       <input
@@ -344,11 +368,11 @@ const AddProduct = () => {
 
 
           </div>
-          <h1 className="text-lg font-medium  text-gray-600 py-3 mt-5 border-b border-gray-400/30 w-full">
+          <h1 className="text-lg font-medium  text-gray-600 dark:text-gray-200 py-3 mt-5 border-b border-gray-400/30 w-full">
             Product Details
           </h1>
 
-          <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-3">
+          <div className="max-w-7xl w-full grid md:grid-cols-1 xl:grid-cols-3 gap-5 mt-3">
             {/* price Field */}
             <div className="relative">
               <input
@@ -419,48 +443,44 @@ const AddProduct = () => {
               </div>
             </div>
 
-            {/* discount Field */}
-            {/* <div className="relative mt-2">
-            <input
-              type="text"
-              id="discount"
-              name="discount"
-              value={discountPer}
-              onChange={(e) => setDiscountPer(e.target.value)}
-              placeholder=" "
-              required
-              className={inputClass}
-            />
-            <label htmlFor="discount" className={labelClass(discountPer)}>
-              Discount Percentage
-            </label>
-          </div> */}
-
-            {/* discount Field */}
-            {/* <div className="relative mt-2">
-            <input
-              type="datetime-local"
-              id="discountDate"
-              name="discountDate"
-              value={discountDate}
-              onChange={(e) => setDiscountDate(e.target.value)}
-              placeholder=" "
-              required
-              className={inputClass}
-            />
-            <label
-              htmlFor="discountDate"
-              className={`absolute left-2 transition-all duration-200 font-medium cursor-pointer
-              ${
-                discountDate
-                  ? "top-1 text-xs text-purple-600"
-                  : "top-1 text-base text-gray-400"
-              }
-              peer-focus:top-1 peer-focus:text-xs peer-focus:text-purple-600`}
-            >
-              Discount Last Date And Time
-            </label>
-          </div> */}
+            {/* keywords Field */}
+            <div className="relative mt-2">
+              <input
+                type="text"
+                id="keywords"
+                name="keywords"
+                value={inputValueKeywords} // show tags as comma separated string
+                onChange={handleInputChangeKeywords}
+                onKeyDown={handleKeyDownKeywords}
+                placeholder={
+                  isFocusedKeywords ? "e.g. #phone, #iphone, #smartphone" : ""
+                }
+                className={inputClass}
+                required
+                onFocus={() => setIsFocusedKeywords(true)}
+                onBlur={() => setIsFocusedKeywords(false)}
+              />
+              <label htmlFor="keywords" className={labelClass(keywords.length > 0)}>
+                Keywords
+              </label>
+              <div className="flex flex-wrap gap-2 mb-1">
+                {keywords.map((keyword) => (
+                  <span
+                    key={keyword}
+                    className="bg-purple-200 text-purple-800 px-2 py-1 rounded flex items-center space-x-1"
+                  >
+                    <span>{keyword}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeTagKeywords(keyword)}
+                      className="text-purple-800 hover:text-red-600 cursor-pointer"
+                    >
+                      &times;
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
 
             {/* width Field */}
             <div className="relative mt-2">
@@ -545,7 +565,7 @@ const AddProduct = () => {
               >
                 <option value="" disabled hidden></option>
                 {comboOptions.map((option) => (
-                  <option key={option} value={option}>
+                  <option key={option} className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 dark:border-gray-400" value={option}>
                     {option}
                   </option>
                 ))}
@@ -662,68 +682,11 @@ const AddProduct = () => {
                 Packer PinCode
               </label>
             </div>
-
-            {/* status Field */}
-            {/* <div className="mt-4">
-            <p className="mb-2 text-sm font-medium text-gray-500">Status</p>
-            <div className="flex gap-4">
-              {statusOptions.map((option) => (
-                <div key={option} className="relative">
-                  <input
-                    type="radio"
-                    id={option}
-                    name="status"
-                    value={option}
-                    checked={status === option}
-                    onChange={(e) => setStatus(e.target.value)}
-                    className={"peer hidden"}
-                  />
-                  <label
-                    htmlFor={option}
-                    className={`inline-block px-4 py-2 border rounded-md cursor-pointer transition-colors duration-200
-                  ${
-                    option === status
-                      ? "bg-purple-600 text-white"
-                      : "bg-white text-gray-700 border-gray-300"
-                  }
-                  hover:border-purple-600 hover:text-purple-600 `}
-                  >
-                    {option}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </div> */}
-
-            {/* images Field */}
-            {/* <div>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImageChange}
-            />
-
-            <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-              {images.map((file, i) => {
-                const url = URL.createObjectURL(file);
-                return (
-                  <img
-                    key={i}
-                    src={url}
-                    alt={file.name}
-                    style={{ width: 100, height: 100, objectFit: "cover" }}
-                    onLoad={() => URL.revokeObjectURL(url)}
-                  />
-                );
-              })}
-            </div>
-          </div> */}
           </div>
-          <h1 className="text-lg font-medium  text-gray-600 py-3 mt-5 border-b border-gray-400/30 w-full">
+          <h1 className="text-lg font-medium  text-gray-600 dark:text-gray-200 py-3 mt-5 border-b border-gray-400/30 w-full">
             Other Attributes
           </h1>
-          <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-3">
+          <div className="max-w-7xl w-full grid  md:grid-cols-1 xl:grid-cols-3 gap-5 mt-3">
             {/* Battery Field */}
             <div className="relative ">
               <input
@@ -801,6 +764,21 @@ const AddProduct = () => {
               </label>
             </div>
 
+            {/* Gender Field */}
+            <div className="relative ">
+              <input
+                type="text"
+                id="gender"
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                placeholder=" " // Needed for `peer-placeholder-shown` to trigger, but space keeps it hidden
+                className={inputClass}
+              />
+              <label htmlFor="gender" className={labelClass(gender)}>
+                Recommended Gender
+              </label>
+            </div>
+
             {/* description Field */}
             <div className="relative">
               <textarea
@@ -821,7 +799,7 @@ const AddProduct = () => {
           </div>
         </div>
 
-        <div className="max-w-xl bg-white rounded-sm flex flex-col items-center gap-5">
+        <div className="max-w-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-sm flex flex-col items-center gap-5">
           <div className="w-full flex flex-col  p-5 gap-5">
             <p className="text-lg font-semibold font-poppins">
               Images Guidelines
@@ -932,7 +910,7 @@ const AddProduct = () => {
         </div>
       </div>
 
-      <div className="w-full h-16 bg-white fixed bottom-0 right-0 flex items-center justify-between px-10">
+      <div className="w-full h-16 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 fixed bottom-0 right-0 flex items-center justify-between px-10">
         <div
           onClick={() => {
             navigate("/seller");
@@ -944,7 +922,7 @@ const AddProduct = () => {
         </div>
         <button
           onClick={() => handleFormSubmit()}
-          className=" px-4 py-2 text-white font-medium bg-purple-600 rounded-md hover:bg-purple-700 cursor-pointer"
+          className=" px-4 py-2  font-medium bg-purple-600 rounded-md hover:bg-purple-700 cursor-pointer"
         >
           Add Product
         </button>

@@ -20,16 +20,15 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      unique: true,
       lowercase: true,
       trim: true,
+      unique: true, 
+      sparse: true,
       minlength: [6, "Email should be at least 6 characters long"],
       match: [/^\S+@\S+\.\S+$/, "Please fill a valid email address"],
-      index: true,
     },
     phone: {
       type: String,
-      unique: true,
       sparse: true,
       match: [/^\+?[0-9]{10,15}$/, "Please fill a valid phone number"],
     },
@@ -59,7 +58,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["user", "admin", "seller"],
       default: "user",
-      index: true,
     },
     address: [
       {
@@ -143,8 +141,6 @@ userSchema.statics.hashPassword = async function (password) {
   const salt = await bcrypt.genSalt(12);
   return bcrypt.hash(password, salt);
 };
-
-userSchema.set("autoIndex", process.env.NODE_ENV !== "production");
 
 const User = mongoose.model("user", userSchema);
 

@@ -14,14 +14,14 @@ export const createSeller = asyncHandler(async (req, res) => {
     throw new AppError("You are already registered as a seller", 400, "DUPLICATE_SELLER");
   }
 
-  const hashedPassword = await sellerModel.hashPassword(password);
-  if (!hashedPassword) {
-    throw new AppError("Error hashing password", 500, "HASH_ERROR");
-  }
+  // const hashedPassword = await sellerModel.hashPassword(password);
+  // if (!hashedPassword) {
+  //   throw new AppError("Error hashing password", 500, "HASH_ERROR");
+  // }
 
   const seller = await sellerModel.create({
     phoneNumber,
-    password: hashedPassword,
+    password,
   });
 
   if (!seller) {
@@ -51,7 +51,6 @@ export const createSeller = asyncHandler(async (req, res) => {
     token,
   });
 });
-
 
 export const sellerLoginController = asyncHandler(async (req, res) => {
   const { phoneNumber, password } = req.body;
