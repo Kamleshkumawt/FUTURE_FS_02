@@ -17,7 +17,7 @@ const HomePageCard = ({data}) => {
   return (
     <div 
     onClick={() => {
-        const category = data?.categoryId;
+        const category = data?.category;
         const categoryName = category?.name;
 
         if (categoryName) {

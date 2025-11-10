@@ -6,13 +6,13 @@ export const productApi = baseApi.injectEndpoints({
     getProducts: builder.query({
       query: (params) => {
         const queryString = new URLSearchParams(params).toString();
-        return `/products?${queryString}`;
+        return `/product?${queryString}`;
       },
       providesTags: ["Products"],
     }),
 
     getProductBySlug: builder.query({
-      query: (slug) => `/products/slug/${slug}`,
+      query: (slug) => `/product/slug/${slug}`,
       providesTags: ["Products"],
     }),
 
@@ -21,12 +21,12 @@ export const productApi = baseApi.injectEndpoints({
       providesTags: ["Products"],
     }),
     getProductsByCategory: builder.query({
-      query: (categoryId) => `/products/category/${categoryId}`,
+      query: (categoryId) => `/product/category/${categoryId}`,
       providesTags: ["Products"],
     }),
 
     searchProducts: builder.query({
-      query: (searchTerm) => `/products/search/${searchTerm}`,
+      query: (searchTerm) => `/product/search/${searchTerm}`,
       providesTags: ["Products"],
     }),
 

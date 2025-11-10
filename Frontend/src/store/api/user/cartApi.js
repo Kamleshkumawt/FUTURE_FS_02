@@ -3,35 +3,35 @@ import { baseApi } from '../baseApi';
 export const cartApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCart: builder.query({
-      query: (userId) => `/cart/${userId}`,
+      query: () => `/user/cart/get`,
       providesTags: ['Cart'],
     }),
     addItemToCart: builder.mutation({
-      query: ({ userId, item }) => ({
-        url: `/cart/${userId}`,
+      query: ({data}) => ({
+        url: '/user/cart/add',
         method: 'POST',
-        body: item,
+        body: data,
       }),
       invalidatesTags: ['Cart'],
     }),
     updateCartItem: builder.mutation({
-      query: ({ userId, item }) => ({
-        url: `/cart/${userId}`,
+      query: ({ data }) => ({
+        url: `/user/cart/update`,
         method: 'PUT',
-        body: item,
+        body: data,
       }),
       invalidatesTags: ['Cart'],
     }),
     removeCartItem: builder.mutation({
-      query: ({ userId, productId }) => ({
-        url: `/cart/${userId}/item/${productId}`,
+      query: ({productId }) => ({
+        url: `/user/cart/${productId}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Cart'],
     }),
     clearCart: builder.mutation({
-      query: (userId) => ({
-        url: `/cart/${userId}`,
+      query: () => ({
+        url: `/user/cart/clear`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Cart'],

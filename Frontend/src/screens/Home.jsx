@@ -10,17 +10,19 @@ import { useGetAllCategoriesQuery } from "../store/api/user/categoryApi";
 
 // ✅ Helper — unique products by category
 const getUniqueCategoryProducts = (products, limit = 8) => {
+  // console.log('products : ',products);
   const result = [];
   const seenCategories = new Set();
 
   for (const product of products) {
-    const category = product.categoryId?.name;
+    const category = product.category?.name;
     if (!category || seenCategories.has(category)) continue;
 
     result.push(product);
     seenCategories.add(category);
     if (result.length >= limit) break;
   }
+  // console.log('result : ',result);
   return result;
 };
 

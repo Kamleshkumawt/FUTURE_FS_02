@@ -26,6 +26,8 @@ export const getCart = asyncHandler(async (req, res, next) => {
 export const addItemToCart = asyncHandler(async (req, res, next) => {
   const { userId } = req.params;
   const { productId, quantity = 1 } = req.body;
+  
+  console.log("req.body", req.body);
 
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return next(new AppError('Invalid product ID', 400, 'INVALID_PRODUCT_ID'));

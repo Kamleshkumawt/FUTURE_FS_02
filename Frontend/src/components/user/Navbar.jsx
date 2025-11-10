@@ -84,7 +84,7 @@ const Navbar = () => {
 
     setQuery(trimmed);
     setShowDropdown(false);
-    console.log("Search:", trimmed);
+    // console.log("Search:", trimmed);
   }
 
   function handleKeyDown(e) {

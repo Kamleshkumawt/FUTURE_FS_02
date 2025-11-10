@@ -76,7 +76,6 @@ cartSchema.statics.updateQuantity = async function (userId, productId, quantity)
   );
 };
 
-cartSchema.index({ userId: 1 });
 cartSchema.index({ 'items.productId': 1 });
 
 const Cart = model('cart', cartSchema);

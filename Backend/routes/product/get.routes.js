@@ -10,10 +10,7 @@ const router = Router();
 router.get('/get/all', getProducts); // /api/products?page=1&limit=20&search=phone&category=ID
 
 // Get product by slug (SEO-friendly)
-router.get('/slug/:slug', async (req, res, next) => {
-  req.params.id = req.params.slug; // adapt slug to your controller logic if needed
-  return getProductById(req, res, next);
-});
+router.get('/slug/:slug', getProductById);
 
 // Get products by category (SEO-friendly)
 router.get('/category/:id', getProductsByCategory);

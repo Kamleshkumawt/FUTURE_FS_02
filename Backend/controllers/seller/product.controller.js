@@ -163,8 +163,9 @@ export const createProduct = asyncHandler(async (req, res) => {
 });
 
 export const getProductById = asyncHandler(async (req, res) => {
+  const { slug } = req.params;
   const product = await productModel
-    .findById(req.params.id)
+    .findOne({slug})
     .populate('categoryId', 'name description');
 
   if (!product) {
@@ -182,18 +183,17 @@ export const getProductById = asyncHandler(async (req, res) => {
       price: product.price,
       finalPrice: product.finalPrice,
       discount: product.discount?.percentage || 0,
-      brand: product.brand,
       color: product.color,
       size: product.size,
       material: product.material,
       weight: product.weight,
-      battery: product.battery,
       ageGroup: product.age,
       hsnCode: product.hsnCode,
       styleCode: product.styleCode,
       comboType: product.comboType,
       quantity: product.quantity,
-      stockStatus: product.stockStatus,
+      rating: product.averageRating,
+      numOfReviews: product.numOfReviews,
       frontImage: product.frontImage?.url,
       images: product.images.map(img => img.url),
       tags: product.tags,
@@ -216,7 +216,7 @@ export const getProducts = asyncHandler(async (req, res) => {
     .find()
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
-    .limit(limit);
+    .limit(limit).populate('categoryId', 'name slug description');
 
   const total = await productModel.countDocuments();
 
@@ -378,12 +378,20 @@ export const searchProducts = asyncHandler(async (req, res) => {
       slug: p.slug,
       price: p.price,
       finalPrice: p.finalPrice,
+      numOfReviews: p.numOfReviews,
+      rating: p.averageRating,
       discount: p.discount?.percentage || 0,
-      brand: p.brand,
+      material:p.material,
+      color: p.color,
+      comboType: p.comboType,
+      gender: p.gender,
+      size: p.size,
       frontImage: p.frontImage?.url,
-      stockStatus: p.stockStatus,
-      category: p.categoryId?.name,
+      category: p.categoryId,
       tags: p.tags,
+      stockStatus: p.stockStatus,
+      metaTitle: p.metaTitle,
+      metaDescription: p.metaDescription,
       createdAt: p.createdAt,
     })),
   });

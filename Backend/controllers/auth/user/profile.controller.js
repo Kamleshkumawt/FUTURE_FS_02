@@ -98,3 +98,42 @@ export const updateProfilePasswordController = asyncHandler(async (req, res, nex
     message: "Password updated successfully",
   });
 });
+
+export const updateAddressById = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { address } = req.body;
+    const addressId = address._id;
+    const user = await userModel.findOneAndUpdate(
+      { _id: userId, "address._id": addressId },
+      { $set: { "address.$": address } },
+      { new: true }
+    );
+    res
+      .status(200)
+      .json({ success: true, message: "Address updated successfully", user });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
+export const addNewAddress = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { address } = req.body;
+    const user = await userModel.findOneAndUpdate(
+      { _id: userId },
+      { $push: { address: address } },
+      { new: true }
+    );
+    res
+      .status(200)
+      .json({ success: true, message: "Address updated successfully", user });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};

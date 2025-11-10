@@ -47,7 +47,6 @@ const productSchema = new Schema(
     },
     slug: {
       type: String,
-      unique: true,
     },
     description: {
       type: String,

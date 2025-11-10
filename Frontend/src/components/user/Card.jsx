@@ -2,12 +2,7 @@ import React  from "react";
 import { useNavigate } from "react-router-dom";
 import {formatAmount} from '../../lib/formatAmount';
 
-/**
- * Product Card Component
- * - SEO-friendly
- * - Wishlist toggle (Add / Remove)
- * - Optimized performance
- */
+
 const Card = React.memo(({ data }) => {
   const navigate = useNavigate();
   
@@ -18,7 +13,7 @@ const Card = React.memo(({ data }) => {
 
   return (
     <article
-      className="max-w-[15rem] min-w-[14rem] rounded-lg overflow-hidden border border-gray-200 bg-white hover:shadow-md transition"
+      className="max-w-[15rem] min-w-[14rem] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-gray-100 hover:shadow-md transition"
       itemScope
       itemType="https://schema.org/Product"
     >
@@ -37,34 +32,6 @@ const Card = React.memo(({ data }) => {
           loading="lazy"
           itemProp="image"
         />
-
-        {/* Wishlist Button */}
-        {/* <button
-          aria-label={
-            isAddedToWishlist ? "Remove from wishlist" : "Add to wishlist"
-          }
-          disabled={isProcessing}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleWishlistToggle(data?._id);
-          }}
-          className={`absolute top-3 right-3 transition-colors text-gray-400 `}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill={isAddedToWishlist ? "currentColor" : "none"}
-            viewBox="0 0 20 18"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M9.75 16.982l-1.32-1.222C4.68 11.48 2 8.98 2 5.75 2 3.403 3.903 1.5 6.25 1.5c1.474 0 2.895.657 3.75 1.707A4.8 4.8 0 0 1 13.75 1.5C16.097 1.5 18 3.403 18 5.75c0 3.23-2.68 5.73-6.43 10.01l-1.32 1.222z"
-            />
-          </svg>
-        </button> */}
       </div>
 
       {/* Product Info */}
@@ -75,7 +42,7 @@ const Card = React.memo(({ data }) => {
             navigate(`/product/${data?.slug || data?.name}`);
             scrollTo(0, 0);
           }}
-          className="text-[14px] text-gray-800 line-clamp-2 cursor-pointer hover:text-blue-600"
+          className="text-[14px] dark:text-gray-100 line-clamp-2 cursor-pointer hover:text-blue-600"
           itemProp="name"
         >
           {data?.name || data?.description?.slice(0, 70)}
@@ -95,7 +62,7 @@ const Card = React.memo(({ data }) => {
               />
             </div>
           )}
-          <span className="text-sm text-gray-500 font-medium">
+          <span className="text-sm dark:text-gray-300 text-gray-500 font-medium">
             {data?.numOfReviews || 0} Reviews
           </span>
         </div>
@@ -104,13 +71,13 @@ const Card = React.memo(({ data }) => {
         <div className="mt-2" itemProp="offers" itemScope itemType="https://schema.org/Offer">
           <div className="flex items-center space-x-2">
             <span
-              className="text-lg font-bold text-gray-900"
+              className="text-lg font-bold dark:text-gray-200"
               itemProp="price"
               content={discountedPrice}
             >
               {formatAmount(discountedPrice)}
             </span>
-            <span className="line-through text-xs text-gray-500">
+            <span className="line-through text-xs dark:text-gray-300 text-gray-500">
               {formatAmount(originalPrice)}
             </span>
             {data?.discount && (
