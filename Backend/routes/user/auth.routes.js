@@ -26,7 +26,7 @@ router.post('/logout', logoutController);
 router.get('/me', getProfileController);
 router.put('/update', upload.single('profile_picture'), updateProfileController);
 router.put('/update-password', updateProfilePasswordController);
-router.put('/add-address', updateAddressById);
-router.put('/update-address', addNewAddress);
+router.put('/add-address', addNewAddress);
+router.put('/update-address', updateAddressById);
 
 export default router;

@@ -5,10 +5,10 @@ import { asyncHandler } from '../../middlewares/errorHandler.js';
 import { AppError } from '../../utils/appError.js';
 
 export const getCart = asyncHandler(async (req, res, next) => {
-  const { userId } = req.params;
+  const  userId  = req.user._id;
 
   const cart = await Cart.findOne({ userId })
-    .populate('items.productId', 'name price images')
+    .populate('items.productId', 'name price frontImage discount size ')
     .lean();
 
   if (!cart) {
@@ -24,11 +24,9 @@ export const getCart = asyncHandler(async (req, res, next) => {
 });
 
 export const addItemToCart = asyncHandler(async (req, res, next) => {
-  const { userId } = req.params;
   const { productId, quantity = 1 } = req.body;
+  const  userId  = req.user._id;
   
-  console.log("req.body", req.body);
-
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return next(new AppError('Invalid product ID', 400, 'INVALID_PRODUCT_ID'));
   }
@@ -68,8 +66,8 @@ export const addItemToCart = asyncHandler(async (req, res, next) => {
 });
 
 export const updateCartItem = asyncHandler(async (req, res, next) => {
-  const { userId } = req.params;
-  const { productId, quantity } = req.body;
+  const { _id:productId, quantity } = req.body;
+  const  userId  = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return next(new AppError('Invalid product ID', 400, 'INVALID_PRODUCT_ID'));
@@ -93,7 +91,8 @@ export const updateCartItem = asyncHandler(async (req, res, next) => {
 });
 
 export const removeCartItem = asyncHandler(async (req, res, next) => {
-  const { userId, productId } = req.params;
+  const {productId } = req.params;
+const  userId  = req.user._id;
 
   const cart = await Cart.findOneAndUpdate(
     { userId },
@@ -109,7 +108,7 @@ export const removeCartItem = asyncHandler(async (req, res, next) => {
 });
 
 export const clearCart = asyncHandler(async (req, res, next) => {
-  const { userId } = req.params;
+  const  userId  = req.user._id;
 
   const cart = await Cart.findOneAndUpdate(
     { userId },

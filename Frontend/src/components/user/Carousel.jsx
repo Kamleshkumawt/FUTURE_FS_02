@@ -19,7 +19,7 @@ const ManualCarousel = ({ data}) => {
       {/* Prev Button */}
       <button
         onClick={() => scroll("left")}
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gray-100 shadow-md p-3 py-5 rounded cursor-pointer hover:bg-gray-50 transition"
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gray-100 dark:bg-gray-600 dark:hover:bg-gray-700 shadow-md p-3 py-5 rounded cursor-pointer hover:bg-gray-50 transition"
       >
         {/* <FaChevronLeft className="text-gray-700" /> */}
         {"<"}
@@ -52,7 +52,7 @@ const ManualCarousel = ({ data}) => {
       {/* Next Button */}
       <button
         onClick={() => scroll("right")}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gray-100 shadow-md p-3 py-5 rounded hover:bg-gray-50 cursor-pointer transition"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gray-100 dark:bg-gray-600 dark:hover:bg-gray-700 shadow-md p-3 py-5 rounded hover:bg-gray-50 cursor-pointer transition"
       >
          {">"}
       </button>

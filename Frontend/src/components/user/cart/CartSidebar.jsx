@@ -1,5 +1,5 @@
 import React from "react";
-import { formatAmount } from "../lib/formatAmount";
+import { formatAmount } from "../../../lib/formatAmount";
 import { Link, useNavigate } from "react-router-dom";
 
 const CartSidebar = ({ items, nav, viewPage, paymentMethod, isClick,
@@ -16,7 +16,7 @@ const CartSidebar = ({ items, nav, viewPage, paymentMethod, isClick,
 
   return (
     <div className="w-xs h-full flex flex-col items-start gap-3">
-      <h1 className="text-lg font-medium text-gray-600 py-3">
+      <h1 className="text-lg font-medium text-gray-600 dark:text-gray-300 py-3">
         Price Details ({items?.length} Items)
       </h1>
       <p className="flex items-center w-full justify-between ">
@@ -31,7 +31,7 @@ const CartSidebar = ({ items, nav, viewPage, paymentMethod, isClick,
         </span>{" "}
         <span>- {discount}</span>
       </div>
-      <span className="block w-full border-b-2 border-gray-300"></span>
+      <span className="block w-full border-b-2 border-gray-300 dark:border-gray-500"></span>
       <h1 className="text-xl w-full font-medium flex items-center justify-between">
         {" "}
         Order Total <span>{formatAmount(items.totalPrice - discount)}</span>

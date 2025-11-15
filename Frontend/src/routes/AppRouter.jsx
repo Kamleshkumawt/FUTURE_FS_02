@@ -24,6 +24,7 @@ import Cart from '../screens/Cart'
 import CartAddress from '../screens/CartAddress'
 import CartPayment from '../screens/CartPayment'
 import CartSummary from '../screens/CartSummary'
+import CategoryProduct from '../screens/CategoryProduct'
 
 
 const AppRouter = () => {
@@ -40,6 +41,7 @@ const AppRouter = () => {
             <Route path="/signUp" element={<Register />} />
             <Route path="/about" element={<h1>About</h1>} />
             <Route path="/products/search" element={<SearchCategoryRoutes />} />
+            <Route path="/category/search/:categoryName" element={<CategoryProduct />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/account/delete" element={<DeleteAccount />} />
             <Route path="/seller/SignUp" element={<CreateSellerAccount />} />

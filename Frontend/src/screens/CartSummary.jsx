@@ -13,13 +13,14 @@ const CartSummary = () => {
   const [cart, setCart] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [address, setAddr] = useState();
-      const [openSideBarUpdated, setOpenSideBarUpdated] = useState(false);
+    const [openSideBarUpdated, setOpenSideBarUpdated] = useState(false);
   
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [data, { isLoading }] = useGetCartQuery();
+    const  {data, isLoading } = useGetCartQuery();
 
     // const [createOrder,{loading}] = useCreateOrderMutation();
+    const loading = false
 
     const user = useSelector((state) => state.auth.user);
     const addr = useSelector((state) => state.filters.address);
@@ -41,9 +42,18 @@ const CartSummary = () => {
     useEffect(() => {
       if(data){
         console.log("Cart data:", data);
-        setCart(data.cart);
-        // dispatch(setItemsAndPrice({items:response.cart?.items?.length, price:totalPrice}))
+        setCart(data.data);
+        const totalPrice =
+            (
+              (data.data.items || [])
+                .map((item) => item.productId.price * item.quantity)
+                .reduce((acc, curr) => acc + curr, 0)
+                .toFixed(2)
+          )
+          setTotalPrice(totalPrice);
+        dispatch(setItemsAndPrice({items:data.data?.items?.length, price:totalPrice}))
       }
+
       // const fetchCart = async () => {
       //   try {
       //     // const response = await getToCartProduct().unwrap();
@@ -71,7 +81,7 @@ const CartSummary = () => {
       // };
   
       // fetchCart();
-    }, []);
+    }, [data, dispatch]);
 
       useEffect(() => {
       if (user?.address) {
@@ -95,27 +105,27 @@ const CartSummary = () => {
     
 
   return !isLoading ? (
-   <div className='w-full min-h-screen'>
+   <div className='w-full min-h-screen bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-gray-100  '>
     <CartHeader address={4}/>
     <div className='w-full h-full flex flex-col sm:flex-row items-start justify-center gap-3 p-3'>
-      <div className=' w-full sm:w-[60%] h-full flex flex-col items-end gap-2 sm:px-5 sm:border-r-2 sm:border-gray-200'>
+      <div className=' w-full sm:w-[60%] h-full flex flex-col items-end gap-2 sm:px-5 sm:border-r-2 sm:border-gray-200 dark:border-gray-600'>
         <div className='space-y-3'>
-          <h1 className='text-lg font-medium text-gray-500 py-1 text-start w-full'>Product Details</h1>
+          <h1 className='text-lg font-medium text-gray-500 dark:text-gray-100 py-1 text-start w-full'>Product Details</h1>
         {/* <CartBox location={2}/> */}
          {cart?.items?.map((item) => (
             <CartBox key={item._id} location={2} product={item} />
           ))}
         {/* <CartBox location={2}/> */}
-          <h1 className='text-lg font-medium text-gray-500 py-1 text-start w-full'>Delivery Address</h1>
+          <h1 className='text-lg font-medium text-gray-500 dark:text-gray-100 py-1 text-start w-full'>Delivery Address</h1>
           {/* <div className='w-full flex flex-col items-start gap-3 border border-gray-300 rounded-sm p-3'>
             <h1 className='w-full flex items-center justify-between text-lg font-medium'> {address?.name}<span className='text-purple-900/70'>EDIT</span></h1>
             <p className='w-[30rem] '> {address?.label} {address?.street} {address?.city} {address?.state} - {address?.postalCode}</p>
             <p> {address?.contact}</p>
           </div> */}
           <CartAddressSummary addr={address} openSideBarUpdated={openSideBarUpdated} setOpenSideBarUpdated={setOpenSideBarUpdated}/>
-          <h1 className='text-lg font-medium text-gray-500 py-1 text-start w-full'>Payment Mode</h1>
+          <h1 className='text-lg font-medium text-gray-500 dark:text-gray-100 py-1 text-start w-full'>Payment Mode</h1>
           <div className='w-full flex flex-col items-center border border-gray-300 rounded-sm p-3'>
-            <h1 className='w-full flex items-center justify-between font-medium'> Cash on Delivery <span onClick={()=> navigate('/cart/payment')} className='text-purple-900/70 cursor-pointer focus:scale-95'>EDIT</span></h1>
+            <h1 className='w-full flex items-center justify-between font-medium'> Cash on Delivery <span onClick={()=> navigate('/cart/payment')} className='text-purple-900/70 dark:text-purple-500 cursor-pointer focus:scale-95'>EDIT</span></h1>
           </div>
         </div>
     </div>

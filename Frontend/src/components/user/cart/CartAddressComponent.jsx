@@ -1,12 +1,33 @@
-import CartHeader from "../components/user/cart/CartHeader";
-import { useDispatch, useSelector } from "react-redux";
-import CartSidebar from "../components/user/cart/CartSidebar";
-import { useEffect, useState } from "react";
-import CartAddressComponent from "../components/user/cart/CartAddressComponent";
-import { setAddress } from "../store/slices/productsFilterSlice";
-import { useAddNewAddressMutation } from "../store/api/user/userApi";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  useUpdateAddressMutation,
+} from "../../../store/api/user/userApi";
+import { useDispatch } from "react-redux";
+import { setAddress } from "../../../store/slices/productsFilterSlice";
 
-const inputClass =
+const CartAddressComponent = ({
+  addr,
+  isSelected,
+  onSelect,
+}) => {
+
+  //   const [openSideBar, setOpenSideBar] = useState(false);
+  const [openSideBarUpdated, setOpenSideBarUpdated] = useState(false);
+  const [name, setName] = useState("");
+  const [contact, setContact] = useState("");
+  const [homeValue, setHomeValue] = useState("");
+  const [areaValue, setAreaValue] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [city, setCity] = useState("");
+  const [stateValue, setStateValue] = useState("");
+  const [place, setPlace] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [updateAddress, { isLoading }] = useUpdateAddressMutation();
+
+  const inputClass =
     "peer w-full border-b-2 border-gray-300 px-4 pt-5 pb-2 text-sm focus:outline-none focus:border-purple-600";
 
   const labelClass = (value) =>
@@ -16,145 +37,90 @@ const inputClass =
      }
      peer-focus:top-1 peer-focus:text-xs peer-focus:text-purple-600`;
 
-
-
-const CartAddress = () => {
-  const [openSideBar, setOpenSideBar] = useState(false);
-   const [name, setName] = useState("");
-    const [contact, setContact] = useState("");
-    const [homeValue, setHomeValue] = useState("");
-    const [areaValue, setAreaValue] = useState("");
-    const [pincode, setPincode] = useState("");
-    const [city, setCity] = useState("");
-    const [stateValue, setStateValue] = useState("");
-    const [place, setPlace] = useState("");
-    const [location, setLocation] = useState(null);
-    const [error, setError] = useState("");
-
-    const dispatch = useDispatch();
-
-    const [addNewAddress, { loading }] = useAddNewAddressMutation();
-
-  const [selectedAddressId, setSelectedAddressId] = useState("");
-
-  const itemsAndPrice = useSelector((state) => state.filters.itemsAndPrice);
-  const user = useSelector((state) => state.auth.user);
-  console.log("user", user);
-  const addr = useSelector((state) => state.filters.address);
-
-  useEffect(() => {
-    if (user?.address) {
-      console.log("user address", user.address);
-      dispatch(setAddress(user.address));
+  const handleSaveAddress = async (id) => {
+    const address = {
+      name,
+      contact,
+      label: homeValue,
+      street: areaValue,
+      postalCode: pincode,
+      city,
+      state: stateValue,
+      famousPlaces: place,
+      latitude: location?.latitude,
+      longitude: location?.longitude,
+      _id: id,
+    };
+    // console.log("address to save :", address);
+    try {
+      const response = await updateAddress({ address }).unwrap();
+      // console.log("Address saved successfully:", response.user.address);
+      dispatch(setAddress(response.user?.address));
+      setOpenSideBarUpdated(false);
+    } catch (error) {
+      console.error("Error saving address:", error);
     }
-  }, [user, dispatch, openSideBar]);
-
-  useEffect(() => {
-    if (addr?.length > 0) {
-      const defaultAddr = addr.find((a) => a.isDefault);
-      setSelectedAddressId(defaultAddr?._id || addr[0]._id);
-    }
-  }, [addr]);
-
-  const handleUseMyLocation = () => {
-    if (!navigator.geolocation) {
-      setError("Geolocation is not supported by your browser");
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setError("");
-        const { latitude, longitude } = position.coords;
-        setLocation({ latitude, longitude });
-
-        // You can now reverse geocode or fill form fields here
-        console.log("Latitude:", latitude);
-        console.log("Longitude:", longitude);
-      },
-      (err) => {
-        setError("Permission denied or unable to retrieve location");
-        console.error(err);
-        setTimeout(() => setError(""), 10000);
-      }
-    );
   };
 
-  const handleNewSaveAddress = async () => {
-      const address = {
-        name,
-        contact,
-        label: homeValue,
-        street: areaValue,
-        postalCode: pincode,
-        city,
-        state: stateValue,
-        famousPlaces: place,
-        latitude: location?.latitude,
-        longitude: location?.longitude,
-      };
-      // console.log('address to save :', address);
-      try {
-        const response = await addNewAddress({ address }).unwrap();
-        console.log("Address saved successfully:", response.user);
-        dispatch(setAddress(response.user?.address));
-        setOpenSideBar(false);
-      } catch (error) {
-        console.error("Error saving address:", error);
-      }
-    };
+  useEffect(() => {
+    if (openSideBarUpdated && addr) {
+      setName(addr.name || "");
+      setContact(addr.contact || "");
+      setHomeValue(addr.label || "");
+      setAreaValue(addr.street || "");
+      setPincode(addr.postalCode || "");
+      setCity(addr.city || "");
+      setStateValue(addr.state || "");
+      setPlace(addr.famousPlaces || "");
+    }
+  }, [openSideBarUpdated, addr]);
 
   return (
-    <div>
-      <div className="w-full min-h-screen bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-gray-100">
-        <CartHeader address={2} />
-        <div className="w-full h-full flex flex-col sm:flex-row items-start justify-center gap-3 p-3">
-          <div className=" w-full sm:w-[60%] h-full flex flex-col items-end gap-2 sm:px-5 sm:border-r-2 sm:border-gray-200">
-            <div className="space-y-3">
-              <div className="text-lg font-medium text-gray-500 py-1 w-full flex items-center justify-between">
-                Select Delivery Address
-                <span
-                  onClick={() => setOpenSideBar(true)}
-                  className="text-purple-600 cursor-pointer"
-                >
-                  {" "}
-                  + ADD NEW ADDRESS
-                </span>
-              </div>
-            
-
-              {addr?.length > 0 ? (
-                addr?.map((addr, index) => (
-                  <CartAddressComponent
-                    key={index}
-                    addr={addr}
-                    openSideBar={openSideBar}
-                    setOpenSideBar={setOpenSideBar}
-                    isSelected={selectedAddressId === addr._id}
-                    onSelect={() => setSelectedAddressId(addr._id)}
-                  />
-                ))
-              ) : (
-                <div className="text-lg font-medium text-gray-500 py-1 w-full flex items-center justify-between">
-                  No Address Found
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="w-[40%] h-full flex flex-col items-start">
-            <CartSidebar
-              items={{
-                length: itemsAndPrice?.items,
-                totalPrice: itemsAndPrice?.price,
-              }}
-              nav={"address"}
-              viewPage={2}
+    <>
+      <div className="bg-purple-300/50 w-full h-45 rounded-sm flex flex-col items-start p-3">
+        <div className="flex items-center justify-between w-full text-xl font-medium">
+          <div className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              name="selectedAddress"
+              checked={isSelected}
+              onChange={onSelect}
+              className="w-5 h-5 rounded-full appearance-none bg-white border-2 border-gray-300 
+                    checked:bg-pink-500 checked:border-white  cursor-pointer focus:outline-none"
             />
+            <span>{addr?.name}</span>
           </div>
+          <span
+            onClick={() => setOpenSideBarUpdated(true)}
+            className="text-purple-900/70 font-medium text-lg cursor-pointer"
+          >
+            EDIT
+          </span>
+        </div>
+
+        <div className="flex flex-col gap-3 px-8">
+          <p className="w-[30rem] mt-2">
+            {addr?.label}, {addr?.street}, {addr?.city}, {addr?.state},
+            {addr?.postalCode}
+            {/* {addr.famousPlaces} */}
+            <br />
+            {/* Hanuman Chok , Gayatri Nagar, Ganeshpura, University Road,
+                    Girwa, Udaipur District, Udaipur, Udaipur, Rajasthan, 313001 */}
+          </p>
+          <p>{addr?.contact}</p>
+          <Link
+            to="/cart/payment"
+            onClick={() => {
+              navigate("/cart/payment");
+              localStorage.setItem("selAdd", JSON.stringify(addr?._id));
+            }}
+            className="bg-purple-800 w-full text-center p-2 px-4 rounded-sm text-white font-medium"
+          >
+            Deliver to this Address
+          </Link>
         </div>
       </div>
-
-      {openSideBar && (
+      {openSideBarUpdated && (
         <div className="w-full h-full fixed left-0 top-0 z-50 flex items-center justify-end bg-gray-900/80 transition-all duration-200 ease-in-out">
           <div className="top-0 right-0 z-50 flex flex-col items-start justify-between w-[33%] h-full bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-gray-100 ">
             <div className="w-full p-6 font-medium flex items-center justify-between border-b-2 border-gray-300">
@@ -163,7 +129,7 @@ const CartAddress = () => {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-7 w-7 cursor-pointer hover:text-red-600"
-                  onClick={() => setOpenSideBar(false)}
+                  onClick={() => setOpenSideBarUpdated(false)}
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -180,7 +146,7 @@ const CartAddress = () => {
             <div className="w-full overflow-auto p-4">
               <div className="w-full p-1">
                 <div className="w-full flex items-center justify-between mb-5">
-                  <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-300 flex items-center gap-2">
+                  <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -197,15 +163,15 @@ const CartAddress = () => {
                         ></path>
                         <path
                           fill="#3A66CF"
-                          fill-rule="evenodd"
+                         
                           d="M9.397.482a.517.517 0 0 1 .56-.47c.848.073 1.682.26 2.48.557a10.73 10.73 0 0 1 7.115 8.517q.054.271.074.547a.517.517 0 1 1-1.032.075 4 4 0 0 0-.062-.455 9.7 9.7 0 0 0-6.438-7.708l-.012-.004a8.4 8.4 0 0 0-2.214-.499.517.517 0 0 1-.47-.56"
-                          clip-rule="evenodd"
+                       
                         ></path>
                         <path
                           fill="#3A66CF"
-                          fill-rule="evenodd"
+                        
                           d="M9.484 4.14a.517.517 0 0 1 .599-.42 7.21 7.21 0 0 1 5.84 5.82.517.517 0 1 1-1.017.183A6.18 6.18 0 0 0 9.903 4.74a.517.517 0 0 1-.42-.6"
-                          clip-rule="evenodd"
+                         
                         ></path>
                       </g>
                       <defs>
@@ -216,74 +182,8 @@ const CartAddress = () => {
                     </svg>
                     Contact Details
                   </h2>
-                  <button
-                    onClick={handleUseMyLocation}
-                    className="text-[#9F2089] border border-[#9F2089] p-1 rounded-xs px-2 font-medium text-sm flex items-center gap-2 cursor-pointer"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="14"
-                      fill="none"
-                      // iconSize="16"
-                      className="sc-dlfmHC cBtrij"
-                    >
-                      <path
-                        fill="#9F2089"
-                        fill-rule="evenodd"
-                        d="M7.05 12.086a5.036 5.036 0 1 0 0-10.072 5.036 5.036 0 0 0 0 10.072m0-1.007a4.029 4.029 0 1 0 0-8.057 4.029 4.029 0 0 0 0 8.057"
-                        clip-rule="evenodd"
-                      ></path>
-                      <circle
-                        cx="7.049"
-                        cy="7.05"
-                        r="2.518"
-                        fill="#9F2089"
-                      ></circle>
-                      <rect
-                        width="1.007"
-                        height="2.417"
-                        x="6.546"
-                        fill="#9F2089"
-                        rx="0.504"
-                      ></rect>
-                      <rect
-                        width="1.007"
-                        height="2.417"
-                        x="6.546"
-                        y="11.583"
-                        fill="#9F2089"
-                        rx="0.504"
-                      ></rect>
-                      <rect
-                        width="1.007"
-                        height="2.417"
-                        x="14.05"
-                        y="6.496"
-                        fill="#9F2089"
-                        rx="0.504"
-                        transform="rotate(90 14.05 6.496)"
-                      ></rect>
-                      <rect
-                        width="1.007"
-                        height="2.417"
-                        x="2.467"
-                        y="6.496"
-                        fill="#9F2089"
-                        rx="0.504"
-                        transform="rotate(90 2.467 6.496)"
-                      ></rect>
-                    </svg>
-                    Use My Location
-                  </button>
                 </div>
-                {error && <p className="mt-2 text-red-600">{error}</p>}
-                {location && (
-                  <p className="mt-2 text-green-600">
-                    Latitude: {location.latitude}, Longitude:{" "}
-                    {location.longitude}
-                  </p>
-                )}
+              
 
                 {/* Name Field */}
                 <div className="relative mb-5">
@@ -326,8 +226,6 @@ const CartAddress = () => {
                     width="20"
                     height="20"
                     fill="none"
-                    iconSize="20"
-                    class="sc-dlfmHC bFsYwH"
                   >
                     <path fill="#fff" d="M0 0h20v20H0z"></path>
                     <path
@@ -441,8 +339,8 @@ const CartAddress = () => {
 
             <div className="w-full p-4 font-medium text-lg flex items-center justify-between border-t-2 border-gray-300">
               <button
-                onClick={() => handleNewSaveAddress()}
-                disabled={loading}
+                onClick={() => handleSaveAddress(addr._id)}
+                disabled={isLoading}
                 className="bg-purple-800 w-full text-center p-2 px-4 rounded-sm text-white font-medium cursor-pointer"
               >
                 Save Address and Continue
@@ -451,8 +349,8 @@ const CartAddress = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
-export default CartAddress;
+export default CartAddressComponent;

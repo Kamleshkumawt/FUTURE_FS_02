@@ -77,8 +77,8 @@ const ShowAllProduct = () => {
                   <td className="p-2 text-green-700">{item.stockStatus}</td>
                   <td className="p-2 text-green-700">{item.discount}% off</td>
                   <td className="p-2 text-white flex items-center gap-2">
-                    <Link to={`/seller/edit-product/${item._id}`} className='p-1 px-2 rounded-xs bg-green-500'>Edit</Link>
-                    <div disabled={loading}  onClick={()=> handleDelete(item._id)} className='p-1 px-2 rounded-xs bg-red-500 '>Delete</div>
+                    <Link to={`/seller/edit-product/${item.id}`} className='p-1 px-2 rounded-xs bg-green-500'>Edit</Link>
+                    <div disabled={loading}  onClick={()=> handleDelete(item.id)} className='p-1 px-2 rounded-xs bg-red-500 '>Delete</div>
                   </td>
               </tr>
             ))}

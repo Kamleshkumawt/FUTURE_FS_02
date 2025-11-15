@@ -90,6 +90,7 @@ const existingUser = query.length
     _id: user._id,
     username: user.username,
     email: user.email,
+    profilePicture: user.profile_picture?.url || null,
     phone: user.phone,
     role: user.role,
   };

@@ -176,7 +176,7 @@ const EditProduct = () => {
       setHsn(data.product.hsnCode);
       setStyleCode(data.product.styleCode);
       setSize(data.product.size);
-      setShowImage(data.product.frontImage.url);
+      setShowImage(data.product.frontImage);
       setFrontImage(data.product.frontImage);
       setName(data.product.name);
       setQuantity(data.product.quantity);
@@ -545,7 +545,7 @@ const EditProduct = () => {
                   {/* Image Preview */}
                   <img
                     src={file.url}
-                    alt={file.name || `Image ${i + 1}`}
+                    alt={file || `Image ${i + 1}`}
                     className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-60"
                   />
 
@@ -597,7 +597,7 @@ const EditProduct = () => {
           Cancel
         </div>
         <button
-          onClick={() => handleFormSubmit(product._id)}
+          onClick={() => handleFormSubmit(product.id)}
           className=" px-4 py-2 text-white font-medium bg-purple-600 rounded-md hover:bg-purple-700 cursor-pointer"
         >
           Add Product

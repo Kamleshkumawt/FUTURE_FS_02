@@ -3,7 +3,7 @@ import React from "react";
 const Loading = ({ message = "Loading..." }) => {
   return (
     <div
-      className="flex flex-col items-center justify-center h-screen w-full gap-3 text-gray-700 bg-gray-50"
+      className="flex flex-col items-center justify-center h-screen w-full gap-3 text-gray-700 bg-gray-50 dark:bg-neutral-800 dark:text-gray-200 "
       role="status"
       aria-live="polite"
     >

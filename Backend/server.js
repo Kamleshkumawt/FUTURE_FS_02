@@ -78,13 +78,14 @@ const startServer = async () => {
     try {
         await connectDB();
         // await Product.insertMany(data);
-console.log('✅ Sample products inserted successfully');
+// console.log('✅ Sample products inserted successfully');
 // Clear existing
     // await Category.deleteMany({});
     // console.log("🧹 Existing categories cleared");
 
     // // Insert new
     // await Category.insertMany(categories);
+    // await Product.insertMany(data);
     // console.log("✅ Categories inserted successfully");
         const server = http.createServer(app);
         server.listen(PORT, () => {

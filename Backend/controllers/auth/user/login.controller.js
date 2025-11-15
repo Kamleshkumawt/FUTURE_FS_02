@@ -62,8 +62,10 @@ export const loginController = asyncHandler(async (req, res, next) => {
   const safeUser = {
     _id: user._id,
     username: user.username,
+    profilePicture: user.profile_picture?.url || null,
     email: user.email,
     phone: user.phone,
+    address: user.address,
     role: user.role,
   };
 

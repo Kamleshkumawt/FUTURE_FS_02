@@ -91,7 +91,7 @@ const ProductDetails = () => {
 
   const handleAddToCartProduct = async () => {
     try {
-      const res = await addItemToCart({ productId: show?._id, quantity: show?.quantity }).unwrap();
+      const res = await addItemToCart({ productId: show?.id, quantity: show?.quantity }).unwrap();
       console.log("create cart response successfully", res);
       navigate("/cart");
     } catch (error) {
@@ -162,7 +162,7 @@ const ProductDetails = () => {
             ))}
           </div>
           <div className="flex flex-col gap-3">
-            <div className="border border-gray-300 rounded-xs max-w-[16rem] sm:max-w-2xl">
+            <div className="border border-gray-300 dark:border-gray-600 rounded-xs max-w-[16rem] sm:max-w-2xl">
               <img
                 src={showSelectedImg}
                 className="w-full h-full object-cover px-6"
@@ -247,7 +247,7 @@ const ProductDetails = () => {
 
         <div className="w-full flex flex-col gap-3">
           {/* main details for products*/}
-          <div className="w-full border border-gray-300 rounded-sm p-5 flex flex-col gap-3">
+          <div className="w-full border border-gray-300 dark:border-gray-600 rounded-sm p-5 flex flex-col gap-3">
             <h1 className="text-gray-400 text-xl font-medium max-w-[38rem]">
               {show?.name?.slice(0, 70)}
             </h1>
@@ -312,29 +312,29 @@ const ProductDetails = () => {
                 {show?.rating} Ratings, {show?.numOfReviews} Reviews
               </p>
             </div>
-            <div className="text-gray-700 text-sm font-medium bg-gray-200/40 px-2 rounded-xl text-center p-1 max-w-[7rem]">
+            <div className="text-gray-700 dark:text-gray-300 text-sm font-medium bg-gray-200/40 dark:bg-gray-800/80 px-2 rounded-xl text-center p-1 max-w-[7rem]">
               Free Delivery
             </div>
           </div>
 
           {/*selected Size*/}
-          <div className="w-full border border-gray-300 rounded-sm p-5 flex flex-col gap-4 ">
-            <h1 className="text-gray-800 text-xl font-semibold  ">
+          <div className="w-full border border-gray-300 dark:border-gray-600 rounded-sm p-5 flex flex-col gap-4 ">
+            <h1 className="text-gray-800 dark:text-gray-300 text-xl font-semibold  ">
               Select Size
             </h1>
             <div className="flex items-center justify-start ">
-              <div className="text-purple-600 font-medium bg-purple-200/40 px-2 p-1 border border-purple-500 rounded-xl text-center ">
+              <div className="text-purple-600 dark:text-purple-200 font-medium bg-purple-200/40 px-2 p-1 border border-purple-500 rounded-xl text-center ">
                 {show?.size}
               </div>
             </div>
           </div>
 
           {/*Product Details*/}
-          <div className="w-full border border-gray-300 rounded-sm p-5 flex flex-col gap-4 ">
-            <h1 className="text-gray-800 text-xl font-semibold  ">
+          <div className="w-full border border-gray-300 dark:border-gray-600 rounded-sm p-5 flex flex-col gap-4 ">
+            <h1 className="text-gray-800 dark:text-gray-300 text-xl font-semibold  ">
               Product Details
             </h1>
-            <div className="flex flex-col items-start text-gray-500">
+            <div className="flex flex-col items-start text-gray-500 dark:text-gray-400">
               <p >
                 Name :<span>{show?.name}</span>
               </p>
@@ -364,8 +364,8 @@ const ProductDetails = () => {
 
           {/*Check Delivery Date */}
           {user && (
-            <div className="w-full border border-gray-300 rounded-sm p-5 flex flex-col gap-4">
-              <h1 className="text-gray-800 text-xl font-semibold">
+            <div className="w-full border border-gray-300 dark:border-gray-600 rounded-sm p-5 flex flex-col gap-4">
+              <h1 className="text-gray-800 dark:text-gray-300 text-xl font-semibold">
                 Check Delivery Date
               </h1>
 
@@ -479,8 +479,8 @@ const ProductDetails = () => {
             </div>
           )}
 
-          <div className="w-full border border-gray-300 rounded-sm p-5 flex flex-col gap-5 ">
-            <h1 className="text-gray-800 text-xl font-semibold  ">
+          <div className="w-full border border-gray-300 dark:border-gray-600 rounded-sm p-5 flex flex-col gap-5 ">
+            <h1 className="text-gray-800 dark:text-gray-300 text-xl font-semibold  ">
               Product Ratings & Reviews
             </h1>
             <div className="flex flex-col  gap-5 w-full">
@@ -742,7 +742,7 @@ const ProductDetails = () => {
             </div>
           </div>
           <div className="flex items-center justify-evenly w-full h-full border rounded-sm bg-[#e7eeff] gap-6 p-2">
-            <div className="flex flex-col items-center gap-2 text-xs font-medium">
+            <div className="flex flex-col items-center gap-2 text-xs font-medium text-black">
               <img
                 src="https://images.meesho.com/images/value_props/lowest_price_new.png"
                 className="w-10 h-10 rounded-full"
@@ -751,7 +751,7 @@ const ProductDetails = () => {
               Lowest Price
             </div>
             <span className="bg-white h-8 w-[1px] "></span>
-            <div className="flex flex-col items-center gap-2 text-xs font-medium">
+            <div className="flex flex-col items-center gap-2 text-xs font-medium text-black">
               <img
                 src="https://images.meesho.com/images/value_props/cod_new.png"
                 className="w-10 h-10 rounded-full"
@@ -760,7 +760,7 @@ const ProductDetails = () => {
               Cash on Delivery
             </div>
             <span className="bg-white h-8 w-[1px] "></span>
-            <div className="flex flex-col items-center gap-2 text-xs font-medium">
+            <div className="flex flex-col items-center gap-2 text-xs font-medium text-black">
               <img
                 src="https://images.meesho.com/images/value_props/return_new.png"
                 className="w-10 h-10 rounded-full"
@@ -774,8 +774,8 @@ const ProductDetails = () => {
       <div className="flex flex-col gap-2">
         <h1 className="font-semibold text-xl">People also viewed</h1>
         <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 mt-3 mb-20">
-          {products.map((product, index) => (
-            <Card key={product._id || product.slug || index} data={product} />
+          {products.map((product) => (
+            <Card key={product._id  } data={product} />
           ))}
           {isLoading && <h1>No products found</h1>}
         </div>

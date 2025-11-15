@@ -22,6 +22,7 @@ export const getProfileController = asyncHandler(async (req, res, next) => {
       email: user.email,
       phone: user.phone,
       role: user.role,
+      address: user.address,
       profilePicture: user.profile_picture?.url || null,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
@@ -123,6 +124,7 @@ export const addNewAddress = async (req, res) => {
   try {
     const userId = req.user._id;
     const { address } = req.body;
+    console.log(address);
     const user = await userModel.findOneAndUpdate(
       { _id: userId },
       { $push: { address: address } },

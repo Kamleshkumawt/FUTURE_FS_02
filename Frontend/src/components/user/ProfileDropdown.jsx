@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {useUserLogoutMutation } from '../../store/api/user/authApi';
 import {useUpdateUserProfileMutation, useUpdateUserProfilePasswordMutation } from '../../store/api/user/userApi';
-import {setCredentials } from '../../store/slices/authSlice';
+import {setUser, clearUser } from '../../store/slices/authSlice';
 
 const ProfileDropdown = () => {
   const [open, setOpen] = useState(false);
@@ -27,7 +27,7 @@ const ProfileDropdown = () => {
   const logoutHandler = async () => {
     try {
       await userLogout().unwrap();
-    //    dispatch(logout()); 
+       dispatch(clearUser()); 
        localStorage.removeItem('token');
       navigate('/');
     } catch (error) {
@@ -50,7 +50,7 @@ const ProfileDropdown = () => {
   const handleSaveChanges = async () => {
     try {
       const formData = new FormData();
-    formData.append('profileImage', profileImage); // 'profile_picture' must match Multer field name
+    formData.append('profile_picture', profileImage); // 'profile_picture' must match Multer field name
     formData.append('username', username);
     formData.append('email', email);
     formData.append('phone', phone);
@@ -61,7 +61,7 @@ const ProfileDropdown = () => {
     
       const response = await updateUserProfile(formData).unwrap();
       // console.log('Profile updated successfully:', response);
-      dispatch(setCredentials(response.user));
+      dispatch(setUser(response.data));
       setShowEditModal(false);
     } catch(error) {
       console.error('Save changes error:', error);
@@ -108,13 +108,14 @@ const ProfileDropdown = () => {
           {user && <div className="flex items-center gap-3">
             <img
               // src="https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2"
-              src={user?.profile_picture.url ?? ''}
+              src={user?.profilePicture ?? ''}
               className="h-10 w-10 rounded-full object-cover"
+              lazy="loading"
               alt="Profile"
             />
             <div>
               <h1 className="text-lg font-semibold">{user.username}</h1>
-              <p className="text-sm text-gray-600">+91 {user.phone}</p>
+              <p className="text-sm dark:text-gray-400 text-gray-600">+91 {user.phone}</p>
             </div>
           </div>}
           
@@ -151,16 +152,16 @@ const ProfileDropdown = () => {
           <hr />
 
           {/* My Wishlist */}
-          <div className="flex items-center gap-2 cursor-pointer hover:text-yellow-600">
+          {/* <div className="flex items-center gap-2 cursor-pointer hover:text-yellow-600">
             <span onClick={() => {navigate('/wishlist');scrollTo(0,0)}} className="text-lg font-semibold">My Wishlist</span>
           </div>
 
-          <hr />
+          <hr /> */}
 
           {/* Edit Profile */}
           {user && <> <button
             onClick={() => setShowEditModal(true)}
-            className="flex items-center gap-2 text-lg font-semibold text-gray-800 hover:text-yellow-600 w-full text-left cursor-pointer"
+            className="flex items-center gap-2 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-yellow-600 w-full text-left cursor-pointer"
           >
             ✏️ Edit Profile
           </button>

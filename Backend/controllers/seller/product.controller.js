@@ -5,6 +5,7 @@ import uploadOnCloudinary from '../../config/cloudinary.js';
 import { asyncHandler } from '../../middlewares/errorHandler.js';
 import { AppError } from '../../utils/appError.js';
 import slugify from 'slugify';
+import mongoose from 'mongoose';
 
 export const createProduct = asyncHandler(async (req, res) => {
   const {
@@ -164,8 +165,13 @@ export const createProduct = asyncHandler(async (req, res) => {
 
 export const getProductById = asyncHandler(async (req, res) => {
   const { slug } = req.params;
+
+  const query = mongoose.Types.ObjectId.isValid(slug)
+  ? { _id: slug }
+  : { slug };
+
   const product = await productModel
-    .findOne({slug})
+    .findOne(query)
     .populate('categoryId', 'name description');
 
   if (!product) {
@@ -198,6 +204,7 @@ export const getProductById = asyncHandler(async (req, res) => {
       images: product.images.map(img => img.url),
       tags: product.tags,
       category: product.categoryId?.name,
+      dimensions: product.dimensions,
       metaTitle: product.metaTitle,
       metaDescription: product.metaDescription,
       createdAt: product.createdAt,
@@ -278,10 +285,16 @@ export const getProductsByCategory = asyncHandler(async (req, res) => {
       slug: product.slug,
       price: product.price,
       finalPrice: product.finalPrice,
+      numOfReviews: product.numOfReviews,
+      rating: product.averageRating,
       discount: product.discount?.percentage || 0,
-      brand: product.brand,
+      material:product.material,
       color: product.color,
+      comboType: product.comboType,
+      gender: product.gender,
+      size: product.size,
       frontImage: product.frontImage?.url,
+      category: product.categoryId,
       tags: product.tags,
       stockStatus: product.stockStatus,
       metaTitle: product.metaTitle,
@@ -479,7 +492,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
   if (color) product.color = color;
   if (tags) product.tags = tags;
   if (weight) product.weight = weight;
-  if (dimensions) product.dimensions = dimensions;
+  if (dimensions) product.dimensions = JSON.parse(dimensions);
 
   const updatedProduct = await product.save();
 

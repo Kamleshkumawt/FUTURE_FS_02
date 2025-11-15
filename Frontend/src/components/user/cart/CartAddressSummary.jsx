@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useUpdateAddressMutation } from "../store/api/userApi";
+import { useUpdateAddressMutation } from "../../../store/api/user/userApi";
 import { useDispatch } from "react-redux";
-import { setAddress } from "../store/slices/productsFilterSlice";
+import { setAddress } from "../../../store/slices/productsFilterSlice";
 
 const CartAddressSummary = ({
   addr,
@@ -79,7 +79,7 @@ const CartAddressSummary = ({
           {addr?.name}
           <span
             onClick={() => setOpenSideBarUpdated(true)}
-            className="text-purple-900/70 cursor-pointer"
+            className="text-purple-900/70 dark:text-purple-500 cursor-pointer"
           >
             EDIT
           </span>
@@ -93,7 +93,7 @@ const CartAddressSummary = ({
       </div>
       {openSideBarUpdated && (
         <div className="w-full h-full fixed left-0 top-0 z-50 flex items-center justify-end bg-gray-900/80 transition-all duration-200 ease-in-out">
-          <div className="top-0 right-0 z-50 flex flex-col items-start justify-between w-[33%] h-full bg-white">
+          <div className="top-0 right-0 z-50 flex flex-col items-start justify-between w-[33%] h-full bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-gray-100 ">
             <div className="w-full p-6 font-medium flex items-center justify-between border-b-2 border-gray-300">
               ADD DELIVERY ADDRESS
               <span>

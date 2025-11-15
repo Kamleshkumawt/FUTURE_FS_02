@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { formatAmount } from "../lib/formatAmount";
+import { formatAmount } from "../../../lib/formatAmount";
 import {
-  useRemoveToCartProductMutation,
-  useUpdateToCartProductMutation,
-} from "../store/api/userApi";
+  useRemoveCartItemMutation,
+  useUpdateCartItemMutation,
+} from "../../../store/api/user/cartApi";
 
 const sizes = ["S", "M", "L", "XL", "XXL"];
 
@@ -13,26 +13,26 @@ const Cart = ({ location, product }) => {
   const [selectedSize, setSelectedSize] = useState("Free Size");
   const [openRemoveProduct, setOpenRemoveProduct] = useState(false);
 
-  const [updateToCartProduct, { isLoading }] = useUpdateToCartProductMutation();
-  const [removeToCartProduct, { loading }] = useRemoveToCartProductMutation();
+  const [updateCartItem, { isLoading }] = useUpdateCartItemMutation();
+  const [removeCartItem, { loading }] = useRemoveCartItemMutation();
 
   const handleUpdateCart = async () => {
     try {
       const items = {
-        _id: product?._id,
+        _id: product?.productId._id,
         quantity: quantity,
         // size: selectedSize,
       };
-      await updateToCartProduct({ items }).unwrap();
+      await updateCartItem( items ).unwrap();
       window.location.reload();
     } catch (err) {
       console.log("update cart error :", err);
     }
   };
 
-  const handleCartRemove = async (id) => {
+  const handleCartRemove = async (productId) => {
     try {
-      await removeToCartProduct({ id }).unwrap();
+      await removeCartItem( productId ).unwrap();
       window.location.reload();
     } catch (err) {
       console.log("deleted cart error :", err);
@@ -41,13 +41,13 @@ const Cart = ({ location, product }) => {
 
   return (
     <>
-      <div className="border border-gray-300 rounded-sm min-w-lg">
+      <div className="border border-gray-300 dark:border-gray-500 rounded-sm min-w-lg">
         {location === 2 && (
           <>
-            <div className="flex items-center p-2 text-gray-800">
+            <div className="flex items-center p-2 text-gray-800 dark:text-gray-300">
               Estimated Delivery by Monday, 20th Oct
             </div>
-            <span className=" block border-b border-gray-300 mt-1"></span>
+            <span className=" block border-b border-gray-300 dark:border-gray-500 mt-1"></span>
           </>
         )}
         <div className="flex items-start gap-2 p-3">
@@ -63,7 +63,7 @@ const Cart = ({ location, product }) => {
               {product?.productId?.name}
               <button
                 onClick={() => setOpenSideBar(true)}
-                className="text-purple-900/70 font-medium cursor-pointer"
+                className="text-purple-900/70 dark:text-purple-500 font-medium cursor-pointer"
               >
                 EDIT
               </button>
@@ -79,7 +79,7 @@ const Cart = ({ location, product }) => {
             </div>
             <div className="flex items-center gap-3">
               Size: {product?.productId?.size}{" "}
-              <div className="text-gray-500"> Qty: {product?.quantity}</div>
+              <div className="text-gray-500 dark:text-gray-300"> Qty: {product?.quantity}</div>
             </div>
             {location === 1 && (
               <div
@@ -102,13 +102,13 @@ const Cart = ({ location, product }) => {
                     />
                   </svg>
                 </span>
-                <span className="text-gray-500 font-medium ">REMOVE</span>
+                <span className="text-gray-500 dark:text-gray-300 font-medium ">REMOVE</span>
               </div>
             )}
           </div>
         </div>
-        <span className=" block border-b border-gray-300 mt-2"></span>
-        <div className="flex items-center justify-between p-2 text-gray-500">
+        <span className=" block border-b border-gray-300 dark:border-gray-500 mt-2"></span>
+        <div className="flex items-center justify-between p-2 text-gray-500 dark:text-gray-300">
           <span>Sold by: {product?.productId?.brand}</span>
           <span>Free Delivery</span>
         </div>
@@ -116,8 +116,8 @@ const Cart = ({ location, product }) => {
 
       {openSideBar && (
         <div className="w-full h-full fixed left-0 top-0 z-50 flex items-center justify-end bg-gray-900/80 transition-all duration-200 ease-in-out">
-          <div className="top-0 right-0 z-50 flex flex-col items-start w-[33%] h-full bg-white">
-            <div className="w-full p-6 font-medium flex items-center justify-between">
+          <div className="top-0 right-0 z-50 flex flex-col items-start w-[33%] h-full bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-gray-100   ">
+            <div className="w-full p-6 font-medium flex items-center justify-between ">
               EDIT ITEM
               <span>
                 <svg
@@ -169,7 +169,7 @@ const Cart = ({ location, product }) => {
                         id="size"
                         value={selectedSize}
                         onChange={(e) => setSelectedSize(e.target.value)}
-                        className="border border-gray-300 rounded px-1 py-1 focus:outline-none text-gray-600 font-semibold"
+                        className="border border-gray-300 dark:border-gray-500 rounded px-1 py-1 focus:outline-none text-gray-600 dark:text-gray-300 font-semibold"
                       >
                         {/* <option value="">Select Size</option> */}
                         {sizes.map((size) => (
@@ -183,35 +183,18 @@ const Cart = ({ location, product }) => {
                         ))}
                       </select>
                     </div>
-                    {/* <div className="flex items-center gap-3">
-  <span className="font-medium">Size:</span>
-  <div className="flex gap-2">
-    {sizes.map((size) => (
-      <button
-        key={size}
-        onClick={() => setSelectedSize(size)}
-        className={`px-3 py-1 border rounded text-sm ${
-          selectedSize === size
-            ? "bg-blue-600 text-white border-blue-600"
-            : "border-gray-300 text-gray-700 hover:bg-gray-100"
-        }`}
-      >
-        {size}
-      </button>
-    ))}
-  </div>
-</div> */}
+          
 
                     <div className="flex items-center gap-2 text-gray-700">
-                      <span className="text-gray-800 font-medium">Qty </span>
-                      <div className="flex items-center gap-1 border border-gray-300 rounded ">
+                      <span className="text-gray-800 dark:text-gray-300 font-medium">Qty </span>
+                      <div className="flex items-center gap-1 border border-gray-300 dark:border-gray-500 rounded ">
                         <button
                           onClick={() =>
                             quantity > 1
                               ? setQuantity(quantity - 1)
                               : setQuantity(1)
                           }
-                          className={`text-gray-900 px-2 hover:text-black bg-gray-100  py-1 cursor-pointer ${
+                          className={`text-gray-900 px-2 hover:text-black bg-gray-100 dark:text-gray-200 dark:hover:text-gray-300 dark:bg-neutral-800 py-1 cursor-pointer ${
                             quantity === 1 && "opacity-50 cursor-not-allowed"
                           }`}
                         >
@@ -225,7 +208,7 @@ const Cart = ({ location, product }) => {
                             const val = Math.max(1, Number(e.target.value));
                             setQuantity(val);
                           }}
-                          className="w-12 text-center border-none focus:outline-none"
+                          className="w-12 text-center border-none focus:outline-none dark:text-gray-300"
                         />
                         <button
                           onClick={() =>
@@ -233,7 +216,7 @@ const Cart = ({ location, product }) => {
                               ? setQuantity(quantity + 1)
                               : setQuantity(10)
                           }
-                          className={`text-gray-900 px-2 hover:text-black bg-gray-100 py-1 cursor-pointer ${
+                          className={`text-gray-900 px-2 hover:text-black bg-gray-100 dark:text-gray-200 dark:hover:text-gray-300 dark:bg-neutral-800 py-1 cursor-pointer ${
                             quantity === 10 && "opacity-50 cursor-not-allowed"
                           }`}
                         >
@@ -274,7 +257,7 @@ const Cart = ({ location, product }) => {
 
       {openRemoveProduct && (
         <div className="fixed top-0 left-0 w-full h-full bg-gray-900/80 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xs p-6">
+          <div className="bg-gray-100 dark:text-gray-200 dark:bg-neutral-800  rounded-xs p-6">
             <span className="flex justify-end">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -307,7 +290,7 @@ const Cart = ({ location, product }) => {
               </button>
               <button
                 onClick={() => {
-                  handleCartRemove(product?._id);
+                  handleCartRemove(product?.productId._id);
                   setOpenRemoveProduct(false);
                   scrollTo(0, 0);
                 }}

@@ -161,7 +161,7 @@ const Home = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <div className="w-full min-h-screen px-4 bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-gray-100 pt-30">
+    <div className="w-full min-h-screen px-4 bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-gray-100 py-30">
       {/* Hero Banner */}
       <div>
         <img
@@ -172,7 +172,7 @@ const Home = () => {
       </div>
 
       {/* Top Deals Carousel */}
-      <section className="w-full px-2 bg-white my-4">
+      <section className="w-full px-2 bg-white dark:bg-neutral-800 my-4">
         <h1 className="text-2xl font-semibold mb-2">Top Deals Product</h1>
         <ManualCarousel data={topDeals} />
       </section>
@@ -191,7 +191,7 @@ const Home = () => {
       {/* Category Highlight Sections */}
       <div className="w-full flex flex-wrap justify-center gap-3 mb-10">
         {/* Left Block */}
-        <div className="w-[32%] bg-white p-3 rounded shadow-sm">
+        <div className="w-[32%] bg-white dark:bg-neutral-800 p-3 rounded shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-2xl font-semibold">Make Your Style</h1>
             <span className="bg-blue-600 text-white px-3 py-1 rounded-full cursor-pointer">
@@ -206,7 +206,7 @@ const Home = () => {
         </div>
 
         {/* Middle Block */}
-        <div className="w-[32%] bg-white p-3 rounded shadow-sm">
+        <div className="w-[32%] bg-white dark:bg-neutral-800 p-3 rounded shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-2xl font-semibold">Shop Your Favorites</h1>
             <span className="bg-blue-600 text-white px-3 py-1 rounded-full cursor-pointer">

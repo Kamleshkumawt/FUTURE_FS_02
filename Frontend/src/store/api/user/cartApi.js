@@ -7,7 +7,7 @@ export const cartApi = baseApi.injectEndpoints({
       providesTags: ['Cart'],
     }),
     addItemToCart: builder.mutation({
-      query: ({data}) => ({
+      query: (data) => ({
         url: '/user/cart/add',
         method: 'POST',
         body: data,
@@ -15,7 +15,7 @@ export const cartApi = baseApi.injectEndpoints({
       invalidatesTags: ['Cart'],
     }),
     updateCartItem: builder.mutation({
-      query: ({ data }) => ({
+      query: (data ) => ({
         url: `/user/cart/update`,
         method: 'PUT',
         body: data,
@@ -23,7 +23,7 @@ export const cartApi = baseApi.injectEndpoints({
       invalidatesTags: ['Cart'],
     }),
     removeCartItem: builder.mutation({
-      query: ({productId }) => ({
+      query: (productId) => ({
         url: `/user/cart/${productId}`,
         method: 'DELETE',
       }),

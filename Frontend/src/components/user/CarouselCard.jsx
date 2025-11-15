@@ -11,9 +11,8 @@ const CarouselCard = ({ data }) => {
   return (
     <div
       onClick={() => {
-        const category = data?.categoryId;
+        const category = data?.category;
         const categoryName = category?.name;
-
         if (categoryName) {
           dispatch(setCategories(category)); // ✅ Dispatch on click
           navigate(`/category/search/${categoryName}`);
@@ -22,7 +21,7 @@ const CarouselCard = ({ data }) => {
           console.warn("Category name is missing");
         }
       }}
-      className="max-w-[13rem] min-w-[10rem] overflow-hidden p-3 space-y-2 bg-white"
+      className="max-w-[13rem] min-w-[10rem] overflow-hidden p-3 space-y-2 bg-white dark:bg-neutral-700 cursor-pointer"
     >
       {/* Image container */}
       <div className="w-full h-48 flex items-center justify-center">
@@ -36,10 +35,10 @@ const CarouselCard = ({ data }) => {
 
       {/* Text content */}
       <div className="flex flex-col items-center gap-1 text-center">
-        <span className="text-gray-500  font-medium text-sm">
+        <span className="text-gray-500 dark:text-gray-200 font-medium text-sm">
           From {data?.name.slice(0, 20)}
         </span>
-        <span className="text-sm font-semibold text-gray-900">
+        <span className="text-sm font-semibold text-gray-900 dark:text-gray-400">
           From{" "}
           {formatAmount(data?.price)}*
         </span>
