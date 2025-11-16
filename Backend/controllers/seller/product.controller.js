@@ -439,6 +439,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
     weight,
     dimensions,
     productId,
+    age,
   } = req.body;
 
   const sellerId = req.user._id;
@@ -450,12 +451,11 @@ export const updateProduct = asyncHandler(async (req, res) => {
     throw new AppError('You are not authorized to update this product', 403);
   }
 
-  // Handle front image upload
-  if (req.files?.frontImage?.length) {
-    const result = await uploadOnCloudinary(req.files.frontImage[0].path);
-    if (!result.success) throw new AppError('Front image upload failed', 500);
 
-    product.frontImage = {
+   const uploadImage = async (file) => {
+    const result = await uploadOnCloudinary(file.path);
+    if (!result?.success) throw new AppError('Image upload failed', 500);
+    return {
       url: result.secure_url,
       publicId: result.public_id,
       width: result.width,
@@ -463,36 +463,79 @@ export const updateProduct = asyncHandler(async (req, res) => {
       format: result.format,
       bytes: result.bytes,
     };
+  };
+
+  // console.log('📸 Uploading images to Cloudinary req.files', req?.files);
+  if (req.files?.frontImage?.[0]) {
+    product.frontImage = await uploadImage(req.files.frontImage?.[0]);
   }
+
+ if (req.files?.images?.length) {
+  const uploadedImages = await Promise.all(
+    req.files.images.map(file => uploadImage(file))
+  );
+
+  // console.log('📸 Uploaded images to Cloudinary before : ', uploadedImages);
+
+  product.images = uploadedImages.map(img => ({
+    url: img.url,
+    publicId: img.publicId,
+    width: img.width,
+    height: img.height,
+    format: img.format,
+    bytes: img.bytes,
+  }));
+  // console.log("📸 Uploaded images to Cloudinary successfully", product.images);
+}
+
+
+  // Handle front image upload
+  // if (req.files?.frontImage?.length) {
+  //   const result = await uploadOnCloudinary(req.files.frontImage[0].path);
+  //   if (!result.success) throw new AppError('Front image upload failed', 500);
+
+  //   product.frontImage = {
+  //     url: result.secure_url,
+  //     publicId: result.public_id,
+  //     width: result.width,
+  //     height: result.height,
+  //     format: result.format,
+  //     bytes: result.bytes,
+  //   };
+  // }
 
   // Handle additional images
-  if (req.files && req.files.length > 0) {
-    const imageFiles = req.files.filter(f => f.fieldname !== 'frontImage');
-    const uploadPromises = imageFiles.map(file => uploadOnCloudinary(file.path));
-    const results = await Promise.all(uploadPromises);
-
-    results.forEach(result => {
-      if (result.success) {
-        product.images.push({
-          url: result.secure_url,
-          publicId: result.public_id,
-          width: result.width,
-          height: result.height,
-          format: result.format,
-          bytes: result.bytes,
-        });
-      }
-    });
-  }
+  // console.log('req.files', req.files);
+  // if (req.files) {
+  //   console.log('📸 Uploading images to Cloudinary...',req.files);
+  //   const imageFiles = req.files.filter(f => f.fieldname !== 'frontImage');
+  //   console.log(`📸 Uploading ${imageFiles.length} images to Cloudinary...`,imageFiles);
+  //   const uploadPromises = imageFiles.map(file => uploadOnCloudinary(file.path));
+  //   const results = await Promise.all(uploadPromises);
+  //   console.log('📸 Image upload results:', results);
+  //   results.forEach(result => {
+  //     if (result.success) {
+  //       product.images.push({
+  //         url: result.secure_url,
+  //         publicId: result.public_id,
+  //         width: result.width,
+  //         height: result.height,
+  //         format: result.format,
+  //         bytes: result.bytes,
+  //       });
+  //     }
+  //   });
+  // }
 
   // Update other fields
   if (name) product.name = name;
   if (description) product.description = description;
   if (quantity !== undefined) product.quantity = quantity;
   if (color) product.color = color;
-  if (tags) product.tags = tags;
+  if (tags) product.tags = JSON.parse(tags);
   if (weight) product.weight = weight;
   if (dimensions) product.dimensions = JSON.parse(dimensions);
+  if (age) product.age = age;
 
   const updatedProduct = await product.save();
 

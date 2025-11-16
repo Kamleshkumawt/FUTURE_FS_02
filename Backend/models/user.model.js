@@ -74,7 +74,7 @@ const userSchema = new mongoose.Schema(
           type: String,
           default: "India",
         },
-        pinCode: String,
+        postalCode: String,
         famousPlaces: String,
         isDefault: {
           type: Boolean,

@@ -33,6 +33,11 @@ const reviewSchema = new Schema(
       ref: 'product',
       required: [true, 'Product ID is required'],
     },
+    orderId: {
+      type: Schema.Types.ObjectId,
+      ref: 'order',
+      required: [true, 'Order ID is required'],
+    },
     rating: {
       type: Number,
       required: [true, 'Rating is required'],

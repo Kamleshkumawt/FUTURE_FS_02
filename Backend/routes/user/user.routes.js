@@ -31,13 +31,13 @@ router.delete('/cart/clear', protect, clearCart);
 
 
 // Create a new review (with optional images)
-router.post('/', protect, upload.array('images', 5), createReview);
+router.post('/review/create', protect, upload.array('images', 5), createReview);
 
 // Get all reviews for a specific product
-router.get('/product/:productId', getReviewsByProductId);
+router.get('/review/product/:productId', getReviewsByProductId);
 
 // Delete a review (only owner or admin can delete)
-router.delete('/:id', protect, deleteReview);
+router.delete('/review/:id', protect, deleteReview);
 
 
 // // Public routes

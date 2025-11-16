@@ -8,7 +8,7 @@ export const getCart = asyncHandler(async (req, res, next) => {
   const  userId  = req.user._id;
 
   const cart = await Cart.findOne({ userId })
-    .populate('items.productId', 'name price frontImage discount size ')
+    .populate('items.productId', 'name price frontImage discount size sellerId ')
     .lean();
 
   if (!cart) {

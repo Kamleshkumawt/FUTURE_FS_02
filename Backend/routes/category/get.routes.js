@@ -7,7 +7,7 @@ const router = Router();
 // Public routes
 router.get('/get/all', protect, getAllCategoriesForSeller); // Get all categories, optional query: includeSub, status
 router.get('/all', getAllCategories); // Get all categories, optional query: includeSub, status
-router.get('/category/:id', getCategoryById); // Get category by ID
-router.get('/category/parentId/:id', getCategoriesByParentId); // Get category by ID
+router.get('/:id', getCategoryById); // Get category by ID
+router.get('/parentId/:id', getCategoriesByParentId); // Get category by ID
 
 export default router;

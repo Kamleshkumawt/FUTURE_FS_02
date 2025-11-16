@@ -6,7 +6,7 @@ import { asyncHandler } from '../../middlewares/errorHandler.js';
 import { AppError } from '../../utils/appError.js';
 
 export const createReview = asyncHandler(async (req, res, next) => {
-  const { productId, rating, comment } = req.body;
+  const { productId, orderId, rating, comment } = req.body;
   const userId = req.user?._id;
 
   if (!mongoose.Types.ObjectId.isValid(productId)) {
@@ -26,18 +26,17 @@ export const createReview = asyncHandler(async (req, res, next) => {
     return next(new AppError('Product not found', 404, 'PRODUCT_NOT_FOUND'));
   }
 
-  const existingReview = await Review.findOne({ userId, productId });
+  const existingReview = await Review.findOne({ userId, orderId });
   if (existingReview) {
     return next(new AppError('You have already reviewed this product', 400, 'DUPLICATE_REVIEW'));
   }
 
   let images = [];
   if (req.files && req.files.length > 0) {
-    console.log(`📸 Uploading ${req.files.length} images to Cloudinary...`);
-
+    // console.log(`📸 Uploading ${req.files.length} images to Cloudinary...`);
     const uploadPromises = req.files.map((file) => uploadOnCloudinary(file.path));
     const cloudinaryResults = await Promise.allSettled(uploadPromises);
-
+    // console.log(`📸 Uploaded ${cloudinaryResults.length} images to Cloudinary successfully`,cloudinaryResults);
     images = cloudinaryResults
       .filter((result) => result.status === 'fulfilled' && result.value?.secure_url)
       .map(({ value }) => ({
@@ -54,7 +53,7 @@ export const createReview = asyncHandler(async (req, res, next) => {
     }
   }
 
-  const newReview = await Review.create({ userId, productId, rating, images, comment });
+  const newReview = await Review.create({ userId, productId, rating, images, comment, orderId });
 
   res.status(201).json({
     success: true,
