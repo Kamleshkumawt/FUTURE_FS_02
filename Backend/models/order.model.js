@@ -32,6 +32,10 @@ const orderItemSchema = new mongoose.Schema({
   price: { type: Number, required: true },  
   quantity: { type: Number, required: true },
   thumbnail: { type: String },  
+  isReviewed: {
+      type:Boolean,
+      default:false
+  },
 }, { _id: false });
 
 const orderSchema = new mongoose.Schema({
@@ -63,7 +67,6 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-
   status: {
     type: String,
     enum: [

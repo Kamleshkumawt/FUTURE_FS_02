@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const { Schema, model } = mongoose;
 
@@ -6,7 +6,7 @@ const imageSchema = new Schema(
   {
     url: {
       type: String,
-      required: [true, 'Image URL is required'],
+      required: [true, "Image URL is required"],
     },
     publicId: String,
     width: Number,
@@ -25,24 +25,24 @@ const reviewSchema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: 'user',
-      required: [true, 'User ID is required'],
+      ref: "user",
+      required: [true, "User ID is required"],
     },
     productId: {
       type: Schema.Types.ObjectId,
-      ref: 'product',
-      required: [true, 'Product ID is required'],
+      ref: "product",
+      required: [true, "Product ID is required"],
     },
     orderId: {
       type: Schema.Types.ObjectId,
-      ref: 'order',
-      required: [true, 'Order ID is required'],
+      ref: "order",
+      required: [true, "Order ID is required"],
     },
     rating: {
       type: Number,
-      required: [true, 'Rating is required'],
-      min: [1, 'Rating must be at least 1'],
-      max: [5, 'Rating cannot exceed 5'],
+      required: [true, "Rating is required"],
+      min: [1, "Rating must be at least 1"],
+      max: [5, "Rating cannot exceed 5"],
     },
     images: {
       type: [imageSchema],
@@ -50,15 +50,19 @@ const reviewSchema = new Schema(
         validator: function (arr) {
           return Array.isArray(arr) && arr.length <= 5;
         },
-        message: 'You can upload a maximum of 5 images per review',
+        message: "You can upload a maximum of 5 images per review",
       },
+    },
+    helpful: {
+      type: Number,
+      default: 0,
     },
     comment: {
       type: String,
-      required: [true, 'Comment is required'],
+      required: [true, "Comment is required"],
       trim: true,
-      minlength: [5, 'Comment must be at least 5 characters long'],
-      maxlength: [1000, 'Comment cannot exceed 1000 characters'],
+      minlength: [5, "Comment must be at least 5 characters long"],
+      maxlength: [1000, "Comment cannot exceed 1000 characters"],
     },
   },
   {
@@ -69,26 +73,24 @@ const reviewSchema = new Schema(
   }
 );
 
-
 reviewSchema.index({ productId: 1, userId: 1 }, { unique: true });
 reviewSchema.index({ rating: 1 });
 reviewSchema.index({ createdAt: -1 });
-
 
 reviewSchema.statics.calcAverageRatings = async function (productId) {
   const result = await this.aggregate([
     { $match: { productId } },
     {
       $group: {
-        _id: '$productId',
-        avgRating: { $avg: '$rating' },
+        _id: "$productId",
+        avgRating: { $avg: "$rating" },
         numOfReviews: { $sum: 1 },
       },
     },
   ]);
 
   try {
-    const Product = (await import('./product.model.js')).default;
+    const Product = (await import("./product.model.js")).default;
 
     if (result.length > 0) {
       await Product.findByIdAndUpdate(productId, {
@@ -102,19 +104,18 @@ reviewSchema.statics.calcAverageRatings = async function (productId) {
       });
     }
   } catch (err) {
-    console.error('Error updating product rating:', err);
+    console.error("Error updating product rating:", err);
   }
 };
 
-
-reviewSchema.post('save', async function () {
+reviewSchema.post("save", async function () {
   await this.constructor.calcAverageRatings(this.productId);
 });
 
-reviewSchema.post('findOneAndDelete', async function (doc) {
+reviewSchema.post("findOneAndDelete", async function (doc) {
   if (doc) await doc.constructor.calcAverageRatings(doc.productId);
 });
 
-const Review = model('review', reviewSchema);
+const Review = model("review", reviewSchema);
 
 export default Review;

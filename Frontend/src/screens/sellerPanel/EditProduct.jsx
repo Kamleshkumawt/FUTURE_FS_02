@@ -140,9 +140,15 @@ const EditProduct = () => {
       formData.append("dimensions", JSON.stringify(dimensions));
       formData.append("tags", JSON.stringify(tags));
 
-      images.forEach((file) => {
-        formData.append("images", file);
+      images.forEach((img) => {
+        formData.append("images", img.file);
       });
+
+      // for (let pair of formData.entries()) {
+      //   console.log(pair[0] + ", " + pair[1]);
+      // }
+
+      // console.log([...formData.entries()]);
 
       await updateProduct(formData).unwrap();
       // console.log("Product created:", response);
@@ -491,7 +497,7 @@ const EditProduct = () => {
           </div>
         </div>
 
-        <div className="max-w-xl bg-white rounded-sm flex flex-col items-center gap-5">
+        <div className="max-w-xl bg-white dark:bg-[#1e1a1a] rounded-sm flex flex-col items-center gap-5">
           <div className="w-full flex flex-col  p-5 gap-5">
             <p className="text-lg font-semibold font-poppins">
               Images Guidelines
@@ -544,7 +550,7 @@ const EditProduct = () => {
                 >
                   {/* Image Preview */}
                   <img
-                    src={file.url}
+                    src={file.url || file}
                     alt={file || `Image ${i + 1}`}
                     className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-60"
                   />
@@ -579,14 +585,14 @@ const EditProduct = () => {
               )}
             </div>
 
-            <p className="text-gray-700 text-sm font-medium">
+            <p className="text-gray-700 dark:text-gray-300 text-sm font-medium">
               Please provide only a maximum of 4 sold images
             </p>
           </div>
         </div>
       </div>
 
-      <div className="w-full h-16 bg-white fixed bottom-0 right-0 flex items-center justify-between px-10">
+      <div className="w-full h-16 bg-white dark:bg-[#120d0e] fixed bottom-0 right-0 flex items-center justify-between px-10">
         <div
           onClick={() => {
             navigate("/seller");

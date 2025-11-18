@@ -3,164 +3,57 @@ import { useDispatch } from "react-redux";
 import { setSellerUser } from "../../store/slices/authSlice";
 import Loading from "../../components/Loading";
 import Title from "../../components/sellerPanel/Title";
-import {
-  useGetProductStatusForSellerMutation,
-} from "../../store/api/seller/productApi";
 import { useGetSellerProfileMutation } from "../../store/api/seller/sellerApi";
+import {
+  useGetOrdersByStatusForSellerQuery,
+  useGetSellerIncomeQuery,
+  useGetSellerOrderStatsQuery,
+} from "../../store/api/user/orderApi";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  YAxis,
+} from "recharts";
+
+const MONTHS = Object.freeze([
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+]);
 
 const Dashboard = () => {
-  const [products, setProducts] = useState("");
-  const [orderChartData, setOrderChartData] = useState("");
-  const [chartData, setIncomeChartData] = useState("");
+  const dispatch = useDispatch();
+  const [products, setProducts] = useState({});
+  const [incomeChartData, setIncomeChartData] = useState([]);
+  const [orderChartData, setOrderChartData] = useState([]);
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalSales, setTotalSales] = useState(0);
 
-  const dispatch = useDispatch();
-
-  const [getSellerProfile, { data, isLoading }] = useGetSellerProfileMutation();
-  const [getIncomeBySellerId, { data: idData }] =
-    useGetProductStatusForSellerMutation();
-    
-  const [getProductStatusForSeller, { data: PTRs }] =
-    useGetProductStatusForSellerMutation();
+  const [getSellerProfile,{isLoading}] = useGetSellerProfileMutation();
+  const { data: incomeData } = useGetSellerIncomeQuery();
+  const { data: ordersByStatus } = useGetOrdersByStatusForSellerQuery();
+  const { data: orderStats } = useGetSellerOrderStatsQuery();
 
   useEffect(() => {
-    getSellerProfile();
-    getProductStatusForSeller();
-    getIncomeBySellerId();
+    getSellerProfile().unwrap().then((res) => {
+      if (res?.data) dispatch(setSellerUser(res.data));
+    });
   }, []);
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
   useEffect(() => {
-    if (data) {
-      // console.log('data : ',data);
-      dispatch(setSellerUser(data.data));
-    }
-  }, [data, dispatch]);
+    if (!ordersByStatus?.orders) return;
 
-  useEffect(() => {
-    if (idData) {
-      console.log("data for income  : ", idData);
+    setProducts(ordersByStatus.orders);
+  }, [ordersByStatus]);
 
-      // const statsFromDB = idData?.stats[0]; // example: Delivered status
-      // // console.log("totalAmount : ", idData?.stats[0].totalIncome);
-      // // console.log("totalAmount : ", idData?.stats[0].totalSales);
-      // setTotalIncome(Number(idData?.stats[0].totalIncome));
-      // setTotalSales(Number(idData?.stats[0].totalSales));
-
-      // // Initialize chart data with 0s
-      // const baseChartData = months.map((month) => ({
-      //   month,
-      //   income: 0,
-      //   sales: 0,
-      // }));
-
-      // // Fill in the actual data from stats
-      // statsFromDB.monthly.forEach((m) => {
-      //   const index = m.month - 1; // MongoDB $month returns 1-12
-      //   baseChartData[index].income = m.totalAmount;
-      //   baseChartData[index].sales = m.sales;
-      // });
-
-      // // console.log("for income : ", baseChartData);
-      // setIncomeChartData(baseChartData);
-    }
-  }, [idData, dispatch]);
-
-  useEffect(() => {
-    if (PTRs) {
-      console.log("data : ", PTRs?.products);
-      setProducts(PTRs?.products);
-      // const orderChartData = months.map((month, index) => {
-      //   const monthNumber = index + 1;
-      //   const getCount = (key) => {
-      //     const found = PTRs?.response[key]?.monthly?.find(
-      //       (m) => m.month === monthNumber
-      //     );
-      //     return found ? found.count : 0;
-      //   };
-
-      //   return {
-      //     month,
-      //     cancelled: getCount("cancelled"),
-      //     delivered: getCount("delivered"),
-      //   };
-      // });
-
-      // setOrderChartData(orderChartData);
-    }
-  }, [PTRs, dispatch]);
-
-  // const chartData = [
-  //   { month: "January", income: 186, sales: 80 },
-  //   { month: "February", income: 305, sales: 200 },
-  //   { month: "March", income: 237, sales: 120 },
-  //   { month: "April", income: 73, sales: 190 },
-  //   { month: "May", income: 209, sales: 140 },
-  //   { month: "June", income: 214, sales: 150 },
-  // ];
-
-  const chartConfig = {
-    income: {
-      label: "income",
-      color: "#2563eb",
-    },
-    sales: {
-      label: "sales",
-      color: "#60a5fa",
-    },
-  };
-
-  // const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-
-  // // Build chart data
-  // const orderChartDat = monthNames.slice(0,6).map((monthName, index) => {
-  //   const monthNumber = index + 1;
-
-  //   const delivered =
-  //     (chart?.pending.monthly.find(m => m.month === monthNumber)?.count || 0) +
-  //     (chart?.shipped.monthly.find(m => m.month === monthNumber)?.count || 0) +
-  //     (chart?.delivered.monthly.find(m => m.month === monthNumber)?.count || 0);
-
-  //   const cancelled = chart?.cancelled.monthly.find(m => m.month === monthNumber)?.count || 0;
-
-  //   return { month: monthName, delivered, cancelled };
-  // });
-
-  // console.log(orderChartData);
-
-  const orderChartConfig = {
-    delivered: {
-      label: "delivered",
-      color: "#DC143C",
-    },
-    cancelled: {
-      label: "cancelled",
-      color: "#F75270",
-    },
-  };
-
-  // Total number of orders
   const totalOrders = Object.values(products).reduce(
-    (sum, val) => sum + val,
+    (sum, val) => sum + (val || 0),
     0
   );
 
-  // If totalOrders = 0, avoid division by zero
   const statusData = [
     {
       label: "Delivered",
@@ -172,7 +65,6 @@ const Dashboard = () => {
       color: "#eab308",
       percentage: totalOrders ? (products.pending / totalOrders) * 100 : 0,
     },
-    // { label: "Shipped", color: "#3b82f6", percentage: totalOrders ? (products.shipped / totalOrders) * 100 : 0 },
     {
       label: "Cancelled",
       color: "#ef4444",
@@ -180,23 +72,66 @@ const Dashboard = () => {
     },
   ];
 
-  const maxValue = Math.max(totalSales || 0, totalIncome || 0);
+  useEffect(() => {
+    if (!incomeData?.stats?.[0]) return;
 
-  const incomeData = [
+    const stats = incomeData.stats[0];
+
+    setTotalIncome(Number(stats.totalIncome?.toFixed(2)) || 0);
+    setTotalSales(Number(stats.totalSales) || 0);
+
+    const chartBase = MONTHS.map((m) => ({
+      month: m,
+      income: 0,
+      sales: 0,
+    }));
+
+    stats.monthly.forEach((m) => {
+      const i = m.month - 1;
+      chartBase[i].income = Number(m.income?.toFixed(2)) || 0;
+      chartBase[i].sales = m.sales ?? 0;
+    });
+
+    setIncomeChartData(chartBase);
+  }, [incomeData]);
+
+  useEffect(() => {
+    if (!orderStats?.stats) return;
+
+    const base = MONTHS.map((m) => ({
+      month: m,
+      delivered: 0,
+      cancelled: 0,
+    }));
+
+    orderStats.stats.forEach((item) => {
+      item.monthly.forEach((m) => {
+        const i = m.month - 1;
+        if (item._id === "Delivered") base[i].delivered += m.count;
+        if (item._id === "Cancelled") base[i].cancelled += m.count;
+      });
+    });
+
+    setOrderChartData(base);
+  }, [orderStats]);
+
+
+  const maxValue = Math.max(totalSales, totalIncome);
+
+  const incomeSummary = [
     {
       label: "Total Sales",
       color: "#3b82f6",
-      percentage: maxValue ? ((totalSales || 0) / maxValue) * 100 : 0,
+      percentage: maxValue ? parseFloat(totalSales / maxValue).toFixed(2) * 100 : 0,
     },
     {
       label: "Total Income",
       color: "#10b981",
-      percentage: maxValue ? ((totalIncome || 0) / maxValue) * 100 : 0,
+      percentage: maxValue ? parseFloat(totalIncome / maxValue).toFixed(2) * 100 : 0,
     },
   ];
 
-  // Total percentage (should be 100 or 0 if no orders)
-  const totalPercentage = statusData.reduce((acc, s) => acc + s.percentage, 0);
+   const totalPercentage = statusData.reduce((acc, s) => acc + s.percentage, 0);
 
   return !isLoading ? (
     <div>
@@ -214,9 +149,7 @@ const Dashboard = () => {
               Pending PR's
             </span>{" "}
             <span className="text-2xl font-bold w-full text-end">
-              {(
-                (products?.pending ?? 0)
-              ).toString()}
+              {(products?.pending ?? 0).toString()}
             </span>
           </div>
           <div className="border border-gray-400 p-5 rounded-sm font-medium flex flex-col w-full gap-5">
@@ -229,9 +162,7 @@ const Dashboard = () => {
               Ongoing PR's
             </span>{" "}
             <span className="text-2xl font-bold text-end">
-              {(
-                (products?.shipped ?? 0)
-              ).toString()}
+              {(products?.shipped ?? 0).toString()}
             </span>
           </div>
           <div className="border border-gray-400 p-5 rounded-sm font-medium flex flex-col w-full gap-5">
@@ -244,9 +175,7 @@ const Dashboard = () => {
               Move To delivered
             </span>
             <span className="text-2xl font-bold text-end">
-              {(
-                (products?.delivered ?? 0)
-              ).toString()}
+              {(products?.delivered ?? 0).toString()}
             </span>
           </div>
           <div className="border border-gray-400 p-5 rounded-sm font-medium flex flex-col w-full gap-5">
@@ -276,9 +205,7 @@ const Dashboard = () => {
               Total Income
             </span>
             <span className="text-2xl font-bold text-end">
-              {(
-                (totalIncome ?? 0)
-              ).toString()}
+              {(totalIncome ?? 0).toString()}
             </span>
           </div>
           <div className="border border-gray-400 p-5 rounded-sm font-medium flex flex-col w-full gap-5">
@@ -291,62 +218,83 @@ const Dashboard = () => {
               Total Sales
             </span>
             <span className="text-2xl font-bold text-end">
-              {(
-                (totalSales ?? 0)
-              ).toString()}
+              {(totalSales ?? 0).toString()}
             </span>
           </div>
         </div>
         <div className="flex flex-col xl:flex-row gap-2 lg:gap-10 xl:gap-30  justify-center items-center">
-          <div className="max-w-[18rem] sm:max-w-2xl border border-gray-200 rounded-sm p-2 mt-2 sm:mt-10">
-            <div className="flex items-center justify-between gap-10 p-1">
-              <h1 className="text-sm sm:text-xl py-2 font-medium">
-                Order Success
+          <div className="w-full border border-gray-200 rounded-lg p-4 mt-6 bg-white dark:bg-[#2A1C20] text-gray-900 dark:text-gray-100 shadow-sm">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b">
+              <h1 className="text-base sm:text-xl font-semibold">
+                Order Summary
               </h1>
-              <div className="flex items-center justify-between gap-10">
-                <div className="flex items-center gap-1 text-xs">
-                  <span className="bg-red-500 h-[7px] w-[7px] rounded-full"></span>
-                  delivered
+
+              <div className="flex items-center gap-4 text-xs">
+                <div className="flex items-center gap-1">
+                  <span className="bg-green-500 h-2 w-2 rounded-full"></span>
+                  Delivered
                 </div>
-                <div className="flex items-center gap-1 text-xs ">
-                  <span className="bg-red-300 h-[7px] w-[7px] rounded-full"></span>
+
+                <div className="flex items-center gap-1">
+                  <span className="bg-red-500 h-2 w-2 rounded-full"></span>
                   Cancelled
                 </div>
               </div>
             </div>
-            {/* <ChartContainer
-              config={orderChartConfig}
-              className="min-h-[150px] sm:min-h-[200px] lg:min-h-[250px] w-full"
-            >
-              <BarChart accessibilityLayer data={orderChartData}>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="month"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  tickFormatter={(value) => value.slice(0, 3)}
-                />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar
-                  dataKey="delivered"
-                  fill="var(--color-delivered)"
-                  radius={2}
-                />
-                <Bar
-                  dataKey="cancelled"
-                  fill="var(--color-cancelled)"
-                  radius={2}
-                />
-              </BarChart>
-            </ChartContainer> */}
+            <div className="w-full h-[280px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={orderChartData}
+                  margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
+                >
+                  <CartesianGrid vertical={false} strokeDasharray="4 4" />
+
+                  <XAxis
+                    dataKey="month"
+                    tick={{ fontSize: 12 }}
+                    interval={0}
+                    height={30}
+                  />
+
+                  <Tooltip
+                    contentStyle={{
+                      background: "white",
+                      borderRadius: "10px",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                    cursor={{ fill: "rgba(0,0,0,0.06)" }}
+                  />
+
+                  {/* FIXED BARS — always visible */}
+                  <Bar
+                    dataKey="delivered"
+                    fill="#22c55e"
+                    radius={4}
+                    fillOpacity={1}
+                    isAnimationActive={false}
+                    activeBar={{ fill: "#16a34a" }}
+                  />
+
+                  <Bar
+                    dataKey="cancelled"
+                    fill="#ef4444"
+                    radius={4}
+                    fillOpacity={1}
+                    isAnimationActive={false}
+                    activeBar={{ fill: "#dc2626" }}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
-          <div className="max-w-lg border border-gray-200 rounded-lg shadow-sm p-5 mt-2 sm:mt-10 bg-white">
+          <div className="max-w-lg border border-gray-200 rounded-lg shadow-sm p-5 mt-2 sm:mt-10 bg-white dark:bg-[#2A1C20] text-gray-900 dark:text-gray-100">
             {/* Header */}
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
-                <h1 className="sm:text-xl font-semibold text-gray-800">
+                <h1 className="sm:text-xl font-semibold text-gray-800 dark:text-gray-200">
                   Order Status
                 </h1>
                 <p className="text-gray-400 font-medium text-sm">
@@ -411,8 +359,10 @@ const Dashboard = () => {
                 }
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-gray-600 text-sm font-medium">Ratio</span>
-                <span className="text-xl font-bold text-gray-800">
+                <span className="text-gray-600 dark:text-gray-300 text-sm font-medium">
+                  Ratio
+                </span>
+                <span className="text-xl font-bold text-gray-800 dark:text-gray-200">
                   {totalPercentage}%
                 </span>
               </div>
@@ -437,10 +387,10 @@ const Dashboard = () => {
         </div>
 
         <div className="flex flex-col xl:flex-row gap-2 lg:gap-10 xl:gap-30 justify-center items-center">
-          <div className="max-w-md mt-2 sm:mt-10 border border-gray-200 rounded-lg shadow-sm p-5 bg-white">
+          <div className="max-w-md mt-2 sm:mt-10 border border-gray-200 rounded-lg shadow-sm p-5 bg-white dark:bg-[#2A1C20] text-gray-900 dark:text-gray-100">
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
-                <h1 className="sm:text-xl font-semibold text-gray-800">
+                <h1 className="sm:text-xl font-semibold text-gray-800 dark:text-gray-200">
                   Total Income & Sales
                 </h1>
                 <p className="text-gray-400 font-medium text-sm">
@@ -503,7 +453,7 @@ const Dashboard = () => {
             </div>
 
             <div className="flex justify-center gap-5 sm:gap-20 mt-6">
-              {incomeData.map((item, i) => (
+              {incomeSummary.map((item, i) => (
                 <div
                   key={i}
                   className="flex items-center gap-1 text-xs sm:text-sm font-medium"
@@ -518,40 +468,88 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="max-w-[18rem] sm:max-w-2xl border border-gray-200 rounded-sm p-2 mt-2 sm:mt-10">
+          <div className="max-w-[18rem] sm:max-w-2xl border border-gray-200 rounded-sm p-2 mt-4 sm:mt-10">
             <div className="flex items-center justify-between gap-10 p-1">
               <h1 className="text-sm sm:text-xl py-2 font-medium">Revenue</h1>
-              <div className="flex items-center justify-between gap-10">
+
+              <div className="flex items-center justify-between gap-6">
                 <div className="flex items-center gap-1 text-xs">
                   <span className="bg-blue-500 h-[7px] w-[7px] rounded-full"></span>
                   Income
                 </div>
-                <div className="flex items-center gap-1 text-xs ">
+                <div className="flex items-center gap-1 text-xs">
                   <span className="bg-blue-300 h-[7px] w-[7px] rounded-full"></span>
-                  sales
+                  Sales
                 </div>
               </div>
             </div>
-            {/* <ChartContainer
-              config={chartConfig}
-              className="min-h-[150px] sm:min-h-[200px] lg:min-h-[250px] w-full"
-            >
-              <BarChart accessibilityLayer data={chartData}>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="month"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  tickFormatter={(value) => value.slice(0, 3)}
-                />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="income" fill="var(--color-income)" radius={2} />
-                <Bar dataKey="sales" fill="var(--color-sales)" radius={2} />
-              </BarChart>
-            </ChartContainer> */}
-          </div>
 
+            <div className="w-full h-[400px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={incomeChartData}
+                  layout="vertical"
+                  margin={{ top: 20, right: 20, left: 80, bottom: 20 }}
+                >
+                  {/* Grid */}
+                  <CartesianGrid strokeDasharray="4 4" horizontal={false} />
+
+                  {/* Month Axis */}
+                  <YAxis
+                    dataKey="month"
+                    type="category"
+                    tick={{ fontSize: 12, fill: "#374151", fontWeight: 500 }}
+                    tickLine={false}
+                    axisLine={false}
+                    width={90}
+                  />
+
+                  {/* Number Axis */}
+                  <XAxis
+                    type="number"
+                    // Show tick labels with formatting
+                    tick={{ fontSize: 12, fill: "#6b7280" }}
+                    tickFormatter={(value) =>
+                      new Intl.NumberFormat("en-IN", {
+                        maximumFractionDigits: 0,
+                      }).format(value)
+                    }
+                    axisLine={false}
+                    tickLine={false}
+                    domain={[0, "dataMax"]}
+                    tickCount={5}
+                  />
+
+                  {/* Tooltip */}
+                  <Tooltip
+                    contentStyle={{
+                      background: "white",
+                      borderRadius: "10px",
+                      border: "1px solid #e5e7eb",
+                      padding: "8px",
+                      boxShadow: "0 4px 8px rgba(0,0,0,0.08)",
+                    }}
+                    cursor={{ fill: "rgba(0,0,0,0.06)" }}
+                  />
+
+                  {/* Bars */}
+                  <Bar
+                    dataKey="income"
+                    fill="#3b82f6"
+                    barSize={14}
+                    radius={[4, 4, 4, 4]}
+                  />
+
+                  <Bar
+                    dataKey="sales"
+                    fill="#93c5fd"
+                    barSize={14}
+                    radius={[4, 4, 4, 4]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         </div>
       </div>
     </div>

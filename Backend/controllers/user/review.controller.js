@@ -1,44 +1,65 @@
-import mongoose from 'mongoose';
-import uploadOnCloudinary from '../../config/cloudinary.js';
-import Review from '../../models/review.model.js';
-import Product from '../../models/product.model.js';
-import { asyncHandler } from '../../middlewares/errorHandler.js';
-import { AppError } from '../../utils/appError.js';
+import mongoose from "mongoose";
+import uploadOnCloudinary from "../../config/cloudinary.js";
+import Review from "../../models/review.model.js";
+import Product from "../../models/product.model.js";
+import orderModel from "../../models/order.model.js";
+import { asyncHandler } from "../../middlewares/errorHandler.js";
+import { AppError } from "../../utils/appError.js";
 
 export const createReview = asyncHandler(async (req, res, next) => {
   const { productId, orderId, rating, comment } = req.body;
+  // console.log(req.body);
   const userId = req.user?._id;
 
   if (!mongoose.Types.ObjectId.isValid(productId)) {
-    return next(new AppError('Invalid product ID', 400, 'INVALID_PRODUCT_ID'));
+    return next(new AppError("Invalid product ID", 400, "INVALID_PRODUCT_ID"));
   }
 
   if (!rating || rating < 1 || rating > 5) {
-    return next(new AppError('Rating must be between 1 and 5', 400, 'INVALID_RATING'));
+    return next(
+      new AppError("Rating must be between 1 and 5", 400, "INVALID_RATING")
+    );
   }
 
   if (!comment || comment.trim().length < 5) {
-    return next(new AppError('Comment must be at least 5 characters', 400, 'INVALID_COMMENT'));
+    return next(
+      new AppError(
+        "Comment must be at least 5 characters",
+        400,
+        "INVALID_COMMENT"
+      )
+    );
   }
+
+  // if (!Array.isArray(productId)) {
+  //   return next(
+  //     new AppError("productId must be an array", 400, "INVALID_PRODUCT_ID")
+  //   );
+  // }
+
+  // const products = await Product.find({ _id: { $in: productId } });
+
+  // if (products.length === 0) {
+  //   return next(new AppError("Products not found", 404, "PRODUCTS_NOT_FOUND"));
+  // }
 
   const product = await Product.findById(productId);
   if (!product) {
     return next(new AppError('Product not found', 404, 'PRODUCT_NOT_FOUND'));
   }
 
-  const existingReview = await Review.findOne({ userId, orderId });
-  if (existingReview) {
-    return next(new AppError('You have already reviewed this product', 400, 'DUPLICATE_REVIEW'));
-  }
-
   let images = [];
   if (req.files && req.files.length > 0) {
     // console.log(`📸 Uploading ${req.files.length} images to Cloudinary...`);
-    const uploadPromises = req.files.map((file) => uploadOnCloudinary(file.path));
+    const uploadPromises = req.files.map((file) =>
+      uploadOnCloudinary(file.path)
+    );
     const cloudinaryResults = await Promise.allSettled(uploadPromises);
     // console.log(`📸 Uploaded ${cloudinaryResults.length} images to Cloudinary successfully`,cloudinaryResults);
     images = cloudinaryResults
-      .filter((result) => result.status === 'fulfilled' && result.value?.secure_url)
+      .filter(
+        (result) => result.status === "fulfilled" && result.value?.secure_url
+      )
       .map(({ value }) => ({
         url: value.secure_url,
         publicId: value.public_id,
@@ -49,15 +70,85 @@ export const createReview = asyncHandler(async (req, res, next) => {
       }));
 
     if (images.length === 0) {
-      return next(new AppError('Image upload failed', 500, 'UPLOAD_FAILED'));
+      return next(new AppError("Image upload failed", 500, "UPLOAD_FAILED"));
     }
   }
 
-  const newReview = await Review.create({ userId, productId, rating, images, comment, orderId });
+
+  // const existingReview = await Review.findOne({ userId, orderId });
+  // if (existingReview) {
+  //   return next(
+  //     new AppError(
+  //       "You have already reviewed this product",
+  //       400,
+  //       "DUPLICATE_REVIEW"
+  //     )
+  //   );
+  // }
+
+  const existingOrder = await orderModel.findOne({ _id: orderId, userId });
+if (!existingOrder) {
+  return next(new AppError("Order not found", 404));
+}
+
+// Check if the product exists inside the order items
+const productExists = existingOrder.items.some(
+  (item) => item.productId.toString() === productId.toString()
+);
+
+if (!productExists) {
+  return next(
+    new AppError(
+      "This product is not part of the order",
+      400,
+      "PRODUCT_NOT_IN_ORDER"
+    )
+  );
+}
+
+// Check for duplicate review for SAME product in SAME ORDER
+const existingReview = await Review.findOne({
+  userId,
+  orderId,
+  productId
+});
+
+if (existingReview) {
+  return next(
+    new AppError(
+      "You have already reviewed this product",
+      400,
+      "DUPLICATE_REVIEW"
+    )
+  );
+}
+
+
+  const newReview = await Review.create({
+    userId,
+    productId,
+    rating,
+    images,
+    comment,
+    orderId,
+  });
+
+  // const order = await orderModel.findById(orderId);
+  // if (!order) {
+  //   return next(new AppError('Order not found', 404, 'PRODUCT_NOT_FOUND'));
+  // }
+
+  // existingOrder.isReviewed = true;
+  // await existingOrder.save();
+  await orderModel.updateOne(
+  { _id: orderId, "items.productId": productId },
+  { $set: { "items.$.isReviewed": true } }
+);
+
 
   res.status(201).json({
     success: true,
-    message: 'Review submitted successfully',
+    message: "Review submitted successfully",
     data: newReview,
   });
 });
@@ -66,17 +157,17 @@ export const getReviewsByProductId = asyncHandler(async (req, res, next) => {
   const { productId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(productId)) {
-    return next(new AppError('Invalid product ID', 400, 'INVALID_PRODUCT_ID'));
+    return next(new AppError("Invalid product ID", 400, "INVALID_PRODUCT_ID"));
   }
 
   const reviews = await Review.find({ productId })
-    .populate('userId', 'name email profilePicture')
+    .populate("userId", "fullName profile_picture")
     .sort({ createdAt: -1 })
     .lean();
 
   res.status(200).json({
     success: true,
-    message: 'Reviews fetched successfully',
+    message: "Reviews fetched successfully",
     count: reviews.length,
     data: reviews,
   });
@@ -87,23 +178,27 @@ export const deleteReview = asyncHandler(async (req, res, next) => {
   const userId = req.user?._id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return next(new AppError('Invalid review ID', 400, 'INVALID_REVIEW_ID'));
+    return next(new AppError("Invalid review ID", 400, "INVALID_REVIEW_ID"));
   }
 
   const review = await Review.findById(id);
   if (!review) {
-    return next(new AppError('Review not found', 404, 'REVIEW_NOT_FOUND'));
+    return next(new AppError("Review not found", 404, "REVIEW_NOT_FOUND"));
   }
 
-
-  if (review.userId.toString() !== userId.toString() && req.user.role !== 'admin') {
-    return next(new AppError('Not authorized to delete this review', 403, 'FORBIDDEN'));
+  if (
+    review.userId.toString() !== userId.toString() &&
+    req.user.role !== "admin"
+  ) {
+    return next(
+      new AppError("Not authorized to delete this review", 403, "FORBIDDEN")
+    );
   }
 
   await Review.findByIdAndDelete(id);
 
   res.status(200).json({
     success: true,
-    message: 'Review deleted successfully',
+    message: "Review deleted successfully",
   });
 });

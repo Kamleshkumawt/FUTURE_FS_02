@@ -8,6 +8,7 @@ import Loading from '../components/Loading';
 import { useNavigate } from 'react-router-dom';
 import CartAddressSummary from '../components/user/cart/CartAddressSummary';
 import { useGetCartQuery } from '../store/api/user/cartApi';
+import { useCreateOrderMutation } from '../store/api/user/orderApi';
 
 const CartSummary = () => {
   const [cart, setCart] = useState([]);
@@ -19,8 +20,7 @@ const CartSummary = () => {
     const navigate = useNavigate();
     const  {data, isLoading } = useGetCartQuery();
 
-    // const [createOrder,{loading}] = useCreateOrderMutation();
-    const loading = false
+    const [createOrder,{loading}] = useCreateOrderMutation();
 
     const user = useSelector((state) => state.auth.user);
     const addr = useSelector((state) => state.filters.address);
@@ -29,9 +29,14 @@ const CartSummary = () => {
     try {
       const items = cart.items.map(item => ({
         productId: item.productId._id,
-        quantity: item.quantity
+        quantity: item.quantity,
+        price: item.productId.price,
+        thumbnail: item.productId.frontImage.url,
+        sellerId: item.productId.sellerId,
+        title: item.productId.name
       }));
-      // await createOrder({ total_amount:totalPrice, shipping_address:address, payment_method:"cash_on_delivery", items}).unwrap();
+      
+      await createOrder({shipping_address:address, payment_method:"cash_on_delivery", items}).unwrap();
       // console.log("Order created successfully:", res);
       navigate("/user/orders");
     } catch(error) {
@@ -41,7 +46,7 @@ const CartSummary = () => {
 
     useEffect(() => {
       if(data){
-        console.log("Cart data:", data);
+        // console.log("Cart data:", data);
         setCart(data.data);
         const totalPrice =
             (

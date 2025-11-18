@@ -11,6 +11,7 @@ const initialState = {
   selectedDiscounts: [],
   selectedSize: [],
   address: [],
+  ratingAndId: { rating: 0, productId: "" },
   itemsAndPrice: {
     items: 0,
     price: 0,
@@ -55,6 +56,9 @@ const filterSlice = createSlice({
     setAddress: (state, action) => {
       state.address = action.payload;
     },
+    setRatingAndId: (state, action) => {
+      state.ratingAndId = action.payload;
+    },
   },
 });
 
@@ -69,6 +73,7 @@ export const {
   setSelectedDiscounts,
   setSelectedSize,
   setItemsAndPrice,
-  setAddress
+  setAddress,
+  setRatingAndId,
 } = filterSlice.actions;
 export default filterSlice.reducer;

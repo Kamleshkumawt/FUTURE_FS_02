@@ -40,7 +40,7 @@ const AddProductCategory = () => {
     if (allCategoriesDatas) {
       setAllCategoriesDate(allCategoriesDatas.data);
     }
-  }, []);
+  }, [dispatch, allCategoriesDatas]);
 
   useEffect(() => {
     if (allCategoriesData.length) {

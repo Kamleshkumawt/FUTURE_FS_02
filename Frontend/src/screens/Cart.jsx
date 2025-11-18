@@ -44,7 +44,7 @@ const Cart = () => {
 
     // fetchCart();
     if (data) {
-      console.log("cart data is : ", data);
+      // console.log("cart data is : ", data);
       setCart(data.data);
       const totalPrice = (() => {
         if (!Array.isArray(data?.data.items)) return 0;

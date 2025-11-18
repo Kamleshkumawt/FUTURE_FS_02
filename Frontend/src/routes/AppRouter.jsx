@@ -25,6 +25,11 @@ import CartAddress from '../screens/CartAddress'
 import CartPayment from '../screens/CartPayment'
 import CartSummary from '../screens/CartSummary'
 import CategoryProduct from '../screens/CategoryProduct'
+import Order from '../screens/Order'
+import ShowAllPendingOrders from '../screens/sellerPanel/ShowAllPendingOrders'
+import ShowAllDeliveredOrders from '../screens/sellerPanel/ShowAllDeliveredOrders'
+import ShowAllShippedOrders from '../screens/sellerPanel/ShowAllShippedOrders'
+import ReviewOrder from '../screens/ReviewOrder'
 
 
 const AppRouter = () => {
@@ -44,6 +49,8 @@ const AppRouter = () => {
             <Route path="/category/search/:categoryName" element={<CategoryProduct />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/account/delete" element={<DeleteAccount />} />
+            <Route path="/user/orders" element={<Order />} />
+            <Route path="/user/revieworder/:id" element={<ReviewOrder />} />
             <Route path="/seller/SignUp" element={<CreateSellerAccount />} />
             <Route path="/seller/SignIn" element={<LoginSeller />} />
             <Route path="/sellerSignUp/business" element={<BusinessDetails />} />
@@ -61,10 +68,10 @@ const AppRouter = () => {
                 <Route path="new-category-product" element={<AddProductCategory/>} />
                 <Route path="edit-product/:id" element={<EditProduct/>} />
                 <Route path="list-products" element={<ShowAllProduct/>} />
-                {/*<Route path="list-orders" element={<ShowAllOrders/>} />
+                <Route path="list-orders" element={<ShowAllPendingOrders/>} />
                 <Route path="list-del-orders" element={<ShowAllDeliveredOrders/>} />
                 <Route path="list-ship-orders" element={<ShowAllShippedOrders/>} />
-                <Route path="list-ret-orders" element={<ShowAllReturnsOrders/>} />*/}
+                {/* <Route path="list-ret-orders" element={<ShowAllReturnsOrders/>} /> */}
                 <Route path="list-ret-stting" element={<SellerSettings/>} /> 
             </Route>
         </Routes>

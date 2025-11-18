@@ -4,19 +4,19 @@ export const reviewApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createReview: builder.mutation({
       query: (formData) => ({
-        url: '/reviews',
+        url: '/user/review/create',
         method: 'POST',
         body: formData, // formData must be multipart/form-data
       }),
       invalidatesTags: ['Reviews'],
     }),
     getReviewsByProductId: builder.query({
-      query: (productId) => `/reviews/product/${productId}`,
+      query: (productId) => `/user/review/product/${productId}`,
       providesTags: ['Reviews'],
     }),
     deleteReview: builder.mutation({
       query: (id) => ({
-        url: `/reviews/${id}`,
+        url: `/user/review/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Reviews'],

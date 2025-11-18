@@ -165,7 +165,6 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
   });
 });
 
-
 export const getSellerOrderStats = asyncHandler(async (req, res) => {
   const sellerId = new mongoose.Types.ObjectId(req.user._id);
 

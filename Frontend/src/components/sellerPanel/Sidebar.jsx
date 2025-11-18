@@ -30,7 +30,7 @@ const Sidebar = () => {
         {name: 'List Pending Orders', path: '/seller/list-orders', icon: ListCollapseIcon},
         {name: 'List Delivered Orders', path: '/seller/list-del-orders', icon: ListCollapseIcon},
         {name: 'List Shipped Orders', path: '/seller/list-ship-orders', icon: ListCollapseIcon},
-        {name: 'List Returned Orders', path: '/seller/list-ret-orders', icon: ListCollapseIcon},
+        // {name: 'List Returned Orders', path: '/seller/list-ret-orders', icon: ListCollapseIcon},
         {name: 'Settings', path: '/seller/list-ret-stting', icon: Settings},
     ]
 

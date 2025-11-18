@@ -11,11 +11,11 @@ export const categoryApi = baseApi.injectEndpoints({
       providesTags: ['Categories'],
     }),
     getCategoryById: builder.query({
-      query: (id) => `/user/category/${id}`,
+      query: (id) => `/category/${id}`,
       providesTags: ['Categories'],
     }),
     getCategoryByParentId: builder.query({
-      query: (id) => `/user/category/parentId/${id}`,
+      query: (id) => `/category/parentId/${id}`,
       providesTags: ['Categories'],
     }),
   }),

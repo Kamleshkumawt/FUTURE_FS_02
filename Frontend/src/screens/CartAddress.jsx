@@ -39,12 +39,12 @@ const CartAddress = () => {
 
   const itemsAndPrice = useSelector((state) => state.filters.itemsAndPrice);
   const user = useSelector((state) => state.auth.user);
-  console.log("user", user);
+  // console.log("user", user);
   const addr = useSelector((state) => state.filters.address);
 
   useEffect(() => {
     if (user?.address) {
-      console.log("user address", user.address);
+      // console.log("user address", user.address);
       dispatch(setAddress(user.address));
     }
   }, [user, dispatch, openSideBar]);
@@ -54,7 +54,7 @@ const CartAddress = () => {
       const defaultAddr = addr.find((a) => a.isDefault);
       setSelectedAddressId(defaultAddr?._id || addr[0]._id);
     }
-  }, [addr]);
+  }, [addr, dispatch, openSideBar]);
 
   const handleUseMyLocation = () => {
     if (!navigator.geolocation) {
@@ -96,7 +96,7 @@ const CartAddress = () => {
       // console.log('address to save :', address);
       try {
         const response = await addNewAddress({ address }).unwrap();
-        console.log("Address saved successfully:", response.user);
+        // console.log("Address saved successfully:", response.user);
         dispatch(setAddress(response.user?.address));
         setOpenSideBar(false);
       } catch (error) {

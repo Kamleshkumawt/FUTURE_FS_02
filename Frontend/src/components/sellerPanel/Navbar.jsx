@@ -1,5 +1,5 @@
 import {useSelector } from 'react-redux';
-import ThemeToggle from '../user/ThemeToggle';
+// import ThemeToggle from '../user/ThemeToggle';
 
 const Navbar = () => {
     const seller = useSelector((state) => state.auth.seller);
@@ -10,7 +10,7 @@ const Navbar = () => {
         {/* <Link to={'/seller'} >
             <img src={logo} alt="logo" className='w-40 h-auto' />
         </Link> */}
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
         <div className='text-xl font-medium text-gray-500 dark:text-gray-400'>{seller?.shopName}</div>
         <div className='flex items-center gap-2'>
             <div className='w-10 h-10'>
