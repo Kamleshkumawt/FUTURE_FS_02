@@ -30,6 +30,11 @@ import ShowAllPendingOrders from '../screens/sellerPanel/ShowAllPendingOrders'
 import ShowAllDeliveredOrders from '../screens/sellerPanel/ShowAllDeliveredOrders'
 import ShowAllShippedOrders from '../screens/sellerPanel/ShowAllShippedOrders'
 import ReviewOrder from '../screens/ReviewOrder'
+import AdminLayout from '../screens/adminPanel/Layout'
+import AdminLogin from '../screens/adminPanel/auth/AdminLogin'
+import AdminRegister from '../screens/adminPanel/auth/AdminRegister'
+import AdminDashboard from '../screens/adminPanel/AdminDashboard'
+import AdminUpdate from '../screens/adminPanel/AdminUpdate'
 
 
 const AppRouter = () => {
@@ -73,6 +78,24 @@ const AppRouter = () => {
                 <Route path="list-ship-orders" element={<ShowAllShippedOrders/>} />
                 {/* <Route path="list-ret-orders" element={<ShowAllReturnsOrders/>} /> */}
                 <Route path="list-ret-stting" element={<SellerSettings/>} /> 
+            </Route>
+            <Route path="/admin/selector/login" element={<AdminLogin />} />
+            <Route path="/admin/selector/register" element={<AdminRegister />} />
+            <Route path='/admin/*' element={<AdminLayout/>} > 
+                <Route index element={<AdminDashboard />} />  
+                <Route path="ret-stting" element={<AdminUpdate />} />
+                {/* <Route path="ret-edit/:id" element={<EditProductByAdmin />} />
+                <Route path="show/all-user" element={<ShowAllUsers />} />
+                <Route path="show/all-seller" element={<ShowAllSellers />} />
+                <Route path="show/all-products" element={<ShowAllProducts />} />
+                <Route path="show/all-orders" element={<ShowAllOrdersAdmin />} />
+                <Route path="show/all-categories" element={<ShowAllCategories />} />
+                <Route path="order/details/:id" element={<EditOrderDetails />} />
+                <Route path="user/details/:id" element={<EditUserByAdmin />} />
+                <Route path="seller/details/:id" element={<EditSellerByAdmin />} />
+                <Route path="show/all-blocked-user" element={<ShowAllBlockedUser />} />
+                <Route path="show/all-blocked-seller" element={<ShowAllBlockedSeller />} />
+                <Route path="add-category" element={<AddCategory />} /> */}
             </Route>
         </Routes>
 

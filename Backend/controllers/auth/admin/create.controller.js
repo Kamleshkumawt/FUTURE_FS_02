@@ -62,10 +62,18 @@ export const loginAdmin = asyncHandler(async (req, res, next) => {
     maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days
   });
 
+  const responseData = {
+    id: admin._id,
+    fullName: admin.username,
+    profilePicture: admin.profilePicture?.url,
+    createdAt: admin.createdAt,
+    updatedAt: admin.updatedAt,
+  };
+
   res.status(200).json({
     success: true,
     message: "Login successful",
-    data: admin.toJSON(),
+    data: responseData,
     token,
   });
 });

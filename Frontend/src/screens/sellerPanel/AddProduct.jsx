@@ -107,13 +107,30 @@ const AddProduct = () => {
     setInputValueKeywords(e.target.value);
   };
 
+  // const toggleSize = (size) => {
+  //   if (selectedSizes.includes(size)) {
+  //     setSelectedSizes(selectedSizes.filter((s) => s !== size));
+  //   } else {
+  //     setSelectedSizes([...selectedSizes, size]);
+  //   }
+  // };
+
   const toggleSize = (size) => {
-    if (selectedSizes.includes(size)) {
-      setSelectedSizes(selectedSizes.filter((s) => s !== size));
-    } else {
-      setSelectedSizes([...selectedSizes, size]);
-    }
-  };
+  let updated = [];
+
+  if (selectedSizes.includes(size)) {
+    updated = selectedSizes.filter((s) => s !== size);
+  } else {
+    updated = [...new Set([...selectedSizes, size])];
+  }
+
+  // Sort by predefined order
+  updated = updated.sort(
+    (a, b) => sizeOptions.indexOf(a) - sizeOptions.indexOf(b)
+  );
+
+  setSelectedSizes(updated);
+};
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" || e.key === ",") {
@@ -365,6 +382,44 @@ const AddProduct = () => {
                 </div>
               )}
             </div>
+
+             {/* <div className="relative mt-2">
+              <input
+                type="text"
+                id="sizes"
+                name="sizes"
+                value={inputValue} // show tags as comma separated string
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                placeholder={
+                  isFocused ? "e.g. #phone, #iphone, #smartphone" : ""
+                }
+                className={inputClass}
+                required
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+              />
+              <label htmlFor="sizes" className={labelClass(tags.length > 0)}>
+                Size
+              </label>
+              <div className="flex flex-wrap gap-2 mb-1">
+                {tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="bg-purple-200 text-purple-800 px-2 py-1 rounded flex items-center space-x-1"
+                  >
+                    <span>{tag}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeTag(tag)}
+                      className="text-purple-800 hover:text-red-600 cursor-pointer"
+                    >
+                      &times;
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div> */}
 
 
           </div>

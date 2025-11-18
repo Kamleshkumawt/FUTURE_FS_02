@@ -580,3 +580,12 @@ export const deleteProduct = asyncHandler(async (req, res) => {
   });
 });
 
+export const getAllProducts = async (req, res) => {
+    try {
+        const products = await productModel.find();
+        res.status(200).json({ success: true, message: "All products fetched successfully", products });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+}
+

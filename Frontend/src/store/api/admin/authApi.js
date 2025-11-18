@@ -1,4 +1,4 @@
-import { baseApi } from '../../app/baseApi';
+import { baseApi } from '../baseApi';
 
 export const adminAuthApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -9,9 +9,16 @@ export const adminAuthApi = baseApi.injectEndpoints({
         body: credentials,
       }),
     }),
+    registerAdmin: builder.mutation({
+      query: (credentials) => ({
+        url: '/admin/auth/register',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
     logoutAdmin: builder.mutation({
       query: () => ({
-        url: "/admin/logout",
+        url: "/admin/auth/logout",
         method: "POST",
       }),
       invalidatesTags: ["Admin"],
@@ -20,13 +27,13 @@ export const adminAuthApi = baseApi.injectEndpoints({
     // ======= PROFILE =======
 
     getAdminProfile: builder.query({
-      query: () => "/admin/me",
+      query: () => "/admin/auth/me",
       providesTags: ["Admin"],
     }),
 
     updateAdminDetails: builder.mutation({
       query: (data) => ({
-        url: "/admin/update-details",
+        url: "/admin/auth/update-details",
         method: "PUT",
         body: data,
       }),
@@ -35,7 +42,7 @@ export const adminAuthApi = baseApi.injectEndpoints({
 
     changeAdminPassword: builder.mutation({
       query: (data) => ({
-        url: "/admin/change-password",
+        url: "/admin/auth/change-password",
         method: "PUT",
         body: data,
       }),
@@ -46,6 +53,10 @@ export const adminAuthApi = baseApi.injectEndpoints({
 
 export const {
   useLoginAdminMutation,
+  useRegisterAdminMutation,
   useLogoutAdminMutation,
+  useGetAdminProfileQuery,
+  useUpdateAdminDetailsMutation,
+  useChangeAdminPasswordMutation,
   
 } = adminAuthApi;

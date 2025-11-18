@@ -139,9 +139,27 @@ if (typeof policies === 'string') {
 
   if (!seller) return next(new AppError("Seller not found", 404, "SELLER_NOT_FOUND"));
 
+  const responseData = {
+    id: seller._id,
+    fullName: seller.fullName,
+    shopName: seller.storeName,
+    storeImage: seller.storeImage?.url,
+    createdAt: seller.createdAt,
+    updatedAt: seller.updatedAt,
+  };
+
   res.status(200).json({
     success: true,
     message: "Seller profile updated successfully",
-    data: seller,
+    data: responseData,
   });
 });
+
+export const getAllSellers = async (req, res) => {
+    try {
+        const sellers = await sellerModel.find();
+        res.status(200).json({ success: true, message: "All sellers fetched successfully", sellers });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+}

@@ -20,6 +20,8 @@ export const protect = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    // console.log('decoded',decoded);
+
     if (!decoded || !decoded._id) {
       return next(new AppError("Invalid or expired token.", 401, "AUTH_INVALID_TOKEN"));
     }

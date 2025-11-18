@@ -1,3 +1,4 @@
+import uploadOnCloudinary from "../../../config/cloudinary.js";
 import { asyncHandler } from "../../../middlewares/errorHandler.js";
 import adminModel from "../../../models/admin.model.js";
 import { AppError} from "../../../utils/appError.js";
@@ -9,13 +10,18 @@ export const getAdmin = asyncHandler(async (req, res, next) => {
   const admin = await adminModel.findById(adminId);
   if (!admin) return next(new AppError("Admin not found", 404, "NOT_FOUND"));
 
-  const token = admin.generateJWT();
+  const responseData = {
+    id: admin._id,
+    fullName: admin.username,
+    profilePicture: admin.profilePicture?.url,
+    createdAt: admin.createdAt,
+    updatedAt: admin.updatedAt,
+  };
 
   res.status(200).json({
     success: true,
     message: "Admin profile fetched successfully",
-    data: admin.toJSON(), // hides password automatically
-    token,
+    data: responseData,
   });
 });
 
@@ -27,7 +33,6 @@ export const updateAdmin = asyncHandler(async (req, res, next) => {
   if (!admin) return next(new AppError("Admin not found", 404));
 
   if (req.body.username?.trim()) admin.username = req.body.username.trim();
-
   if (req.file?.path) {
     try {
       const result = await uploadOnCloudinary(req.file.path);
@@ -54,10 +59,18 @@ export const updateAdmin = asyncHandler(async (req, res, next) => {
   const adminData = admin.toObject();
   delete adminData.password;
 
+  const responseData = {
+    id: admin._id,
+    fullName: admin.username,
+    profilePicture: admin.profilePicture?.url,
+    createdAt: admin.createdAt,
+    updatedAt: admin.updatedAt,
+  };
+
   res.status(200).json({
     success: true,
     message: "Profile updated successfully",
-    data: adminData,
+    data: responseData,
   });
 });
 
@@ -85,7 +98,6 @@ export const updateAdminPassword = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    message: "Admin password updated successfully",
-    data: adminData, 
+    message: "Admin password updated successfully", 
   });
 });

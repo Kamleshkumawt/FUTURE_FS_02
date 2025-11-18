@@ -9,6 +9,7 @@ import {
   updateAdminPassword,
 } from "../../controllers/index.js";
 import {protect} from "../../middlewares/authHandler.js";
+import upload from "../../middlewares/multerHandler.js";
 
 const router = express.Router();
 
@@ -63,7 +64,7 @@ router.get("/me", protect, getAdmin);
 
 router.post("/logout", protect, logoutAdmin);
 
-router.put("/update-details", protect, updateAdmin);
+router.put("/update-details", protect, upload.single("profileImage"), updateAdmin);
 
 router.put("/change-password", protect, updateAdminPassword);
 

@@ -57,7 +57,7 @@ adminSchema.methods.isValidPassword = async function (password) {
 
 adminSchema.methods.generateJWT = function () {
   return jwt.sign(
-    { id: this._id, role: "admin" },
+    { _id: this._id, role: "admin" },
     process.env.JWT_SECRET,
     { expiresIn: "30d" } // slightly shorter and secure token lifetime
   );
