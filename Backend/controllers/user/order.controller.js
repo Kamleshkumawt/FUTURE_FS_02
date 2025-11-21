@@ -267,3 +267,58 @@ export const getIncomeBySellerId = asyncHandler(async (req, res) => {
     stats
   });
 });
+
+export const getAllOrders = async (req, res) => {
+    try {
+        const orders = await orderModel.find();
+        res.status(200).json({ success: true, message: "All orders fetched successfully", orders });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+}
+
+export const getOrdersById = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const orders = await orderModel
+      .findById(orderId);
+
+    res
+      .status(200)
+      .json({ success: true, message: "Orders fetched successfully", orders });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
+export const updateOrderStatusByAdmin = async (req, res) => {
+  try {
+
+    console.log('status, orderId : ', req.body);
+    const { status, orderId } = req.body;
+
+    const updatedOrder = await orderModel.findByIdAndUpdate(
+      orderId,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Order status updated successfully",
+      updatedOrder,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};

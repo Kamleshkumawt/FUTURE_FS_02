@@ -278,6 +278,7 @@ const AddProduct = () => {
                 GST
               </label>
             </div>
+            
             {/*HSN Code */}
             <div className="relative">
               <input

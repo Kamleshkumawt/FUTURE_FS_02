@@ -35,6 +35,19 @@ import AdminLogin from '../screens/adminPanel/auth/AdminLogin'
 import AdminRegister from '../screens/adminPanel/auth/AdminRegister'
 import AdminDashboard from '../screens/adminPanel/AdminDashboard'
 import AdminUpdate from '../screens/adminPanel/AdminUpdate'
+import EditProductByAdmin from '../screens/adminPanel/EditProductByAdmin'
+import ShowAllBlockedUser from '../screens/adminPanel/ShowAllBlockedUser'
+import ShowAllBlockedSeller from '../screens/adminPanel/ShowAllBlockedSeller'
+import ShowAllProducts from '../screens/adminPanel/ShowAllProducts'
+import ShowAllCategories from '../screens/adminPanel/ShowAllCategories'
+import ShowAllOrdersAdmin from '../screens/adminPanel/ShowAllOrders'
+import ShowAllUsers from '../screens/adminPanel/ShowAllUsers'
+import ShowAllSellers from '../screens/adminPanel/ShowAllSellers'
+import AddCategory from '../screens/adminPanel/AddCategory'
+import EditOrderDetails from '../screens/adminPanel/EditOrderDetails'
+import EditUserByAdmin from '../screens/adminPanel/EditUserByAdmin'
+import EditSellerByAdmin from '../screens/adminPanel/EditSellerByAdmin'
+import EditCategory from '../screens/adminPanel/EditCategory'
 
 
 const AppRouter = () => {
@@ -84,18 +97,19 @@ const AppRouter = () => {
             <Route path='/admin/*' element={<AdminLayout/>} > 
                 <Route index element={<AdminDashboard />} />  
                 <Route path="ret-stting" element={<AdminUpdate />} />
-                {/* <Route path="ret-edit/:id" element={<EditProductByAdmin />} />
+                <Route path="ret-edit/:id" element={<EditProductByAdmin />} />
                 <Route path="show/all-user" element={<ShowAllUsers />} />
+                <Route path="show/all-blocked-user" element={<ShowAllBlockedUser />} />
                 <Route path="show/all-seller" element={<ShowAllSellers />} />
+                <Route path="show/all-blocked-seller" element={<ShowAllBlockedSeller />} />
                 <Route path="show/all-products" element={<ShowAllProducts />} />
                 <Route path="show/all-orders" element={<ShowAllOrdersAdmin />} />
                 <Route path="show/all-categories" element={<ShowAllCategories />} />
                 <Route path="order/details/:id" element={<EditOrderDetails />} />
                 <Route path="user/details/:id" element={<EditUserByAdmin />} />
                 <Route path="seller/details/:id" element={<EditSellerByAdmin />} />
-                <Route path="show/all-blocked-user" element={<ShowAllBlockedUser />} />
-                <Route path="show/all-blocked-seller" element={<ShowAllBlockedSeller />} />
-                <Route path="add-category" element={<AddCategory />} /> */}
+                <Route path="add-category" element={<AddCategory />} />  
+                <Route path="category/update/:id" element={<EditCategory />} />  
             </Route>
         </Routes>
 

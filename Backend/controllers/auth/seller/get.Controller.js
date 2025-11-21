@@ -163,3 +163,165 @@ export const getAllSellers = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 }
+
+export const updateSellerByAdmin = asyncHandler(async (req, res, next) => {
+  const {
+    storeName,
+    storeDescription,
+    storeAddress,
+    gstNumber,
+    bankDetails,
+    policies,
+    fullName,
+    sellerId,
+  } = req.body;
+
+// console.log('req.body before parsing policies', req.body);
+
+// Safely parse policies if it's a string
+let parsedPolicies = policies;
+if (typeof policies === 'string') {
+  try {
+    parsedPolicies = JSON.parse(policies); // Single parse
+  } catch (err) {
+    return next(new AppError("Invalid policies format", 400, "INVALID_POLICIES"));
+  }
+}
+
+  if (
+    !storeName &&
+    !storeDescription &&
+    !storeAddress &&
+    !gstNumber &&
+    !bankDetails &&
+    !policies &&
+    !req.file &&
+    !fullName
+  ) {
+    return next(new AppError("At least one field is required to update", 400, "VALIDATION_ERROR"));
+  }
+
+  let storeImage = null;
+
+  // console.log("req.file", req.file);
+
+  if (req.file?.path) {
+    const result = await uploadOnCloudinary(req.file.path);
+    // console.log("result", result);
+    if (!result?.secure_url) {
+      return next(new AppError("Failed to upload store image", 400, "IMAGE_UPLOAD_FAILED"));
+    }
+    storeImage = {
+      url: result.secure_url,
+      publicId: result.public_id,
+      width: result.width,
+      height: result.height,
+      format: result.format,
+      bytes: result.bytes,
+    };
+  }
+
+  const updatedFields = {
+    ...(storeName && { storeName }),
+    ...(storeDescription && { storeDescription }),
+    ...(storeAddress && { storeAddress }),
+    ...(gstNumber && { gstNumber }),
+    ...(bankDetails && { bankDetails }),
+    ...(policies && { parsedPolicies }),
+    ...(fullName && { fullName }),
+    ...(storeImage && { storeImage }),
+  };
+
+  const seller = await sellerModel.findOneAndUpdate(
+    { _id: sellerId },
+    { $set: updatedFields },
+    { new: true, runValidators: true }
+  );
+
+  if (!seller) return next(new AppError("Seller not found", 404, "SELLER_NOT_FOUND"));
+
+  const responseData = {
+    id: seller._id,
+    fullName: seller.fullName,
+    shopName: seller.storeName,
+    storeImage: seller.storeImage?.url,
+    createdAt: seller.createdAt,
+    updatedAt: seller.updatedAt,
+  };
+
+  res.status(200).json({
+    success: true,
+    message: "Seller profile updated successfully",
+  });
+});
+
+export const getSellerByIdAdmin = async (req, res) => {
+  try {
+    const sellerId = req.params.id;
+    const seller = await sellerModel.findById(sellerId);
+    if (!seller) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Seller not found" });
+    }
+    res
+      .status(200)
+      .json({ success: true, message: "Seller fetched successfully", seller });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server Error", errors: error.message });
+  }
+};
+
+export const updateSellerPassByAdmin = async (req, res) => {
+  try {
+    const { newPassword, sellerId } = req.body;
+
+    const seller = await sellerModel.findById(sellerId).select("+password");
+    if (!seller) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // const hashedPassword = await sellerModel.hashPassword(newPassword);
+    // if (!hashedPassword) {
+    //   return res.status(500).json({ message: "Error hashing password" });
+    // }
+    seller.password = newPassword;
+
+    await seller.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    console.error("Update password error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating password",
+      errors: error.message,
+    });
+  }
+};
+
+export const blockSellerByAdmin = async (req, res) => {
+  try {
+    const sellerId = req.params.id;
+    const seller = await sellerModel.findById(sellerId);
+    if (!seller) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Seller not found" });
+    }
+    seller.isDisabled = !seller.isDisabled;
+    await seller.save();
+    res
+      .status(200)
+      .json({ success: true, message: "Seller update successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server Error", errors: error.message });
+  }
+};

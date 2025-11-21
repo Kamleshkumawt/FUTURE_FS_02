@@ -141,7 +141,7 @@ const productSchema = new Schema(
     canonicalUrl: { type: String },
 
     
-    comboType: { type: String, enum: ['Single', 'combo'], default: 'single' },
+    comboType: { type: String, default: 'single' },
     status: { type: String, enum: ['Active', 'Inactive'], default: 'Active' },
   },
   {
