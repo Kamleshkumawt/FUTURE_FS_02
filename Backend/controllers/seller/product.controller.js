@@ -701,3 +701,12 @@ export const updateProductByAdmin = asyncHandler(async (req, res) => {
     message: "Product updated successfully",
   });
 });
+
+export const getAllProductsCount = async (req, res) => {
+  try {
+    const count = await productModel.countDocuments();
+    res.status(200).json({ success: true, message: "Products count fetched successfully", count });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+};

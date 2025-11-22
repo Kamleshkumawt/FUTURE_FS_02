@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import CartHeader from "../components/user/cart/CartHeader";
-import { useNavigate } from "react-router-dom";
 import CartSidebar from "../components/user/cart/CartSidebar";
 import { useSelector } from "react-redux";
 
@@ -9,12 +8,6 @@ const CartPayment = () => {
 
   const itemsAndPrice = useSelector((state) => state.filters.itemsAndPrice);
 
-  const navigate = useNavigate();
-
-  const handlePayment = () => {
-    // Handle payment logic here
-    console.log("Payment method:", paymentMethod);
-  };
   return (
     <div className="w-full min-h-screen bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-gray-100 ">
       <CartHeader address={3} />
@@ -70,7 +63,7 @@ const CartPayment = () => {
           </div>
         </div>
         <div className="w-[40%] h-full flex flex-col items-start">
-          <CartSidebar items={{length:itemsAndPrice?.items, totalPrice:itemsAndPrice?.price}} nav={'summary'} paymentMethod={paymentMethod} viewPage={3} />
+          <CartSidebar items={{length:itemsAndPrice?.items, totalPrice:itemsAndPrice?.price}} nav={'summary'} viewPage={3} />
         </div>
       </div>
     </div>

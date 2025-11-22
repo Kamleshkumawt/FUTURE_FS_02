@@ -3,6 +3,7 @@ import cartModel from "../../models/cart.model.js";
 import { asyncHandler } from "../../middlewares/errorHandler.js";
 import { AppError } from "../../utils/appError.js";
 import mongoose from "mongoose";
+import Stripe from "stripe";
 
 export const createOrder = asyncHandler(async (req, res) => {
   const { 
@@ -14,7 +15,7 @@ export const createOrder = asyncHandler(async (req, res) => {
     paymentId
   } = req.body;
 
-
+  const {origin} = req.headers;
   // console.log('req.body : ',req.body);
   const userId = req.user?._id;
 
@@ -53,11 +54,47 @@ export const createOrder = asyncHandler(async (req, res) => {
 
   await cartModel.findOneAndDelete({ userId });
 
+
+  //gateway integration
+ if(payment_method === "online"){
+   const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+  const line_items = [{
+    price_data: {
+      currency: "inr",
+      product_data: {
+        name: "Order Payment",
+      },
+      unit_amount: Math.round((subtotal + tax_amount + shipping_fee) * 100),
+    },
+    quantity: 1,
+  }]
+
+  const session = await stripeInstance.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items,
+    mode: 'payment',
+    success_url: `${origin}/user/orders`,
+    cancel_url: `${origin}/cart`,
+    metadata: { orderId: order._id.toString() },
+    expire_at: Math.floor(Date.now() / 1000) + 30 * 60, // 30 minutes from now
+  });
+
+  order.paymentId = session.url;
+  await order.save();
+
   return res.status(201).json({
     success: true,
     message: "Order created successfully",
-    data: order
+    url: session.url,
   });
+ }
+
+ return res.status(201).json({
+    success: true,
+    message: "Order created successfully",
+  });
+
 });
 
 export const getOrdersByUserId = asyncHandler(async (req, res) => {
@@ -322,3 +359,67 @@ export const updateOrderStatusByAdmin = async (req, res) => {
       .json({ success: false, message: "Server error", error: error.message });
   }
 };
+
+export const getAllDeliveredOrdersCount = async (req, res) => {
+  try {
+      const deliveredOrdersCount = await orderModel.countDocuments({ status: "Delivered" });
+      res.status(200).json({ success: true, message: "Delivered orders count fetched successfully", count: deliveredOrdersCount });
+  } catch (error) {
+      res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+}
+
+export const getAllCancelledOrdersCount = async (req, res) => {
+  try {
+      const CancelledOrdersCount = await orderModel.countDocuments({ status: "Cancelled" });
+      res.status(200).json({ success: true, message: "Cancelled orders count fetched successfully", count: CancelledOrdersCount });
+  } catch (error) {
+      res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+}
+
+export const getAllOrdersCount = asyncHandler(async (req, res) => {
+  // const [pending, shipped, delivered, cancelled] = await Promise.all([
+  //   orderModel.countDocuments({ status: "Pending"}),
+  //   orderModel.countDocuments({ status: "Shipped"}),
+  //   orderModel.countDocuments({ status: "Delivered"}),
+  //   orderModel.countDocuments({ status: "Cancelled"}),
+  // ]);
+
+  const status = await orderModel.aggregate([
+  {
+    $group: {
+      _id: {
+        status: "$status",
+        month: { $month: "$createdAt" }
+      },
+      count: { $sum: 1 }
+    }
+  },
+  {
+    $group: {
+      _id: "$_id.status",
+      monthly: {
+        $push: {
+          month: "$_id.month",
+          count: "$count"
+        }
+      },
+      total: { $sum: "$count" }
+    }
+  },
+  {
+    $project: {
+      _id: 1,
+      total: 1,
+      monthly: 1
+    }
+  }
+]);
+
+  res.status(200).json({
+    success: true,
+    message: 'Order status counts fetched successfully',
+    status,
+  });
+});

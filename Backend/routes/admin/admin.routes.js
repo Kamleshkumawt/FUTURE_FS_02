@@ -20,6 +20,12 @@ import {
   deleteProductByAdmin,
   getAllOrders,
   updateProductByAdmin,
+  getAllUsersCount,
+  getAllSellersCount,
+  getAllProductsCount,
+  getAllDeliveredOrdersCount,
+  getAllCancelledOrdersCount,
+  getAllOrdersCount,
 } from "../../controllers/index.js";
 import {protect} from "../../middlewares/authHandler.js";
 
@@ -28,9 +34,15 @@ const router = express.Router();
 router.post('/category', protect, createCategory); 
 
 router.get('/users', protect, getAllUsers);
+router.get('/users/count', protect, getAllUsersCount);
 router.get('/sellers', protect, getAllSellers);
+router.get('/sellers/count', protect, getAllSellersCount);
 router.get('/products', protect, getAllProducts);
+router.get('/products/count', protect, getAllProductsCount);
 router.get("/orders/getAll", protect, getAllOrders);
+router.get("/orders/getAll/count", protect, getAllOrdersCount);
+router.get("/orders/getAll/delivered", protect, getAllDeliveredOrdersCount);
+router.get("/orders/getAll/cancelled", protect, getAllCancelledOrdersCount);
 router.put("/orders/update", protect, updateOrderStatusByAdmin);
 
 

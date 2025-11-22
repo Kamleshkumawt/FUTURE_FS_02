@@ -36,9 +36,10 @@ const CartSummary = () => {
         title: item.productId.name
       }));
       
-      await createOrder({shipping_address:address, payment_method:"cash_on_delivery", items}).unwrap();
+      const res =  await createOrder({shipping_address:address, payment_method:"cash_on_delivery", items}).unwrap();
       // console.log("Order created successfully:", res);
-      navigate("/user/orders");
+      window.location.href = res.url;
+      // navigate("/user/orders");
     } catch(error) {
       console.error("Error creating order:", error);
     }

@@ -2,17 +2,10 @@ import React from "react";
 import { formatAmount } from "../../../lib/formatAmount";
 import { Link, useNavigate } from "react-router-dom";
 
-const CartSidebar = ({ items, nav, viewPage, paymentMethod, isClick,
+const CartSidebar = ({ items, nav, viewPage, isClick,
   isLoading, }) => {
   const discount = 81;
   const navigate = useNavigate();
-
-  
-
-  const handlePayment = () => {
-    // Handle payment logic here
-    console.log("Payment method:", paymentMethod);
-  };
 
   return (
     <div className="w-xs h-full flex flex-col items-start gap-3">
@@ -46,7 +39,7 @@ const CartSidebar = ({ items, nav, viewPage, paymentMethod, isClick,
           </p>
           <button
             // to={`/cart/${nav}`}
-            onClick={() => viewPage === 3 && paymentMethod === "online" ? handlePayment() : navigate(`/cart/${nav}`)}
+            onClick={() => viewPage === 3 && navigate(`/cart/${nav}`)}
             className="bg-purple-800 w-full text-center p-2 px-4 rounded-sm text-white font-medium cursor-pointer"
           >
             Continue

@@ -58,9 +58,7 @@ const EditProductByAdmin = () => {
   const [tags, setTags] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [showImage, setShowImage] = useState(null);
   const [material, setMaterial] = useState("");
-  const [product, setProduct] = useState(null);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [price, setPrice] = useState("");
   const [packerName, setPackerName] = useState("");
@@ -117,14 +115,6 @@ const EditProductByAdmin = () => {
   setSelectedSizes(updated);
 };
 
-  // const handleImageChange = (e) => {
-  //   const files = Array.from(e.target.files);
-  //   // setImages(files);
-  //   setImages((prevImages) => [...prevImages, ...files]);
-  // };
-
-  // ----------- category handlers --------------
-
   // ---------- Form Submit ----------
   const handleFormSubmit = async () => {
     try {
@@ -165,20 +155,13 @@ const EditProductByAdmin = () => {
     }
   };
 
-  useEffect(() => {
-    return () => {
-      if (showImage) URL.revokeObjectURL(showImage);
-    };
-  }, [showImage]);
 
   useEffect(() => {
     if (data) {
       console.log("data", data);
-      setProduct(data.product);
       setHsn(data.product.hsnCode);
       setStyleCode(data.product.styleCode);
       setSize(data.product.size);
-      setShowImage(data.product.frontImage.url);
       setName(data.product.name);
       setQuantity(data.product.quantity);
       setColor(data.product.color);
@@ -206,10 +189,8 @@ const EditProductByAdmin = () => {
           <h1 className="text-lg font-medium  text-gray-600 dark:text-gray-200 py-3 mt-2 border-b border-gray-400/30 w-full">
             Product,Size and Inventory
           </h1>
+          
           <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-3">
-           
-            
-
             {/*HSN Code */}
             <div className="relative">
               <input

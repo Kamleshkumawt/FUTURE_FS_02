@@ -53,6 +53,30 @@ export const adminApi = baseApi.injectEndpoints({
       query: () => `/admin/orders/getAll`,
       providesTags: ["Order"],
     }),
+    getAllDeliveredOrdersByAdminCount: builder.query({
+      query: () => `/admin/orders/getAll/delivered`,
+      providesTags: ["Order"],
+    }),
+    getAllCancelledOrdersByAdminCount: builder.query({
+      query: () => `/admin/orders/getAll/cancelled`,
+      providesTags: ["Order"],
+    }),
+    getAllOrdersByAdminCount: builder.query({
+      query: () => `/admin/orders/getAll/count`,
+      providesTags: ["Order"],
+    }),
+    getAllUsersByAdminCount: builder.query({
+      query: () => `/admin/users/count`,
+      providesTags: ["User"],
+    }),
+    getAllSellerByAdminCount: builder.query({
+      query: () => `/admin/sellers/count`,
+      providesTags: ["Seller"],
+    }),
+    getAllProductByAdminCount: builder.query({
+      query: () => `/admin/products/count`,
+      providesTags: ["Product"],
+    }),
 
     updateOrderStatusByAdmin: builder.mutation({
       query: (data) => ({
@@ -160,6 +184,13 @@ export const {
   useGetAllSellersQuery,
   useGetAllProductsForAdminQuery,
   useGetAllOrdersQuery,
+
+  useGetAllDeliveredOrdersByAdminCountQuery,
+  useGetAllCancelledOrdersByAdminCountQuery,
+  useGetAllUsersByAdminCountQuery,
+  useGetAllSellerByAdminCountQuery,
+  useGetAllProductByAdminCountQuery,
+  useGetAllOrdersByAdminCountQuery,
 
   useUpdateOrderStatusByAdminMutation,
   useUpdateProductByAdminMutation,

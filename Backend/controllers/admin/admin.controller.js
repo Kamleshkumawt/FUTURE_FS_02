@@ -117,3 +117,37 @@ export const blockUserByAdmin = async (req, res) => {
       .json({ success: false, message: "Server Error", errors: error.message });
   }
 };
+
+export const getAllUsersCount = async (req, res) => {
+  try {
+    // const count = await userModel.countDocuments();
+    const status = await userModel.aggregate([
+      {
+        $facet: {
+          active: [
+            { $match: { isDisabled: false } },
+            { $count: "count" }
+          ],
+          blocked: [
+            { $match: { isDisabled: true } },
+            { $count: "count" }
+          ]
+        }
+      }
+    ]);
+    
+    const stats = {
+      active: status[0].active[0]?.count || 0,
+      blocked: status[0].blocked[0]?.count || 0,
+      total: (status[0].active[0]?.count || 0) + (status[0].blocked[0]?.count || 0),
+    };
+    
+    res
+      .status(200)
+      .json({ success: true, message: "Users count fetched successfully", stats });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server Error", errors: error.message });
+  }
+};

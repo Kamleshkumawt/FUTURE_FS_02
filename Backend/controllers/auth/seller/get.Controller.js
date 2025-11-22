@@ -3,53 +3,72 @@ import { asyncHandler } from "../../../middlewares/errorHandler.js";
 import { AppError } from "../../../utils/appError.js";
 import uploadOnCloudinary from "../../../config/cloudinary.js";
 
-export const getSellerProfileController = asyncHandler(async (req, res, next) => {
-  const userId = req.user?._id;
+export const getSellerProfileController = asyncHandler(
+  async (req, res, next) => {
+    const userId = req.user?._id;
 
-  if (!userId) {
-    return next(new AppError("Unauthorized access — no user found in request", 401, "UNAUTHORIZED"));
+    if (!userId) {
+      return next(
+        new AppError(
+          "Unauthorized access — no user found in request",
+          401,
+          "UNAUTHORIZED"
+        )
+      );
+    }
+
+    const seller = await sellerModel.findOne({ _id: userId }).select("-__v");
+
+    if (!seller) {
+      return next(
+        new AppError("Seller profile not found", 404, "SELLER_NOT_FOUND")
+      );
+    }
+
+    // console.log('seller',seller);
+
+    const responseData = {
+      id: seller._id,
+      fullName: seller.fullName,
+      shopName: seller.storeName,
+      storeImage: seller.storeImage?.url,
+      createdAt: seller.createdAt,
+      updatedAt: seller.updatedAt,
+    };
+
+    res.status(200).json({
+      success: true,
+      message: "Seller profile fetched successfully",
+      data: responseData,
+    });
   }
-
-  const seller = await sellerModel
-    .findOne({ _id: userId })
-    .select("-__v");
-
-  if (!seller) {
-    return next(new AppError("Seller profile not found", 404, "SELLER_NOT_FOUND"));
-  }
-
-  // console.log('seller',seller);
-
-  const responseData = {
-    id: seller._id,
-    fullName: seller.fullName,
-    shopName: seller.storeName,
-    storeImage: seller.storeImage?.url,
-    createdAt: seller.createdAt,
-    updatedAt: seller.updatedAt,
-  };
-
-  res.status(200).json({
-    success: true,
-    message: "Seller profile fetched successfully",
-    data: responseData,
-  });
-});
+);
 
 export const sellerPassController = asyncHandler(async (req, res, next) => {
   const { oldPassword, newPassword } = req.body;
   const userId = req.user?._id;
 
-  if (!userId) return next(new AppError("Unauthorized access", 401, "UNAUTHORIZED"));
+  if (!userId)
+    return next(new AppError("Unauthorized access", 401, "UNAUTHORIZED"));
   if (!oldPassword || !newPassword) {
-    return next(new AppError("Both old and new passwords are required", 400, "VALIDATION_ERROR"));
+    return next(
+      new AppError(
+        "Both old and new passwords are required",
+        400,
+        "VALIDATION_ERROR"
+      )
+    );
   }
 
   const seller = await sellerModel.findOne({ _id: userId }).select("+password");
-  if (!seller) return next(new AppError("Seller not found", 404, "SELLER_NOT_FOUND"));
+  if (!seller)
+    return next(new AppError("Seller not found", 404, "SELLER_NOT_FOUND"));
 
   const isMatch = await seller.isValidPassword(oldPassword);
-  if (!isMatch) return next(new AppError("Old password is incorrect", 400, "INVALID_OLD_PASSWORD"));
+  if (!isMatch)
+    return next(
+      new AppError("Old password is incorrect", 400, "INVALID_OLD_PASSWORD")
+    );
 
   // seller.password = await seller.hashPassword(newPassword);
   seller.password = newPassword;
@@ -63,7 +82,8 @@ export const sellerPassController = asyncHandler(async (req, res, next) => {
 
 export const updateSellerController = asyncHandler(async (req, res, next) => {
   const userId = req.user?._id;
-  if (!userId) return next(new AppError("Unauthorized access", 401, "UNAUTHORIZED"));
+  if (!userId)
+    return next(new AppError("Unauthorized access", 401, "UNAUTHORIZED"));
 
   const {
     storeName,
@@ -75,17 +95,19 @@ export const updateSellerController = asyncHandler(async (req, res, next) => {
     fullName,
   } = req.body;
 
-// console.log('req.body before parsing policies', req.body);
+  // console.log('req.body before parsing policies', req.body);
 
-// Safely parse policies if it's a string
-let parsedPolicies = policies;
-if (typeof policies === 'string') {
-  try {
-    parsedPolicies = JSON.parse(policies); // Single parse
-  } catch (err) {
-    return next(new AppError("Invalid policies format", 400, "INVALID_POLICIES"));
+  // Safely parse policies if it's a string
+  let parsedPolicies = policies;
+  if (typeof policies === "string") {
+    try {
+      parsedPolicies = JSON.parse(policies); // Single parse
+    } catch (err) {
+      return next(
+        new AppError("Invalid policies format", 400, "INVALID_POLICIES")
+      );
+    }
   }
-}
 
   if (
     !storeName &&
@@ -97,7 +119,13 @@ if (typeof policies === 'string') {
     !req.file &&
     !fullName
   ) {
-    return next(new AppError("At least one field is required to update", 400, "VALIDATION_ERROR"));
+    return next(
+      new AppError(
+        "At least one field is required to update",
+        400,
+        "VALIDATION_ERROR"
+      )
+    );
   }
 
   let storeImage = null;
@@ -108,7 +136,9 @@ if (typeof policies === 'string') {
     const result = await uploadOnCloudinary(req.file.path);
     // console.log("result", result);
     if (!result?.secure_url) {
-      return next(new AppError("Failed to upload store image", 400, "IMAGE_UPLOAD_FAILED"));
+      return next(
+        new AppError("Failed to upload store image", 400, "IMAGE_UPLOAD_FAILED")
+      );
     }
     storeImage = {
       url: result.secure_url,
@@ -137,7 +167,8 @@ if (typeof policies === 'string') {
     { new: true, runValidators: true }
   );
 
-  if (!seller) return next(new AppError("Seller not found", 404, "SELLER_NOT_FOUND"));
+  if (!seller)
+    return next(new AppError("Seller not found", 404, "SELLER_NOT_FOUND"));
 
   const responseData = {
     id: seller._id,
@@ -156,13 +187,21 @@ if (typeof policies === 'string') {
 });
 
 export const getAllSellers = async (req, res) => {
-    try {
-        const sellers = await sellerModel.find();
-        res.status(200).json({ success: true, message: "All sellers fetched successfully", sellers });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Server error", error: error.message });
-    }
-}
+  try {
+    const sellers = await sellerModel.find();
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "All sellers fetched successfully",
+        sellers,
+      });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};
 
 export const updateSellerByAdmin = asyncHandler(async (req, res, next) => {
   const {
@@ -176,17 +215,19 @@ export const updateSellerByAdmin = asyncHandler(async (req, res, next) => {
     sellerId,
   } = req.body;
 
-// console.log('req.body before parsing policies', req.body);
+  // console.log('req.body before parsing policies', req.body);
 
-// Safely parse policies if it's a string
-let parsedPolicies = policies;
-if (typeof policies === 'string') {
-  try {
-    parsedPolicies = JSON.parse(policies); // Single parse
-  } catch (err) {
-    return next(new AppError("Invalid policies format", 400, "INVALID_POLICIES"));
+  // Safely parse policies if it's a string
+  let parsedPolicies = policies;
+  if (typeof policies === "string") {
+    try {
+      parsedPolicies = JSON.parse(policies); // Single parse
+    } catch (err) {
+      return next(
+        new AppError("Invalid policies format", 400, "INVALID_POLICIES")
+      );
+    }
   }
-}
 
   if (
     !storeName &&
@@ -198,7 +239,13 @@ if (typeof policies === 'string') {
     !req.file &&
     !fullName
   ) {
-    return next(new AppError("At least one field is required to update", 400, "VALIDATION_ERROR"));
+    return next(
+      new AppError(
+        "At least one field is required to update",
+        400,
+        "VALIDATION_ERROR"
+      )
+    );
   }
 
   let storeImage = null;
@@ -209,7 +256,9 @@ if (typeof policies === 'string') {
     const result = await uploadOnCloudinary(req.file.path);
     // console.log("result", result);
     if (!result?.secure_url) {
-      return next(new AppError("Failed to upload store image", 400, "IMAGE_UPLOAD_FAILED"));
+      return next(
+        new AppError("Failed to upload store image", 400, "IMAGE_UPLOAD_FAILED")
+      );
     }
     storeImage = {
       url: result.secure_url,
@@ -238,7 +287,8 @@ if (typeof policies === 'string') {
     { new: true, runValidators: true }
   );
 
-  if (!seller) return next(new AppError("Seller not found", 404, "SELLER_NOT_FOUND"));
+  if (!seller)
+    return next(new AppError("Seller not found", 404, "SELLER_NOT_FOUND"));
 
   const responseData = {
     id: seller._id,
@@ -323,5 +373,43 @@ export const blockSellerByAdmin = async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Server Error", errors: error.message });
+  }
+};
+
+export const getAllSellersCount = async (req, res) => {
+  try {
+    // const sellerCount = await sellerModel.countDocuments();
+    const status = await sellerModel.aggregate([
+  {
+    $facet: {
+      active: [
+        { $match: { isDisabled: false } },
+        { $count: "count" }
+      ],
+      blocked: [
+        { $match: { isDisabled: true } },
+        { $count: "count" }
+      ]
+    }
+  }
+]);
+
+const stats = {
+  active: status[0].active[0]?.count || 0,
+  blocked: status[0].blocked[0]?.count || 0,
+  total: (status[0].active[0]?.count || 0) + (status[0].blocked[0]?.count || 0),
+};
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Sellers count fetched successfully",
+        stats,
+      });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
   }
 };
