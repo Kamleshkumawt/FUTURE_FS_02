@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Title from "../../components/sellerPanel/Title";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { setAdminUser } from "../../store/slices/authSlice";
 import { useUpdateAdminDetailsMutation,useChangeAdminPasswordMutation } from "../../store/api/admin/authApi";
+import {toast} from "react-hot-toast";
 
 const inputClass =
   "peer w-full border-b-2 border-gray-300 px-4 pt-5 pb-2 text-sm focus:outline-none focus:border-purple-600";
@@ -27,7 +28,7 @@ const AdminUpdate = () => {
   const [updateAdminDetails, { isLoading, error }] = useUpdateAdminDetailsMutation();
   const [changeAdminPassword, { loading, isError }] = useChangeAdminPasswordMutation();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -51,8 +52,11 @@ const AdminUpdate = () => {
       
       const response = await updateAdminDetails(formData).unwrap();
       // console.log("update : ", response);
+      toast.success("Profile updated successfully!");
       dispatch(setAdminUser(response.data));
-      navigate("/admin");
+      // navigate("/admin");
+      setHolderName("");
+      setProfileImage("");
     } catch (err) {
       console.error("updated error:", err);
     }
@@ -71,7 +75,10 @@ const AdminUpdate = () => {
     try {
      await changeAdminPassword({ oldPassword, newPassword}).unwrap();
       // console.log("update : ", response);
-      navigate("/admin");
+      toast.success("Password updated successfully!");
+      setOldPassword("");
+      setNewPassword("");
+      // navigate("/admin");
     } catch (err) {
       console.error("updated error:", err);
     }

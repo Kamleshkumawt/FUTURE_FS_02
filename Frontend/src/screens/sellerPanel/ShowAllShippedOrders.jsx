@@ -34,7 +34,7 @@ const ShowAllShippedOrders = () => {
             <th className="p-2 font-medium">Order Date</th>
             <th className="p-2 font-medium">Total Amount</th>
             <th className="p-2 font-medium">Status</th>
-            <th className="p-2 font-medium">Payment Method</th>
+            {/* <th className="p-2 font-medium">Payment Method</th> */}
           </tr>
           </thead>
           <tbody className="text-sm font-light">

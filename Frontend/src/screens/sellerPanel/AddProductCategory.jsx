@@ -131,7 +131,7 @@ const AddProductCategory = () => {
       <Title text1="Add" text2="Category" />
 
       {/* Search Bar */}
-      <div className="w-full border border-gray-400 rounded-sm flex items-center gap-2 shadow-sm shadow-gray-300 p-[10px] bg-white dark:bg-[#2A1C20] text-gray-900 dark:text-gray-100 mt-3">
+      <div className="w-full border border-gray-400 rounded-sm flex items-center gap-2 shadow-sm shadow-gray-300 p-2.5 bg-white dark:bg-[#2A1C20] text-gray-900 dark:text-gray-100 mt-3">
         {/* Left Icon */}
         <svg
           width="20"
@@ -186,7 +186,7 @@ const AddProductCategory = () => {
               .map(([level, categories]) => (
                 <div
                   key={level}
-                  className="w-full flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-sm min-w-[200px]"
+                  className="w-full flex flex-col bg-white dark:bg-[#1e1417] text-gray-900 dark:text-gray-100 rounded-sm min-w-[200px]"
                 >
                   <h1
                     className={`text-lg font-medium text-center border-b border-gray-300 dark:border-gray-400 py-3 ${
@@ -203,7 +203,7 @@ const AddProductCategory = () => {
                       onClick={() =>
                         handleSelectChangeCategory(Number(level), category._id)
                       }
-                      className={`flex items-center p-2 cursor-pointer border-b border-gray-300 ${
+                      className={`flex items-center p-2 cursor-pointer border-b border-gray-300 dark:border-gray-400 ${
                         selectedPath[Number(level)] === category._id
                           ? "bg-purple-300/40"
                           : ""
@@ -217,16 +217,16 @@ const AddProductCategory = () => {
           </div>
 
           {/* ---------- Final Selected Category ---------- */}
-          {selectedPath.length > 0 && (
+          {/* {selectedPath.length > 0 && (
             <div className="mt-6 bg-gray-100 p-4 rounded">
               <p className="font-semibold text-lg">Selected Category ID:</p>
               <p>{selectedPath[selectedPath.length - 1]}</p>
             </div>
-          )}
+          )} */}
         </div>
         {Object.keys(selectedPath).length ===
           Object.keys(categoryTree).length && (
-          <div className="max-w-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-sm flex flex-col items-center gap-5">
+          <div className="max-w-xl bg-white dark:bg-[#1e1417] text-gray-900 dark:text-gray-100 rounded-sm flex flex-col items-center gap-5">
             <div className="bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-200 w-full text-center p-2 max-w-sm">
               {getSelectedCategoryPath().join(" / ")}
             </div>

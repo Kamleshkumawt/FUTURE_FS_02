@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setSellerUser } from "../../../store/slices/authSlice";
 import { useUpdateSellerProfileMutation } from "../../../store/api/seller/sellerApi";
+import toast from "react-hot-toast";
 
 const inputClass =
   "peer w-full border-b-2 border-gray-300 px-4 pt-5 pb-2 text-sm focus:outline-none focus:border-purple-600";
@@ -49,6 +50,7 @@ const BankDetails = () => {
     try {
       const response = await updateSellerProfile({bankDetails}).unwrap();
       // console.log("update : ", response);
+      toast.success("Bank Details Add Successfully!");
       dispatch(setSellerUser(response.user));
       navigate("/sellerSignUp/details");
     } catch (err) {

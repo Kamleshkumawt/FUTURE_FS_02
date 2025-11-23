@@ -17,6 +17,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { formatAmount } from "../../lib/formatAmount";
 
 const AdminDashboard = () => {
   const [orderChartData, setOrderChartData] = useState([]);
@@ -162,14 +163,14 @@ const AdminDashboard = () => {
           <div className="border border-gray-400 p-5 rounded-sm font-medium flex flex-col w-full gap-5">
             <span className="flex items-center gap-3">
               <img
-                src="https://img.icons8.com/?size=96&id=QDgOnr6UAOmg&format=png"
+                src="https://cdn-icons-png.flaticon.com/128/2331/2331941.png"
                 alt="icon"
                 className="sm:w-8 w-5 h-5 sm:h-8 object-cover"
               />
               Total Income
             </span>
             <span className="text-2xl font-bold text-end">
-              {productCount * 20}
+              {formatAmount(productCount * 40)}
             </span>
           </div>
         </div>

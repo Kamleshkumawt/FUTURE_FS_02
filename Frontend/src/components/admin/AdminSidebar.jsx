@@ -1,9 +1,10 @@
-import { LayoutDashboardIcon, ListCollapseIcon, PlusSquareIcon, Settings } from 'lucide-react'
+import { LayersIcon, LayoutDashboardIcon, ListCollapseIcon, PackageIcon, PlusSquareIcon, Settings, ShoppingCart, Store, User2 } from 'lucide-react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { clearAdminUser } from '../../store/slices/authSlice'
 import logo from '../../assets/profile.png'
 import { useLogoutAdminMutation } from '../../store/api/admin/authApi'
+import {toast} from 'react-hot-toast'
 
 const AdminSidebar = () => {
 
@@ -23,6 +24,7 @@ const AdminSidebar = () => {
         const logoutHandler = async () => {
         try {
           await logoutAdmin().unwrap();
+          toast.success('Logged out successfully!');
            dispatch(clearAdminUser()); 
            localStorage.removeItem('token');
           navigate('/');
@@ -34,13 +36,13 @@ const AdminSidebar = () => {
     const adminNAvlinks = [
         {name: 'Dashboard', path: '/admin', icon: LayoutDashboardIcon},
         {name: 'Add Category', path: '/admin/add-category', icon: PlusSquareIcon},
-        {name: 'List Users', path: '/admin/show/all-user', icon: ListCollapseIcon},
+        {name: 'List Users', path: '/admin/show/all-user', icon: User2},
         {name: 'List Blocked Users', path: '/admin/show/all-blocked-user', icon: ListCollapseIcon},
-        {name: 'List Seller', path: '/admin/show/all-seller', icon: ListCollapseIcon},
+        {name: 'List Seller', path: '/admin/show/all-seller', icon: Store},
         {name: 'List Blocked Sellers', path: '/admin/show/all-blocked-seller', icon: ListCollapseIcon},
-        {name: 'List Products', path: '/admin/show/all-products', icon: ListCollapseIcon},
-        {name: 'List Orders', path: '/admin/show/all-orders', icon: ListCollapseIcon},
-        {name: 'List categories', path: '/admin/show/all-categories', icon: ListCollapseIcon},
+        {name: 'List Products', path: '/admin/show/all-products', icon: PackageIcon},
+        {name: 'List Orders', path: '/admin/show/all-orders', icon: ShoppingCart},
+        {name: 'List categories', path: '/admin/show/all-categories', icon: LayersIcon},
         {name: 'Settings', path: '/admin/ret-stting', icon: Settings},
     ]
 

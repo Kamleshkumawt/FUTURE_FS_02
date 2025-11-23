@@ -3,6 +3,7 @@ import { dateFormat } from '../../lib/dateFormat';
 import Title from '../../components/sellerPanel/Title';
 import {Link} from 'react-router-dom'
 import { useBlockSellerMutation, useGetAllSellersQuery, } from '../../store/api/admin/adminApi';
+import { toast } from 'react-hot-toast';
 
 
 const ShowAllSellers = () => {
@@ -24,6 +25,7 @@ const ShowAllSellers = () => {
     try {
       // console.log("Deleting product with ID:", id);
       await blockSeller(id).unwrap(); // unwrap() throws if the mutation fails
+      toast.success("Seller blocked successfully!");
       setSellers((prevUsers) => prevUsers.filter((user) => user._id !== id));
       // console.log("Deleted successfully");
     } catch (error) {

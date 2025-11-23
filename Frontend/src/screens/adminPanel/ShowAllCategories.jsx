@@ -4,6 +4,7 @@ import Title from "../../components/sellerPanel/Title";
 import { Link } from "react-router-dom";
 import { useDeleteCategoryMutation } from "../../store/api/admin/adminApi";
 import { useGetAllCategoriesQuery } from "../../store/api/user/categoryApi";
+import { toast } from "react-hot-toast";
 
 const ShowAllCategories = () => {
   const [categories, setCategories] = useState([]);
@@ -16,6 +17,7 @@ const ShowAllCategories = () => {
     try {
       // console.log("Deleting product with ID:", id);
       await deleteCategory(id).unwrap(); // unwrap() throws if the mutation fails
+      toast.success("Category deleted successfully!");
        setCategories((prevUsers) => prevUsers.filter((user) => user._id !== id));
       // console.log("Deleted successfully");
     } catch (error) {

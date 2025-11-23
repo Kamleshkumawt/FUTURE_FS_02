@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setSellerUser } from "../../../store/slices/authSlice";
 import { useUpdateSellerProfileMutation } from "../../../store/api/seller/sellerApi";
+import toast from "react-hot-toast";
 
 const BusinessDetails = () => {
   const [gst, setGst] = useState("");
@@ -23,6 +24,7 @@ const BusinessDetails = () => {
     try {
       const response = await updateSellerProfile({ gstNumber : gst }).unwrap();
       // console.log("updated :", response);
+      toast.success("Business Details Add Successfully!");
       dispatch(setSellerUser(response.seller));
       navigate("/sellerSignUp/address");
       setIsAuthenticated(true);

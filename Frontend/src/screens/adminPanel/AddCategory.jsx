@@ -3,6 +3,7 @@ import Title from "../../components/sellerPanel/Title";
 import Loading from "../../components/Loading";
 import { useCreateCategoryMutation } from "../../store/api/admin/adminApi";
 import { useGetAllCategoriesQuery, useGetCategoryByParentIdQuery } from "../../store/api/user/categoryApi";
+import { toast } from "react-hot-toast";
 
 
 const inputClass =
@@ -167,6 +168,11 @@ const AddCategory = () => {
     try {
       await createCategory({name, description, parentCategory:category, keywords}).unwrap();
       // console.log('res :', res)
+      setName("");
+      setDescription("");
+      setKeywords([]);
+      setInputValueKeywords("");
+      toast.success("Category created successfully!");
       setIsOpen(false)
     } catch(error){
       console.error("category creation error :",error)
@@ -321,7 +327,7 @@ const AddCategory = () => {
               <h2 className="text-lg font-semibold mb-4 w-full flex items-center justify-between">Add Category  <span onClick={() => setIsOpen(false)} className="text-xl cursor-pointer hover:text-red-500">&times;</span></h2>
 
             {/* Name Field */}
-            <div className="relative">
+            <div className="relative w-full">
               <input
                 type="text"
                 id="name"
@@ -339,7 +345,7 @@ const AddCategory = () => {
 
 
               {/* description Field */}
-            <div className="relative">
+            <div className="relative w-full">
               <textarea
                 type="text"
                 id="description"
@@ -357,7 +363,7 @@ const AddCategory = () => {
             </div>
 
              {/* keywords Field */}
-            <div className="relative mt-2">
+            <div className="relative w-full">
               <input
                 type="text"
                 id="keywords"

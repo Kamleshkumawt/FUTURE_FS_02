@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { setSellerUser } from "../../../store/slices/authSlice";
 import { useSellerRegisterMutation } from "../../../store/api/seller/authApi";
 import ThemeToggle from "../../../components/user/ThemeToggle";
+import toast from "react-hot-toast";
 
 const CreateSellerAccount = () => {
   const [contact, setContact] = useState("");
@@ -30,6 +31,7 @@ const CreateSellerAccount = () => {
     try {
       const response = await sellerRegister({phoneNumber: contact, password}).unwrap();
       console.log("Registered user:", response);
+      toast.success("Account Created Successfully!");
       localStorage.setItem("token", response.token);
       dispatch(setSellerUser(response.seller));
        navigate("/sellerSignUp/business");

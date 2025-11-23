@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { setSellerUser } from "../../store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useUpdateSellerPassMutation, useUpdateSellerProfileMutation } from "../../store/api/seller/sellerApi";
+import toast from "react-hot-toast";
 
 const inputClass =
   "peer w-full border-b-2 border-gray-300 px-4 pt-5 pb-2 text-sm focus:outline-none focus:border-purple-600";
@@ -61,6 +62,7 @@ const SellerSettings = () => {
 
       const response = await updateSellerProfile(formData).unwrap();
       console.log("update : ", response);
+      toast.success("Profile Updated Successfully!");
       dispatch(setSellerUser(response.user));
       navigate("/seller");
     } catch (err) {
@@ -81,6 +83,7 @@ const SellerSettings = () => {
     try {
       const response = await updateSellerPass({ oldPassword, newPassword}).unwrap();
       // console.log("update : ", response);
+      toast.success("Password Updated Successfully!");
       dispatch(setSellerUser(response.user));
       navigate("/seller");
     } catch (err) {

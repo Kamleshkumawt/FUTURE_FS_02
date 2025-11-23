@@ -4,6 +4,7 @@ import Loading from "../../components/Loading";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useGetOrderByIdQuery, useUpdateOrderStatusByAdminMutation } from "../../store/api/admin/adminApi";
+import { toast } from "react-hot-toast";
 
 const inputClass =
   "peer w-full border-b-2 border-gray-300 px-4 pt-5 pb-2 text-sm focus:outline-none focus:border-purple-600";
@@ -51,6 +52,7 @@ const EditOrderDetails = () => {
       }
       await updateOrderStatusByAdmin(data).unwrap();
       // console.log("Product created:", response);
+      toast.success("Order updated successfully!");
       navigate("/admin/show/all-orders");
     } catch (error) {
       console.error("Error creating product:", error);

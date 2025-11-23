@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useSellerLogoutMutation } from '../../store/api/seller/authApi';
 import { useDispatch } from 'react-redux';
 import { clearSellerUser } from '../../store/slices/authSlice';
+import { toast } from 'react-hot-toast';
 
 
 const Sidebar = () => {
@@ -16,6 +17,7 @@ const Sidebar = () => {
     try {
       await sellerLogout().unwrap();
        dispatch(clearSellerUser()); 
+       toast.success('Logged out successfully!');
        localStorage.removeItem('token');
       navigate('/');
     } catch (error) {
@@ -51,7 +53,7 @@ const Sidebar = () => {
                     )}
                 </NavLink>
             ))}
-            <span className=' cursor-pointer min-md:ml-10 ml-5 text-gray-400 flex items-center gap-2' disabled={isLoading} onClick={()=> {logoutHandler();scrollTo(0,0);}} ><img src="https://cdn-icons-png.flaticon.com/128/1286/1286853.png" className='w-5 h-5 object-cover opacity-30' alt="icon" /> <span className='max-md:hidden'>{'LogOut'}</span></span>
+            <span className=' cursor-pointer min- md:ml-10 ml-5 text-gray-400 flex items-center gap-2' disabled={isLoading} onClick={()=> {logoutHandler();scrollTo(0,0);}} ><img src="https://cdn-icons-png.flaticon.com/128/1286/1286853.png" className='w-5 h-5 object-cover opacity-30' alt="icon" /> <span className='max-md:hidden'>{'LogOut'}</span></span>
         </div>
     </div>
   )

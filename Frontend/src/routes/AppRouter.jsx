@@ -48,6 +48,10 @@ import EditOrderDetails from '../screens/adminPanel/EditOrderDetails'
 import EditUserByAdmin from '../screens/adminPanel/EditUserByAdmin'
 import EditSellerByAdmin from '../screens/adminPanel/EditSellerByAdmin'
 import EditCategory from '../screens/adminPanel/EditCategory'
+import { Toaster } from 'react-hot-toast';
+import AuthUserLoader from "../components/user/AuthUserLoader";
+import AuthUser from '../middlewares/AuthUser'
+import NotFound from '../screens/NotFound'
 
 
 const AppRouter = () => {
@@ -58,14 +62,16 @@ const AppRouter = () => {
   return (
     <>
        {!isCartRoute && !isSellerRoute && !isAdminRoute && <Navbar />}
+       <Toaster/>
         <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/signIn" element={<Login />} />
             <Route path="/signUp" element={<Register />} />
             <Route path="/about" element={<h1>About</h1>} />
+
             <Route path="/products/search" element={<SearchCategoryRoutes />} />
             <Route path="/category/search/:categoryName" element={<CategoryProduct />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/product/:id" element={<AuthUser allowedRoles={['user']}><AuthUserLoader><ProductDetails /></AuthUserLoader></AuthUser>} />
             <Route path="/account/delete" element={<DeleteAccount />} />
             <Route path="/user/orders" element={<Order />} />
             <Route path="/user/revieworder/:id" element={<ReviewOrder />} />
@@ -80,7 +86,8 @@ const AppRouter = () => {
             <Route path="/cart/payment" element={<CartPayment />} />
             <Route path="/cart/payment" element={<CartPayment />} />
             <Route path="/cart/summary" element={<CartSummary />} />
-            <Route path='/seller/*' element={<Layout/>} > 
+
+            <Route path='/seller/*' element={<AuthUser allowedRoles={['seller']}><Layout/></AuthUser>} > 
                 <Route index element={<Dashboard />} />
                 <Route path="add-product" element={<AddProduct/>} />
                 <Route path="new-category-product" element={<AddProductCategory/>} />
@@ -92,9 +99,11 @@ const AppRouter = () => {
                 {/* <Route path="list-ret-orders" element={<ShowAllReturnsOrders/>} /> */}
                 <Route path="list-ret-stting" element={<SellerSettings/>} /> 
             </Route>
+            
             <Route path="/admin/selector/login" element={<AdminLogin />} />
             <Route path="/admin/selector/register" element={<AdminRegister />} />
-            <Route path='/admin/*' element={<AdminLayout/>} > 
+
+            <Route path='/admin/*' element={<AuthUser allowedRoles={['admin']}><AdminLayout/> </AuthUser>} > 
                 <Route index element={<AdminDashboard />} />  
                 <Route path="ret-stting" element={<AdminUpdate />} />
                 <Route path="ret-edit/:id" element={<EditProductByAdmin />} />
@@ -111,6 +120,9 @@ const AppRouter = () => {
                 <Route path="add-category" element={<AddCategory />} />  
                 <Route path="category/update/:id" element={<EditCategory />} />  
             </Route>
+
+            <Route path="*" element={<NotFound />} />
+
         </Routes>
 
         {!isCartRoute && !isSellerRoute && !isAdminRoute && <Footer />}

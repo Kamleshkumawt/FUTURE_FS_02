@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserLoginMutation } from "../store/api/user/authApi";
-import { setUser } from "../store/slices/authSlice";
+import { setCredentials, setUser } from "../store/slices/authSlice";
 import { useDispatch } from "react-redux";
 
 const Login = () => {
@@ -32,8 +32,9 @@ const Login = () => {
     try {
       const response = await userLogin(payload).unwrap();
       //  console.log("Logged in user:", response);
-      localStorage.setItem("token", response.token);
+      // localStorage.setItem("token", response.token);
       dispatch(setUser(response.user));
+      dispatch(setCredentials({ user: response.user, token: response.token, refreshToken: response.token }));
       navigate("/");
     } catch (err) {
       console.error("Login error:", err);

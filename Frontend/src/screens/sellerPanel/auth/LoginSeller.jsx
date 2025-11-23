@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { setSellerUser } from "../../../store/slices/authSlice";
 import { useDispatch } from "react-redux";
 import { useSellerLoginMutation } from "../../../store/api/seller/authApi";
+import toast from "react-hot-toast";
 
 const LoginSeller = () => {
   const [contact, setContact] = useState("");
@@ -15,6 +16,7 @@ const LoginSeller = () => {
     try{       
        const response = await sellerLogin({ phoneNumber:contact, password }).unwrap();
       //  console.log("Logged in user:", response);
+        toast.success("Logged in Successfully!");
       localStorage.setItem("token", response.token);
        dispatch(setSellerUser(response.seller));
        navigate("/seller");

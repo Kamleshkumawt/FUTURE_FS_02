@@ -97,7 +97,7 @@ const productSchema = new Schema(
     },
     battery: { type: String },
     ageGroup: { type: String }, // e.g. "3-5 years", "18+"
-    gender: { type: String, enum: ['Male', 'Female', 'Unisex'] },
+    gender: { type: String, enum: ['Male', 'Female', 'Unisex', 'Kids', 'Boys', 'Girls'] },
 
     
     quantity: { type: Number, required: true, default: 0 },

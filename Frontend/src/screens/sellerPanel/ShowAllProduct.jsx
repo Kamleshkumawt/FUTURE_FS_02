@@ -3,6 +3,7 @@ import { dateFormat } from '../../lib/dateFormat';
 import Title from '../../components/sellerPanel/Title';
 import {Link} from 'react-router-dom'
 import { useDeleteProductMutation, useGetProductsBySellerQuery } from '../../store/api/seller/productApi';
+import toast from 'react-hot-toast';
 
 
 const ShowAllProduct = () => {
@@ -18,6 +19,9 @@ const ShowAllProduct = () => {
     console.log('Deleting product with ID:', id);
     await deleteProduct(id).unwrap(); // unwrap() throws if the mutation fails
     // console.log('Deleted successfully');
+    toast.success("Product Deleted Successfully!");
+    // Optionally, you can remove the deleted product from the local state
+    setProducts(products.filter(product => product.id !== id));
   } catch (error) {
     console.error('Delete failed:', error);
   }

@@ -1,4 +1,5 @@
 // src/features/user/userAuthApi.js
+import { logout, setUser } from '../../slices/authSlice';
 import { baseApi } from '../baseApi';
 
 export const userAuthApi = baseApi.injectEndpoints({
@@ -23,6 +24,21 @@ export const userAuthApi = baseApi.injectEndpoints({
         method: 'POST',
       }),
     }),
+    authMe: builder.query({
+      query: () => "/user/auth/me",
+      async onQueryStarted(_, { queryFulfilled, dispatch }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data.user.role === "user") {
+            dispatch(setUser(data.user));
+          } else {
+            dispatch(logout());
+          }
+        } catch {
+          dispatch(logout());
+        }
+      },
+    }),
   }),
 });
 
@@ -30,4 +46,5 @@ export const {
   useUserLoginMutation,
   useUserRegisterMutation,
   useUserLogoutMutation,
+  useAuthMeQuery,
 } = userAuthApi;

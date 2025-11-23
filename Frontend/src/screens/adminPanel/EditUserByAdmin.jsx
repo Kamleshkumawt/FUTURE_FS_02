@@ -8,6 +8,7 @@ import {
   useUpdateUserPasswordByAdminMutation,
   useUpdateUserProfileByAdminMutation,
 } from "../../store/api/admin/adminApi";
+import { toast } from "react-hot-toast";
 
 const EditUserByAdmin = () => {
   const [email, setEmail] = useState("");
@@ -43,6 +44,7 @@ const EditUserByAdmin = () => {
       // });
 
       await updateUserProfileByAdmin(data).unwrap();
+      toast.success("User Profile updated successfully!");
       navigate("/admin/show/all-user");
       // console.log("Profile updated successfully:", response);
     } catch (error) {
@@ -62,6 +64,7 @@ const EditUserByAdmin = () => {
     try {
       await updateUserPassByAdmin({ oldPassword, newPassword, userId: id }).unwrap();
       // console.log('Password updated successfully:', response);
+      toast.success("User Password updated successfully!");
       navigate("/admin/show/all-user");
     } catch (error) {
       console.error("Save changes error:", error);

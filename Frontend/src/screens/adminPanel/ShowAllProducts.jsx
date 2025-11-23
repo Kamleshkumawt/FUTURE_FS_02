@@ -3,6 +3,7 @@ import { dateFormat } from '../../lib/dateFormat';
 import Title from '../../components/sellerPanel/Title';
 import {Link} from 'react-router-dom'
 import {useDeleteProductByAdminMutation, useGetAllProductsForAdminQuery } from '../../store/api/admin/adminApi';
+import {toast} from 'react-hot-toast';
 
 const ShowAllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -16,6 +17,7 @@ const ShowAllProducts = () => {
     // console.log('Deleting product with ID:', id);
     await deleteProductByAdmin(id).unwrap(); // unwrap() throws if the mutation fails
     // console.log('Deleted successfully');
+    toast.success('Product deleted successfully!');
   } catch (error) {
     console.error('Delete failed:', error);
   }

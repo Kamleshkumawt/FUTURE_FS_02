@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { setAdminUser } from "../../../store/slices/authSlice";
 import { useDispatch } from "react-redux";
 import { useLoginAdminMutation } from "../../../store/api/admin/authApi";
+import toast from "react-hot-toast";
 
 const AdminLogin = () => {
   const [contact, setContact] = useState("");
@@ -15,6 +16,7 @@ const AdminLogin = () => {
     try{       
        const response = await loginAdmin({ phone:contact, password }).unwrap();
       //  console.log("Logged in user:", response);
+      toast.success("Logged in successfully!");
       localStorage.setItem("token", response.token);
        dispatch(setAdminUser(response.seller));
        navigate("/admin");

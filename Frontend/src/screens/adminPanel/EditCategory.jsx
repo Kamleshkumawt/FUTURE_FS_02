@@ -4,6 +4,7 @@ import Loading from "../../components/Loading";
 import { useUpdateCategoryMutation } from "../../store/api/admin/adminApi";
 import { useGetCategoryByIdQuery } from "../../store/api/user/categoryApi";
 import { useNavigate, useParams } from "react-router-dom";
+import {toast} from "react-hot-toast";
 
 
 const inputClass =
@@ -77,6 +78,7 @@ const EditCategory = () => {
         const data = { name, description, keywords };
       await updateCategory({ id, data }).unwrap();
       // console.log('res :', res)
+      toast.success("Category updated successfully!");
       setIsOpen(false)
       navigate(-1);
     } catch(error){

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { dateFormat } from '../../lib/dateFormat';
 import Title from '../../components/sellerPanel/Title';
 import { useBlockSellerMutation, useGetAllSellersQuery } from '../../store/api/admin/adminApi';
+import { toast } from 'react-hot-toast';
 
 
 const ShowAllBlockedSeller = () => {
@@ -22,6 +23,7 @@ const ShowAllBlockedSeller = () => {
     try {
       // console.log("Deleting product with ID:", id);
       await blockSeller(id).unwrap(); // unwrap() throws if the mutation fails
+      toast.success("Seller Unblocked successfully!");
       setSellers((prevUsers) => prevUsers.filter((user) => user._id !== id));
       // console.log(" successfully");
     } catch (error) {
@@ -31,7 +33,7 @@ const ShowAllBlockedSeller = () => {
 
   return !isLoading && (
     <>
-      <Title text1="Sellers" text2="List" />
+      <Title text1="Blocked Sellers" text2="List" />
       <div className="max-w-7xl mt-6 overflow-x-auto">
         <table className="w-full border-collapse rounded-md overflow-hidden text-nowrap">
           <thead className="bg-primary/20 text-left dark:text-white text-black">

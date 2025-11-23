@@ -7,6 +7,7 @@ import {
 import Loading from "../../components/Loading";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 const inputClass =
   "peer w-full border-b-2 border-gray-300 px-4 pt-5 pb-2 text-sm focus:outline-none focus:border-purple-600";
@@ -152,6 +153,7 @@ const EditProduct = () => {
 
       await updateProduct(formData).unwrap();
       // console.log("Product created:", response);
+      toast.success("Product Updated Successfully!");
       navigate("/seller/list-products");
     } catch (error) {
       console.error("Error creating product:", error);
@@ -209,7 +211,7 @@ const EditProduct = () => {
 
       <div className=" flex flex-col sm:flex-row items-start w-full gap-10 mb-10">
         <div className="w-full flex flex-col items-start">
-          <h1 className="text-lg font-medium  text-gray-600 py-3 mt-2 border-b border-gray-400/30 w-full">
+          <h1 className="text-lg font-medium  text-gray-600 dark:text-gray-200 py-3 mt-2 border-b border-gray-400/30 w-full">
             Product,Size and Inventory
           </h1>
           <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-3">
@@ -296,7 +298,7 @@ const EditProduct = () => {
               </label>
             </div>
           </div>
-          <h1 className="text-lg font-medium  text-gray-600 py-3 mt-5 border-b border-gray-400/30 w-full">
+          <h1 className="text-lg font-medium  text-gray-600 dark:text-gray-200 py-3 mt-5 border-b border-gray-400/30 w-full">
             Product Details
           </h1>
 
@@ -428,7 +430,7 @@ const EditProduct = () => {
               </select>
             </div>
           </div>
-          <h1 className="text-lg font-medium  text-gray-600 py-3 mt-5 border-b border-gray-400/30 w-full">
+          <h1 className="text-lg font-medium  text-gray-600 dark:text-gray-200 py-3 mt-5 border-b border-gray-400/30 w-full">
             Other Attributes
           </h1>
           <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-3">

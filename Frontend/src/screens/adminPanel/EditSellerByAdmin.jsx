@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import Loading from "../../components/Loading";
 import { useGetSellerByIdQuery, useUpdateSellerPasswordByAdminMutation, useUpdateSellerProfileByAdminMutation } from "../../store/api/admin/adminApi";
+import {toast} from "react-hot-toast";
 
 const inputClass =
   "peer w-full border-b-2 border-gray-300 px-4 pt-5 pb-2 text-sm focus:outline-none focus:border-purple-600";
@@ -60,6 +61,7 @@ const EditSellerByAdmin = () => {
         sellerId: sellerId,
       }
       await updateSellerProfileByAdmin(data).unwrap();
+      toast.success("Seller Profile updated successfully!");
       navigate("/admin/show/all-seller");
     } catch (err) {
       console.error("updated error:", err);
@@ -83,6 +85,7 @@ const EditSellerByAdmin = () => {
         sellerId,
       }).unwrap();
       // console.log("update : ", response);
+      toast.success("Seller Password updated successfully!");
       navigate("/admin/show/all-seller");
     } catch (err) {
       console.error("updated error:", err);

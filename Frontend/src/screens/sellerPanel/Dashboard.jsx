@@ -18,10 +18,21 @@ import {
   ResponsiveContainer,
   YAxis,
 } from "recharts";
+import { formatAmount } from "../../lib/formatAmount";
 
 const MONTHS = Object.freeze([
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ]);
 
 const Dashboard = () => {
@@ -32,15 +43,17 @@ const Dashboard = () => {
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalSales, setTotalSales] = useState(0);
 
-  const [getSellerProfile,{isLoading}] = useGetSellerProfileMutation();
+  const [getSellerProfile, { isLoading }] = useGetSellerProfileMutation();
   const { data: incomeData } = useGetSellerIncomeQuery();
   const { data: ordersByStatus } = useGetOrdersByStatusForSellerQuery();
   const { data: orderStats } = useGetSellerOrderStatsQuery();
 
   useEffect(() => {
-    getSellerProfile().unwrap().then((res) => {
-      if (res?.data) dispatch(setSellerUser(res.data));
-    });
+    getSellerProfile()
+      .unwrap()
+      .then((res) => {
+        if (res?.data) dispatch(setSellerUser(res.data));
+      });
   }, []);
 
   useEffect(() => {
@@ -76,6 +89,8 @@ const Dashboard = () => {
     if (!incomeData?.stats?.[0]) return;
 
     const stats = incomeData.stats[0];
+
+    console.log(stats);
 
     setTotalIncome(Number(stats.totalIncome?.toFixed(2)) || 0);
     setTotalSales(Number(stats.totalSales) || 0);
@@ -115,23 +130,26 @@ const Dashboard = () => {
     setOrderChartData(base);
   }, [orderStats]);
 
-
   const maxValue = Math.max(totalSales, totalIncome);
 
   const incomeSummary = [
     {
       label: "Total Sales",
       color: "#3b82f6",
-      percentage: maxValue ? parseFloat(totalSales / maxValue).toFixed(2) * 100 : 0,
+      percentage: maxValue
+        ? parseFloat(totalSales / maxValue).toFixed(2) * 100
+        : 0,
     },
     {
       label: "Total Income",
       color: "#10b981",
-      percentage: maxValue ? parseFloat(totalIncome / maxValue).toFixed(2) * 100 : 0,
+      percentage: maxValue
+        ? parseFloat(totalIncome / maxValue).toFixed(2) * 100
+        : 0,
     },
   ];
 
-   const totalPercentage = statusData.reduce((acc, s) => acc + s.percentage, 0);
+  const totalPercentage = statusData.reduce((acc, s) => acc + s.percentage, 0);
 
   return !isLoading ? (
     <div>
@@ -191,7 +209,8 @@ const Dashboard = () => {
               {(
                 (products?.pending ?? 0) +
                 (products?.shipped ?? 0) +
-                (products?.delivered ?? 0)
+                (products?.delivered ?? 0) +
+                (products?.cancelled ?? 0)
               ).toString()}
             </span>
           </div>
@@ -205,7 +224,7 @@ const Dashboard = () => {
               Total Income
             </span>
             <span className="text-2xl font-bold text-end">
-              {(totalIncome ?? 0).toString()}
+              {(formatAmount(totalIncome) ?? 0).toString()}
             </span>
           </div>
           <div className="border border-gray-400 p-5 rounded-sm font-medium flex flex-col w-full gap-5">
@@ -259,12 +278,14 @@ const Dashboard = () => {
 
                   <Tooltip
                     contentStyle={{
-                      background: "white",
+                      background: "#111827",
+                      color: "#e5e7eb",
                       borderRadius: "10px",
-                      border: "1px solid #ddd",
-                      padding: "8px",
+                      border: "1px solid rgba(96,165,250,0.4)",
+                      boxShadow: "0 0 8px rgba(96,165,250,0.3)",
+                      padding: "10px",
                     }}
-                    cursor={{ fill: "rgba(0,0,0,0.06)" }}
+                    cursor={{ fill: "rgba(255,255,255,0.04)" }}
                   />
 
                   {/* FIXED BARS — always visible */}
@@ -521,7 +542,7 @@ const Dashboard = () => {
                   />
 
                   {/* Tooltip */}
-                  <Tooltip
+                  {/* <Tooltip
                     contentStyle={{
                       background: "white",
                       borderRadius: "10px",
@@ -530,6 +551,17 @@ const Dashboard = () => {
                       boxShadow: "0 4px 8px rgba(0,0,0,0.08)",
                     }}
                     cursor={{ fill: "rgba(0,0,0,0.06)" }}
+                  /> */}
+                  <Tooltip
+                    contentStyle={{
+                      background: "#111827",
+                      color: "#e5e7eb",
+                      borderRadius: "10px",
+                      border: "1px solid rgba(96,165,250,0.4)",
+                      boxShadow: "0 0 8px rgba(96,165,250,0.3)",
+                      padding: "10px",
+                    }}
+                    cursor={{ fill: "rgba(255,255,255,0.04)" }}
                   />
 
                   {/* Bars */}

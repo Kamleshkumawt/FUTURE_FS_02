@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useGetCategoryByIdQuery } from "../../store/api/user/categoryApi";
 import Loading from "../../components/Loading";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const inputClass =
   "peer w-full border-b-2 border-gray-300 px-4 pt-5 pb-2 text-sm focus:outline-none focus:border-purple-600";
@@ -231,8 +232,9 @@ const AddProduct = () => {
         formData.append("images", file);
       });
 
-      const response = await createProduct(formData).unwrap();
-      console.log("Product created:", response);
+      await createProduct(formData).unwrap();
+      // console.log("Product created:", response);
+      toast.success("Product Created Successfully!");
       navigate("/seller/new-category-product");
     } catch (error) {
       console.error("Error creating product:", error);
@@ -348,10 +350,10 @@ const AddProduct = () => {
             </div>
 
               {/* Size Field */}
-            <div className="relative w-64 mt-3">
+            <div className="relative w-64 mt-4">
               {/* Input field (acts like a select) */}
               <div
-                className="border rounded px-2 py-1 cursor-pointer flex justify-between items-center font-medium text-gray-400"
+                className="border-b-2 border-gray-300 px-2 py-1 cursor-pointer flex justify-between items-center font-medium text-gray-400"
                 onClick={() => setOpen(!open)}
               >
                 <span>
