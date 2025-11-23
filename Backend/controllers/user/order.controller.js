@@ -54,9 +54,10 @@ export const createOrder = asyncHandler(async (req, res) => {
 
   await cartModel.findOneAndDelete({ userId });
 
+  // console.log('order : ',order);
 
   //gateway integration
- if(payment_method === "online"){
+ if(payment_method === "online_payment"){
    const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
 
   const line_items = [{
@@ -77,9 +78,11 @@ export const createOrder = asyncHandler(async (req, res) => {
     success_url: `${origin}/user/orders`,
     cancel_url: `${origin}/cart`,
     metadata: { orderId: order._id.toString() },
-    expire_at: Math.floor(Date.now() / 1000) + 30 * 60, // 30 minutes from now
+    expires_at: Math.floor(Date.now() / 1000) + 3600, // 1 hour from now
   });
 
+  // console.log('session : ',session);
+  // console.log('session.url : ',session.url);
   order.paymentId = session.url;
   await order.save();
 
@@ -94,7 +97,6 @@ export const createOrder = asyncHandler(async (req, res) => {
     success: true,
     message: "Order created successfully",
   });
-
 });
 
 export const getOrdersByUserId = asyncHandler(async (req, res) => {

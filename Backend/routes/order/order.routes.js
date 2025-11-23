@@ -6,7 +6,8 @@ import {
   updateOrderStatus,
   getSellerOrderStats,
   getIncomeBySellerId,
-  getOrdersByStatusForSeller
+  getOrdersByStatusForSeller,
+  handlePaymentSuccess
 } from "../../controllers/index.js";
 
 import { protect } from "../../middlewares/authHandler.js";
@@ -33,5 +34,7 @@ router.get("/seller/stats", protect, getSellerOrderStats);
 
 // Seller income report
 router.get("/seller/income", protect, getIncomeBySellerId);
+
+router.post("/success/stripe", handlePaymentSuccess);
 
 export default router;

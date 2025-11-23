@@ -87,7 +87,7 @@ const orderSchema = new mongoose.Schema({
 
   payment_method: {
     type: String,
-    enum: ["cash_on_delivery", "online_payment"],
+    enum: ["cash_on_delivery", "online_payment", "upi","cod"],
     default: "cash_on_delivery"
   },
 
@@ -98,8 +98,7 @@ const orderSchema = new mongoose.Schema({
   },
 
   paymentId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "payment",
+    type: String,
     default: null
   },
 
