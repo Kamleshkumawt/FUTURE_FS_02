@@ -51,8 +51,8 @@ const CartPayment = () => {
             type="radio"
             name="payment"
             value="online"
-            checked={paymentMethod === "online"}
-            onChange={() => setPaymentMethod("online")}
+            checked={paymentMethod === "online_payment"}
+            onChange={() => setPaymentMethod("online_payment")}
             className="w-5 h-5 appearance-none border-2 border-gray-300 rounded-full bg-white checked:bg-pink-500 checked:border-white cursor-pointer focus:outline-none"
           />
         </div>
@@ -63,7 +63,7 @@ const CartPayment = () => {
           </div>
         </div>
         <div className="w-[40%] h-full flex flex-col items-start">
-          <CartSidebar items={{length:itemsAndPrice?.items, totalPrice:itemsAndPrice?.price}} nav={'summary'} viewPage={3} />
+          <CartSidebar items={{length:itemsAndPrice?.items, totalPrice:itemsAndPrice?.price}} nav={'summary'} viewPage={3} paymentMethod={paymentMethod} />
         </div>
       </div>
     </div>

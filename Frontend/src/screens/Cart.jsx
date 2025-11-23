@@ -83,7 +83,7 @@ const Cart = () => {
                 Product Details
               </h1>
               {cart?.items?.map((item) => (
-                <CartBox key={item._id} location={1} product={item} />
+                <CartBox key={item.productId._id} location={1} product={item} />
               ))}
             </div>
           </div>

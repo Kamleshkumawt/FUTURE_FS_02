@@ -200,7 +200,7 @@ const Home = () => {
           </div>
           <div className="flex flex-wrap gap-3 justify-center">
             {firstHalf.map((product) => (
-              <HomePageCard key={product._id} data={product} />
+              <HomePageCard key={product.id} data={product} />
             ))}
           </div>
         </div>
@@ -215,13 +215,13 @@ const Home = () => {
           </div>
           <div className="flex flex-wrap gap-3 justify-center">
             {secondHalf.map((product) => (
-              <HomePageCard key={product._id} data={product} />
+              <HomePageCard key={product.id} data={product} />
             ))}
           </div>
         </div>
 
         {/* Right Image Block */}
-        <div className="w-[32%] h-[38rem]">
+        <div className="w-[32%] h-152">
           <img
             src="https://rukminim1.flixcart.com/www/1060/1460/promos/26/09/2023/6c3c5fe2-c236-4fa2-8d97-595e1e01da01.jpg?q=60"
             className="object-cover w-full h-full rounded"
@@ -238,7 +238,7 @@ const Home = () => {
         </div>
         <div className="w-[77%] grid grid-cols-4 gap-3">
           {filteredProducts.map((product) => (
-            <Card key={product._id} data={product} />
+            <Card key={product.id} data={product} />
           ))}
         </div>
       </div>

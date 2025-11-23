@@ -119,7 +119,7 @@ const CartSummary = () => {
           <h1 className='text-lg font-medium text-gray-500 dark:text-gray-100 py-1 text-start w-full'>Product Details</h1>
         {/* <CartBox location={2}/> */}
          {cart?.items?.map((item) => (
-            <CartBox key={item._id} location={2} product={item} />
+            <CartBox key={item.productId._id} location={2} product={item} />
           ))}
         {/* <CartBox location={2}/> */}
           <h1 className='text-lg font-medium text-gray-500 dark:text-gray-100 py-1 text-start w-full'>Delivery Address</h1>

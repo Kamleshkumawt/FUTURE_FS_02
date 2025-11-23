@@ -1,11 +1,90 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { formatAmount } from "../../../lib/formatAmount";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useGetCartQuery } from "../../../store/api/user/cartApi";
+import { setAddress, setItemsAndPrice } from "../../../store/slices/productsFilterSlice";
+import { useCreateOrderMutation } from "../../../store/api/user/orderApi";
 
-const CartSidebar = ({ items, nav, viewPage, isClick,
-  isLoading, }) => {
+const CartSidebar = ({ items, nav, viewPage, isClick,isLoading, paymentMethod }) => {
   const discount = 81;
   const navigate = useNavigate();
+const [cart, setCart] = useState([]);
+    const [address, setAddr] = useState();
+  
+    const dispatch = useDispatch();
+    const  {data } = useGetCartQuery();
+
+    const [createOrder,{loading}] = useCreateOrderMutation();
+
+    const user = useSelector((state) => state.auth.user);
+    const addr = useSelector((state) => state.filters.address);
+  
+  const handleCreateOrder = async () => {
+    if (!address) {
+      return;
+    }
+
+    if(!paymentMethod){
+      return;
+    }
+    if(paymentMethod === "cod"){
+      return;
+    }
+
+    try {
+      const items = cart.items.map(item => ({
+        productId: item.productId._id,
+        quantity: item.quantity,
+        price: item.productId.price,
+        thumbnail: item.productId.frontImage.url,
+        sellerId: item.productId.sellerId,
+        title: item.productId.name
+      }));
+
+      // console.log("Items for order:", items);
+      // console.log("Selected address for order:", address);
+      // console.log("Payment method for order:", paymentMethod);
+      const res =  await createOrder({shipping_address:address, payment_method:paymentMethod, items}).unwrap();
+      console.log("Order created successfully:", res);
+      window.location.href = res.url;
+      // navigate("/user/orders");
+    } catch(error) {
+      console.error("Error creating order:", error);
+    }
+  }
+
+    useEffect(() => {
+      if(data){
+        // console.log("Cart data:", data);
+        setCart(data.data);
+        const totalPrice =
+            (
+              (data.data.items || [])
+                .map((item) => item.productId.price * item.quantity)
+                .reduce((acc, curr) => acc + curr, 0)
+                .toFixed(2)
+          )
+        dispatch(setItemsAndPrice({items:data.data?.items?.length, price:totalPrice}))
+      }
+    }, [data, dispatch]);
+
+      useEffect(() => {
+      if (user?.address) {
+        const selectedAddress = user.address.find(addr => addr._id === JSON.parse(localStorage.getItem('selAdd')));
+        setAddr(selectedAddress);
+        dispatch(setAddress(user.address));
+      }
+    }, [user]);
+
+  useEffect(() => {
+    if(addr?.length > 0){
+        const selectedAddress = addr?.find(addr => addr._id === JSON.parse(localStorage.getItem('selAdd')));
+        setAddr(selectedAddress || addr[0]);
+        // console.log("Address in summary:", selectedAddress);
+      }
+  }, [addr]);
+   
 
   return (
     <div className="w-xs h-full flex flex-col items-start gap-3">
@@ -39,8 +118,15 @@ const CartSidebar = ({ items, nav, viewPage, isClick,
           </p>
           <button
             // to={`/cart/${nav}`}
-            onClick={() => viewPage === 3 && navigate(`/cart/${nav}`)}
-            className="bg-purple-800 w-full text-center p-2 px-4 rounded-sm text-white font-medium cursor-pointer"
+            disabled={loading}
+           onClick={() => {
+             if (viewPage === 3 && paymentMethod === "online_payment") {
+               handleCreateOrder();
+             } else {
+               navigate(`/cart/${nav}`);
+             }
+           }}
+            className="bg-purple-800 w-full text-center p-2 px-4 rounded-sm text-white font-medium cursor-pointer z-10"
           >
             Continue
           </button>

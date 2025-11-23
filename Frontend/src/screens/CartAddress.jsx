@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import CartAddressComponent from "../components/user/cart/CartAddressComponent";
 import { setAddress } from "../store/slices/productsFilterSlice";
 import { useAddNewAddressMutation } from "../store/api/user/userApi";
+import toast from "react-hot-toast";
 
 const inputClass =
     "peer w-full border-b-2 border-gray-300 px-4 pt-5 pb-2 text-sm focus:outline-none focus:border-purple-600";
@@ -96,6 +97,7 @@ const CartAddress = () => {
       // console.log('address to save :', address);
       try {
         const response = await addNewAddress({ address }).unwrap();
+        toast.success("Address added successfully!");
         // console.log("Address saved successfully:", response.user);
         dispatch(setAddress(response.user?.address));
         setOpenSideBar(false);

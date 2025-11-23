@@ -12,6 +12,7 @@ import {
 } from "../store/api/seller/productApi";
 import { useAddItemToCartMutation } from "../store/api/user/cartApi";
 import { useGetReviewsByProductIdQuery } from "../store/api/user/review";
+import { toast } from "react-hot-toast";
 
 const ProductDetails = () => {
   const [pincode, setPincode] = useState("");
@@ -91,6 +92,7 @@ const ProductDetails = () => {
         productId: show?.id,
         quantity: show?.quantity,
       }).unwrap();
+      toast.success("Product added to cart successfully!");
       // console.log("create cart response successfully", res);
       navigate("/cart");
     } catch (error) {
@@ -194,7 +196,7 @@ const maxCount = Math.max(...ratings.map((r) => r.count));
       </h1> */}
       <div className=" w-full flex flex-col lg:flex-row justify-center gap-8">
         <div className="flex gap-2 w-full">
-          <div className="flex flex-col items-center gap-2 mt-2 min-w-[3rem]">
+          <div className="flex flex-col items-center gap-2 mt-2 min-w-12">
             {show?.images?.map((image, index) => (
               <img
                 key={index}
@@ -273,7 +275,7 @@ const maxCount = Math.max(...ratings.map((r) => r.count));
                 Buy Now
               </div>
             </div>
-            <span className="border-b border-gray-400 block min-w-[10rem] sm:min-w-xs"></span>
+            <span className="border-b border-gray-400 block min-w-40 sm:min-w-xs"></span>
             <div className="flex flex-col gap-2">
               <h1 className="text-lg font-semibold ">2 Similar Products</h1>
               <div className="flex items-center gap-3">
@@ -600,7 +602,7 @@ const maxCount = Math.max(...ratings.map((r) => r.count));
                   })}
                 </div>
               </div>
-              <span className="border-b border-gray-400 block min-w-[10rem] sm:min-w-xs"></span>
+              <span className="border-b border-gray-400 block min-w-40 sm:min-w-xs"></span>
               <div className="font-semibold ">
                 Real Images and videos from customers
               </div>
@@ -627,7 +629,7 @@ const maxCount = Math.max(...ratings.map((r) => r.count));
               </div>
 
               {reviews.length > 0 && (
-                <span className="border-b border-gray-400 block min-w-[10rem] sm:min-w-xs"></span>
+                <span className="border-b border-gray-400 block min-w-40 sm:min-w-xs"></span>
               )}
 
               {/* user review */}
@@ -711,7 +713,7 @@ const maxCount = Math.max(...ratings.map((r) => r.count));
 
               {reviews.length === 0 && <p>No reviews yet</p>}
 
-              <span className="border-b border-gray-400 block min-w-[10rem] sm:min-w-xs"></span>
+              <span className="border-b border-gray-400 block min-w-40 sm:min-w-xs"></span>
 
               {/* user review */}
               {/* <div className="flex flex-col gap-3">

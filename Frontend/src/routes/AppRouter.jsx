@@ -72,20 +72,22 @@ const AppRouter = () => {
             <Route path="/products/search" element={<SearchCategoryRoutes />} />
             <Route path="/category/search/:categoryName" element={<CategoryProduct />} />
             <Route path="/product/:id" element={<AuthUser allowedRoles={['user']}><AuthUserLoader><ProductDetails /></AuthUserLoader></AuthUser>} />
-            <Route path="/account/delete" element={<DeleteAccount />} />
-            <Route path="/user/orders" element={<Order />} />
-            <Route path="/user/revieworder/:id" element={<ReviewOrder />} />
+            <Route path="/account/delete" element={<AuthUser allowedRoles={['user']}><AuthUserLoader><DeleteAccount /></AuthUserLoader></AuthUser>} />
+            <Route path="/user/orders" element={<AuthUser allowedRoles={['user']}><AuthUserLoader><Order /></AuthUserLoader></AuthUser>} />
+            <Route path="/user/revieworder/:id" element={<AuthUser allowedRoles={['user']}><AuthUserLoader><ReviewOrder /></AuthUserLoader></AuthUser>} />
+            <Route path="/cart" element={<AuthUser allowedRoles={['user']}><AuthUserLoader><Cart /></AuthUserLoader></AuthUser>} />
+            <Route path="/cart/address" element={<AuthUser allowedRoles={['user']}><AuthUserLoader><CartAddress /></AuthUserLoader></AuthUser>} />
+            <Route path="/cart/payment" element={<AuthUser allowedRoles={['user']}><AuthUserLoader><CartPayment /></AuthUserLoader></AuthUser>} />
+            <Route path="/cart/payment" element={<AuthUser allowedRoles={['user']}><AuthUserLoader><CartPayment /></AuthUserLoader></AuthUser>} />
+            <Route path="/cart/summary" element={<AuthUser allowedRoles={['user']}><AuthUserLoader><CartSummary /></AuthUserLoader></AuthUser>} />
+
             <Route path="/seller/SignUp" element={<CreateSellerAccount />} />
             <Route path="/seller/SignIn" element={<LoginSeller />} />
-            <Route path="/sellerSignUp/business" element={<BusinessDetails />} />
-            <Route path="/sellerSignUp/address" element={<PickupAddress />} />
-            <Route path="/sellerSignUp/bank-details" element={<BankDetails />} />
-            <Route path="/sellerSignUp/details" element={<SellerDetails />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/cart/address" element={<CartAddress />} />
-            <Route path="/cart/payment" element={<CartPayment />} />
-            <Route path="/cart/payment" element={<CartPayment />} />
-            <Route path="/cart/summary" element={<CartSummary />} />
+
+            <Route path="/sellerSignUp/business" element={<AuthUser allowedRoles={['seller']}><AuthUserLoader><BusinessDetails /></AuthUserLoader></AuthUser>} />
+            <Route path="/sellerSignUp/address" element={<AuthUser allowedRoles={['seller']}><AuthUserLoader><PickupAddress /></AuthUserLoader></AuthUser>} />
+            <Route path="/sellerSignUp/bank-details" element={<AuthUser allowedRoles={['seller']}><AuthUserLoader><BankDetails /></AuthUserLoader></AuthUser>} />
+            <Route path="/sellerSignUp/details" element={<AuthUser allowedRoles={['seller']}><AuthUserLoader><SellerDetails /></AuthUserLoader></AuthUser>} />
 
             <Route path='/seller/*' element={<AuthUser allowedRoles={['seller']}><Layout/></AuthUser>} > 
                 <Route index element={<Dashboard />} />

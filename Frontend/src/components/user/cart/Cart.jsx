@@ -4,6 +4,7 @@ import {
   useRemoveCartItemMutation,
   useUpdateCartItemMutation,
 } from "../../../store/api/user/cartApi";
+import toast from "react-hot-toast";
 
 const sizes = ["S", "M", "L", "XL", "XXL"];
 
@@ -24,6 +25,7 @@ const Cart = ({ location, product }) => {
         // size: selectedSize,
       };
       await updateCartItem( items ).unwrap();
+      toast.success("Cart updated successfully!");
       window.location.reload();
     } catch (err) {
       console.log("update cart error :", err);
@@ -33,6 +35,7 @@ const Cart = ({ location, product }) => {
   const handleCartRemove = async (productId) => {
     try {
       await removeCartItem( productId ).unwrap();
+      toast.success("Product removed from cart successfully!");
       window.location.reload();
     } catch (err) {
       console.log("deleted cart error :", err);
@@ -83,7 +86,7 @@ const Cart = ({ location, product }) => {
             </div>
             {location === 1 && (
               <div
-                className="flex items-center cursor-pointer w-[6rem]"
+                className="flex items-center cursor-pointer w-24"
                 onClick={() => setOpenRemoveProduct(true)} // your function
               >
                 <span>
@@ -275,7 +278,7 @@ const Cart = ({ location, product }) => {
                 />
               </svg>
             </span>
-            <h2 className="text-lg font-semibold mb-2 w-[22rem] mt-2">
+            <h2 className="text-lg font-semibold mb-2 w-88 mt-2">
               {product?.productId?.name}
             </h2>
             <p className="font-medium text-gray-500">

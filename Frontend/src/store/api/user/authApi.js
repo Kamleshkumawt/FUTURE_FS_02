@@ -29,9 +29,11 @@ export const userAuthApi = baseApi.injectEndpoints({
       async onQueryStarted(_, { queryFulfilled, dispatch }) {
         try {
           const { data } = await queryFulfilled;
-          if (data.user.role === "user") {
-            dispatch(setUser(data.user));
+          if (data.data.role === "user") {
+            // console.log('user data:',data);
+            dispatch(setUser(data.data));
           } else {
+            // console.log('user can not login:',data);
             dispatch(logout());
           }
         } catch {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useUpdateAddressMutation } from "../../../store/api/user/userApi";
 import { useDispatch } from "react-redux";
 import { setAddress } from "../../../store/slices/productsFilterSlice";
+import toast from "react-hot-toast";
 
 const CartAddressSummary = ({
   addr,
@@ -51,6 +52,7 @@ const CartAddressSummary = ({
     try {
       const response = await updateAddress({ address }).unwrap();
       //   console.log("Address saved successfully:", response.user.address);
+      toast.success("Address updated successfully!");
       dispatch(setAddress(response.user?.address));
       setOpenSideBarUpdated(false);
     } catch (error) {
