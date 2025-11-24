@@ -488,7 +488,7 @@ const Dashboard = () => {
                   className="flex items-center gap-1 text-xs sm:text-sm font-medium"
                 >
                   <span
-                    className="h-[8px] w-[8px] rounded-full"
+                    className="h-2 w-2 rounded-full"
                     style={{ backgroundColor: item.color }}
                   ></span>
                   {item.label} ({item.percentage}%)
@@ -571,7 +571,7 @@ const Dashboard = () => {
                   className="flex items-center gap-1 text-xs sm:text-sm font-medium"
                 >
                   <span
-                    className="h-[8px] w-[8px] rounded-full"
+                    className="h-2 w-2 rounded-full"
                     style={{ backgroundColor: item.color }}
                   ></span>
                   {item.label} ({item.percentage}%)

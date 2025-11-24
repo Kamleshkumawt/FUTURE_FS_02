@@ -119,7 +119,7 @@ const Navbar = () => {
           ref={containerRef}
         >
           {/* Search Bar */}
-          <div className="w-full border border-gray-400 dark:border-gray-800 rounded-sm flex items-center gap-2 shadow-sm shadow-gray-300 p-[10px] bg-gray-50 dark:bg-neutral-950">
+          <div className="w-full border border-gray-400 dark:border-gray-800 rounded-sm flex items-center gap-2 shadow-sm shadow-gray-300 p-2.5 bg-gray-50 dark:bg-neutral-950">
             {/* Left Icon */}
             <svg
               width="20"

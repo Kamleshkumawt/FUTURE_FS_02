@@ -297,7 +297,7 @@ const maxCount = Math.max(...ratings.map((r) => r.count));
         <div className="w-full flex flex-col gap-3">
           {/* main details for products*/}
           <div className="w-full border border-gray-300 dark:border-gray-600 rounded-sm p-5 flex flex-col gap-3">
-            <h1 className="text-gray-400 text-xl font-medium max-w-[38rem]">
+            <h1 className="text-gray-400 text-xl font-medium max-w-152">
               {show?.name?.slice(0, 70)}
             </h1>
             <div className="flex items-center gap-2 text-2xl font-medium">
@@ -361,7 +361,7 @@ const maxCount = Math.max(...ratings.map((r) => r.count));
                 {show?.rating} Ratings, {show?.numOfReviews} Reviews
               </p>
             </div>
-            <div className="text-gray-700 dark:text-gray-300 text-sm font-medium bg-gray-200/40 dark:bg-gray-800/80 px-2 rounded-xl text-center p-1 max-w-[7rem]">
+            <div className="text-gray-700 dark:text-gray-300 text-sm font-medium bg-gray-200/40 dark:bg-gray-800/80 px-2 rounded-xl text-center p-1 max-w-28">
               Free Delivery
             </div>
           </div>
@@ -823,7 +823,7 @@ const maxCount = Math.max(...ratings.map((r) => r.count));
               />
               Lowest Price
             </div>
-            <span className="bg-white h-8 w-[1px] "></span>
+            <span className="bg-white h-8 w-px "></span>
             <div className="flex flex-col items-center gap-2 text-xs font-medium text-black">
               <img
                 src="https://images.meesho.com/images/value_props/cod_new.png"
@@ -832,7 +832,7 @@ const maxCount = Math.max(...ratings.map((r) => r.count));
               />
               Cash on Delivery
             </div>
-            <span className="bg-white h-8 w-[1px] "></span>
+            <span className="bg-white h-8 w-px "></span>
             <div className="flex flex-col items-center gap-2 text-xs font-medium text-black">
               <img
                 src="https://images.meesho.com/images/value_props/return_new.png"
