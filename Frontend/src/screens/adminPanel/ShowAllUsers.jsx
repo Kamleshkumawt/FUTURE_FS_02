@@ -4,6 +4,7 @@ import Title from '../../components/sellerPanel/Title';
 import {Link} from 'react-router-dom'
 import { useBlockUserMutation, useGetAllUsersQuery } from '../../store/api/admin/adminApi';
 import { toast } from 'react-hot-toast';
+import Loading from '../../components/Loading';
 
 
 const ShowAllUsers = () => {
@@ -33,7 +34,7 @@ const ShowAllUsers = () => {
     }
   }
 
-  return !isLoading && (
+  return !isLoading ? (
     <>
       <Title text1="Users" text2="List" />
       <div className="max-w-7xl mt-6 overflow-x-auto">
@@ -75,7 +76,7 @@ const ShowAllUsers = () => {
         </table>
       </div>
     </>
-  )
+  ) : <Loading /> ;
 }
 
 export default ShowAllUsers

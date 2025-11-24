@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useDeleteCategoryMutation } from "../../store/api/admin/adminApi";
 import { useGetAllCategoriesQuery } from "../../store/api/user/categoryApi";
 import { toast } from "react-hot-toast";
+import Loading from "../../components/Loading";
 
 const ShowAllCategories = () => {
   const [categories, setCategories] = useState([]);
@@ -33,7 +34,7 @@ const ShowAllCategories = () => {
   }, [data]);
 
   return (
-    !isLoading && (
+    !isLoading ? (
       <>
         <Title text1="Categories" text2="List" />
         <div className="max-w-7xl mt-6 overflow-x-auto">
@@ -78,8 +79,8 @@ const ShowAllCategories = () => {
           </table>
         </div>
       </>
-    )
-  );
+    ) : <Loading />
+  ) 
 };
 
 export default ShowAllCategories;

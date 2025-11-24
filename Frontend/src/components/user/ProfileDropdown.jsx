@@ -1,25 +1,30 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import {useUserLogoutMutation } from '../../store/api/user/authApi';
-import {useUpdateUserProfileMutation, useUpdateUserProfilePasswordMutation } from '../../store/api/user/userApi';
-import {setUser, clearUser } from '../../store/slices/authSlice';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useUserLogoutMutation } from "../../store/api/user/authApi";
+import {
+  useUpdateUserProfileMutation,
+  useUpdateUserProfilePasswordMutation,
+} from "../../store/api/user/userApi";
+import { setUser, clearUser } from "../../store/slices/authSlice";
 
 const ProfileDropdown = () => {
   const [open, setOpen] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showEditModalPass, setShowEditModalPass] = useState(false);
   const user = useSelector((state) => state.auth.user);
-  const [userLogout,  {isLoading}] = useUserLogoutMutation();
-  const [profileImage, setProfileImage] = useState('');
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [phone, setPhone] = useState('');
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [updateUserProfile,{error}] = useUpdateUserProfileMutation();
+  const [userLogout, { isLoading }] = useUserLogoutMutation();
+  const [profileImage, setProfileImage] = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [phone, setPhone] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [updateUserProfile, { error }] = useUpdateUserProfileMutation();
   const [updateUserProfilePassword] = useUpdateUserProfilePasswordMutation();
-  const [previewImage, setPreviewImage] = useState('https://tse3.mm.bing.net/th/id/OIP.Ip2y_2_KabgvNaHIZhYoJgHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3');
+  const [previewImage, setPreviewImage] = useState(
+    "https://tse3.mm.bing.net/th/id/OIP.Ip2y_2_KabgvNaHIZhYoJgHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3"
+  );
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -27,11 +32,11 @@ const ProfileDropdown = () => {
   const logoutHandler = async () => {
     try {
       await userLogout().unwrap();
-       dispatch(clearUser()); 
-       localStorage.removeItem('token');
-      navigate('/');
+      dispatch(clearUser());
+      localStorage.removeItem("token");
+      navigate("/");
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     }
   };
 
@@ -50,21 +55,21 @@ const ProfileDropdown = () => {
   const handleSaveChanges = async () => {
     try {
       const formData = new FormData();
-    formData.append('profile_picture', profileImage); // 'profile_picture' must match Multer field name
-    formData.append('username', username);
-    formData.append('email', email);
-    formData.append('phone', phone);
+      formData.append("profile_picture", profileImage); // 'profile_picture' must match Multer field name
+      formData.append("username", username);
+      formData.append("email", email);
+      formData.append("phone", phone);
 
-//    formData.forEach((value, key) => {
-//   console.log(key + ':', value);
-// });
-    
+      //    formData.forEach((value, key) => {
+      //   console.log(key + ':', value);
+      // });
+
       const response = await updateUserProfile(formData).unwrap();
       // console.log('Profile updated successfully:', response);
       dispatch(setUser(response.data));
       setShowEditModal(false);
-    } catch(error) {
-      console.error('Save changes error:', error);
+    } catch (error) {
+      console.error("Save changes error:", error);
     }
   };
 
@@ -73,8 +78,8 @@ const ProfileDropdown = () => {
       await updateUserProfilePassword({ oldPassword, newPassword }).unwrap();
       // console.log('Password updated successfully:', response);
       setShowEditModal(false);
-    } catch(error) {
-      console.error('Save changes error:', error);
+    } catch (error) {
+      console.error("Save changes error:", error);
     }
   };
 
@@ -105,33 +110,41 @@ const ProfileDropdown = () => {
       {open && (
         <div className="absolute top-full  right-0 w-64 shadow-md rounded-lg p-4 space-y-4 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
           {/* Profile */}
-          {user && <div className="flex items-center gap-3">
-            <img
-              // src="https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2"
-              src={user?.profilePicture ?? ''}
-              className="h-10 w-10 rounded-full object-cover"
-              lazy="loading"
-              alt="Profile"
-            />
-            <div>
-              <h1 className="text-lg font-semibold">{user.username}</h1>
-              <p className="text-sm dark:text-gray-400 text-gray-600">+91 {user.phone}</p>
+          {user && (
+            <div className="flex items-center gap-3">
+              <img
+                // src="https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2"
+                src={user?.profilePicture ?? ""}
+                className="h-10 w-10 rounded-full object-cover"
+                lazy="loading"
+                alt="Profile"
+              />
+              <div>
+                <h1 className="text-lg font-semibold">{user.username}</h1>
+                <p className="text-sm dark:text-gray-400 text-gray-600">
+                  +91 {user.phone}
+                </p>
+              </div>
             </div>
-          </div>}
-          
-          {!user &&<div className="flex flex-col items-start gap-3">
-            <div>
-              <h1 className="text-lg font-semibold">Hello User</h1>
-              <p className="text-xs text-gray-600 dark:text-gray-400">To access your ApanaStore account</p>
+          )}
+
+          {!user && (
+            <div className="flex flex-col items-start gap-3">
+              <div>
+                <h1 className="text-lg font-semibold">Hello User</h1>
+                <p className="text-xs text-gray-600 dark:text-gray-400">
+                  To access your ApanaStore account
+                </p>
+              </div>
+              <div
+                onClick={() => navigate("/signIn")}
+                className="bg-purple-800 w-full text-center p-2 px-4 rounded-sm text-white font-medium cursor-pointer"
+                //   disabled={!paymentMethod}
+              >
+                Sign Up
+              </div>
             </div>
-             <div
-             onClick={() => navigate('/signIn')}
-              className="bg-purple-800 w-full text-center p-2 px-4 rounded-sm text-white font-medium cursor-pointer"
-            //   disabled={!paymentMethod}
-            >
-              Sign Up
-            </div>
-          </div>}
+          )}
 
           <hr />
 
@@ -146,10 +159,32 @@ const ProfileDropdown = () => {
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 11h14l-1.5 9h-11L5 11z" />
             </svg> */}
-            <span onClick={() => {navigate('/user/orders');scrollTo(0,0)}} className="text-lg font-semibold">My Orders</span>
+            <span
+              onClick={() => {
+                navigate("/user/orders");
+                scrollTo(0, 0);
+              }}
+              className="text-lg font-semibold"
+            >
+              My Orders
+            </span>
           </div>
 
           <hr />
+
+          <div className=" sm:hidden flex items-center gap-2  cursor-pointer hover:text-yellow-600">
+            <span
+              onClick={() => {
+                navigate("/cart");
+                scrollTo(0, 0);
+              }}
+              className="text-lg font-semibold"
+            >
+              Cart
+            </span>
+          </div>
+
+          <hr className="flex sm:hidden" />
 
           {/* My Wishlist */}
           {/* <div className="flex items-center gap-2 cursor-pointer hover:text-yellow-600">
@@ -157,47 +192,57 @@ const ProfileDropdown = () => {
           </div>
 
           <hr /> */}
-
           {/* Edit Profile */}
-          {user && <> <button
-            onClick={() => setShowEditModal(true)}
-            className="flex items-center gap-2 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-yellow-600 w-full text-left cursor-pointer"
-          >
-            ✏️ Edit Profile
-          </button>
-          <hr />
-          </>
-          }
+          {user && (
+            <>
+              {" "}
+              <button
+                onClick={() => setShowEditModal(true)}
+                className="flex items-center gap-2 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-yellow-600 w-full text-left cursor-pointer"
+              >
+                ✏️ Edit Profile
+              </button>
+              <hr />
+            </>
+          )}
 
           {/* Delete Account */}
-          <button onClick={()=> navigate('/account/delete')} className="text-lg font-semibold text-red-600 cursor-pointer">
+          <button
+            onClick={() => navigate("/account/delete")}
+            className="text-lg font-semibold text-red-600 cursor-pointer"
+          >
             Delete Account
           </button>
 
           <hr />
 
           {/* Logout */}
-          {user && <div 
-          onClick={()=> {logoutHandler();scrollTo(0,0)}}
-          disabled={isLoading}
-          className="flex items-center gap-2 cursor-pointer hover:text-yellow-600">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
+          {user && (
+            <div
+              onClick={() => {
+                logoutHandler();
+                scrollTo(0, 0);
+              }}
+              disabled={isLoading}
+              className="flex items-center gap-2 cursor-pointer hover:text-yellow-600"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
-              />
-            </svg>
-            <span className="text-lg font-semibold">Logout</span>
-          </div>}
-
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
+                />
+              </svg>
+              <span className="text-lg font-semibold">Logout</span>
+            </div>
+          )}
         </div>
       )}
 
@@ -212,25 +257,27 @@ const ProfileDropdown = () => {
               ✖
             </button>
             <h2 className="text-xl font-bold">Edit Profile</h2>
-            <p className="text-gray-600 text-sm">Make changes to your profile. Click save when you're done.</p>
-           <div className='w-full flex items-center justify-center'>
-            <div className='w-20 h-20 rounded-full relative bg-gray-600 overflow-hidden cursor-pointer'>
-      <input
-        type="file"
-        accept="image/*"
-        className='hidden'
-        id="profile-upload"
-        onChange={handleImageChange}
-      />
-      <label htmlFor="profile-upload" className='block w-full h-full'>
-        <img
-          src={previewImage ? previewImage : profileImage}
-          alt="Profile"
-          className='w-full h-full object-cover absolute top-0 left-0 cursor-pointer'
-        />
-      </label>
-    </div>
-           </div>
+            <p className="text-gray-600 text-sm">
+              Make changes to your profile. Click save when you're done.
+            </p>
+            <div className="w-full flex items-center justify-center">
+              <div className="w-20 h-20 rounded-full relative bg-gray-600 overflow-hidden cursor-pointer">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  id="profile-upload"
+                  onChange={handleImageChange}
+                />
+                <label htmlFor="profile-upload" className="block w-full h-full">
+                  <img
+                    src={previewImage ? previewImage : profileImage}
+                    alt="Profile"
+                    className="w-full h-full object-cover absolute top-0 left-0 cursor-pointer"
+                  />
+                </label>
+              </div>
+            </div>
             <div className="space-y-4">
               <div>
                 <label className="block mb-1 font-medium">Username</label>
@@ -238,7 +285,7 @@ const ProfileDropdown = () => {
                   type="text"
                   defaultValue={`@${user?.username}`}
                   // value={username}
-                  onChange={(e)=> setUsername(e.target.value)}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md"
                 />
               </div>
@@ -249,7 +296,7 @@ const ProfileDropdown = () => {
                   defaultValue={user?.phone}
                   maxLength={10}
                   // value={phone}
-                  onChange={(e)=> setPhone(e.target.value)}
+                  onChange={(e) => setPhone(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md"
                 />
               </div>
@@ -259,12 +306,19 @@ const ProfileDropdown = () => {
                   type="text"
                   defaultValue={user?.email}
                   // value={email}
-                  onChange={(e)=> setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md"
                 />
-                 <p onClick={() => setShowEditModalPass(true)} className="text-purple-400 hover:underline cursor-pointer mt-3">Forgat Password?</p>
+                <p
+                  onClick={() => setShowEditModalPass(true)}
+                  className="text-purple-400 hover:underline cursor-pointer mt-3"
+                >
+                  Forgat Password?
+                </p>
               </div>
-              {error && <p>Error: {error.data?.message || "save changes error"}</p>}
+              {error && (
+                <p>Error: {error.data?.message || "save changes error"}</p>
+              )}
               <div className="flex justify-end gap-2 mt-4">
                 <button
                   onClick={() => setShowEditModal(false)}
@@ -272,7 +326,11 @@ const ProfileDropdown = () => {
                 >
                   Cancel
                 </button>
-                <button onClick={handleSaveChanges} disabled={isLoading} className="px-4 py-2 bg-yellow-600 text-white rounded-md cursor-pointer">
+                <button
+                  onClick={handleSaveChanges}
+                  disabled={isLoading}
+                  className="px-4 py-2 bg-yellow-600 text-white rounded-md cursor-pointer"
+                >
                   Save changes
                 </button>
               </div>
@@ -282,7 +340,7 @@ const ProfileDropdown = () => {
       )}
 
       {/* Edit Password Modal */}
-       {showEditModalPass && (
+      {showEditModalPass && (
         <div className="fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-md w-[90%] max-w-md space-y-4 relative">
             <button
@@ -292,9 +350,10 @@ const ProfileDropdown = () => {
               ✖
             </button>
             <h2 className="text-xl font-bold">Edit Password</h2>
-            <p className="text-gray-600 text-sm">Make changes to your Password. Click save when you're done.</p>
-           <div className='w-full flex items-center justify-center'>
-           </div>
+            <p className="text-gray-600 text-sm">
+              Make changes to your Password. Click save when you're done.
+            </p>
+            <div className="w-full flex items-center justify-center"></div>
             <div className="space-y-4">
               <div>
                 <label className="block mb-1 font-medium">OldPassword</label>
@@ -303,7 +362,7 @@ const ProfileDropdown = () => {
                   maxLength={50}
                   value={oldPassword}
                   placeholder="Enter oldPassword"
-                  onChange={(e)=> setOldPassword(e.target.value)}
+                  onChange={(e) => setOldPassword(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md"
                 />
               </div>
@@ -313,11 +372,13 @@ const ProfileDropdown = () => {
                   type="text"
                   value={newPassword}
                   placeholder="Enter NewPassword"
-                  onChange={(e)=> setNewPassword(e.target.value)}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md"
                 />
               </div>
-              {error && <p>Error: {error.data?.message || "save changes error"}</p>}
+              {error && (
+                <p>Error: {error.data?.message || "save changes error"}</p>
+              )}
               <div className="flex justify-end gap-2 mt-4">
                 <button
                   onClick={() => setShowEditModalPass(false)}
@@ -325,7 +386,11 @@ const ProfileDropdown = () => {
                 >
                   Cancel
                 </button>
-                <button onClick={handleSaveChangesPass} disabled={isLoading} className="px-4 py-2 bg-yellow-600 text-white rounded-md cursor-pointer">
+                <button
+                  onClick={handleSaveChangesPass}
+                  disabled={isLoading}
+                  className="px-4 py-2 bg-yellow-600 text-white rounded-md cursor-pointer"
+                >
                   Save changes
                 </button>
               </div>

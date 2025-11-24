@@ -4,6 +4,7 @@ import Title from '../../components/sellerPanel/Title';
 import {Link} from 'react-router-dom'
 import { useBlockSellerMutation, useGetAllSellersQuery, } from '../../store/api/admin/adminApi';
 import { toast } from 'react-hot-toast';
+import Loading from '../../components/Loading';
 
 
 const ShowAllSellers = () => {
@@ -33,7 +34,7 @@ const ShowAllSellers = () => {
     }
   }
 
-  return !isLoading && (
+  return !isLoading ? (
     <>
       <Title text1="Sellers" text2="List" />
       <div className="max-w-7xl mt-6 overflow-x-auto">
@@ -79,7 +80,7 @@ const ShowAllSellers = () => {
         </table>
       </div>
     </>
-  )
+  ) : <Loading />;
 }
 
 export default ShowAllSellers

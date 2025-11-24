@@ -13,7 +13,7 @@ const Card = React.memo(({ data }) => {
 
   return (
     <article
-      className="max-w-[15rem] min-w-[14rem] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-gray-100 hover:shadow-md transition"
+      className="max-w-60 min-w-56 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-gray-100 hover:shadow-md transition"
       itemScope
       itemType="https://schema.org/Product"
     >

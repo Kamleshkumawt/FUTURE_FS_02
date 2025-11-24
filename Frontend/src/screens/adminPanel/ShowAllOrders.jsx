@@ -3,6 +3,7 @@ import { dateFormat } from "../../lib/dateFormat";
 import Title from "../../components/sellerPanel/Title";
 import { Link } from "react-router-dom";
 import { useGetAllOrdersQuery } from "../../store/api/admin/adminApi";
+import Loading from "../../components/Loading";
 
 const ShowAllOrders = () => {
   const [products, setProducts] = useState([]);
@@ -30,7 +31,7 @@ const ShowAllOrders = () => {
   }, [data]);
 
   return (
-    !isLoading && (
+    !isLoading ? (
       <>
         <Title text1="Orders" text2="List" />
         <div className="max-w-7xl mt-6 overflow-x-auto">
@@ -91,8 +92,8 @@ const ShowAllOrders = () => {
           </table>
         </div>
       </>
-    )
-  );
+    ) : <Loading /> 
+  ) 
 };
 
 export default ShowAllOrders;

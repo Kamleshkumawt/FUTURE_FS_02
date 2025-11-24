@@ -58,7 +58,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!ordersByStatus?.orders) return;
-
+    // console.log(ordersByStatus.orders);
     setProducts(ordersByStatus.orders);
   }, [ordersByStatus]);
 
@@ -86,25 +86,86 @@ const Dashboard = () => {
   ];
 
   useEffect(() => {
-    if (!incomeData?.stats?.[0]) return;
+    if (!incomeData?.stats) return;
 
-    const stats = incomeData.stats[0];
+    const stats = incomeData.stats;
 
-    console.log(stats);
+    // console.log(stats);
 
-    setTotalIncome(Number(stats.totalIncome?.toFixed(2)) || 0);
-    setTotalSales(Number(stats.totalSales) || 0);
+    const delivered = stats.find((s) => s._id === "Delivered");
+
+    setTotalIncome(Number(delivered?.totalIncome?.toFixed(2)) || 0);
+    setTotalSales(delivered?.totalSales || 0);
+
+    // const testStats = [
+    //   {
+    //     _id: "Delivered",
+    //     totalIncome: 3999.2,
+    //     totalSales: 80,
+    //     monthly: [
+    //       {
+    //         month: 11,
+    //         sales: 1,
+    //         income: 7099.2,
+    //       },
+    //       {
+    //         month: 12,
+    //         sales: 1,
+    //         income: 359.2,
+    //       },
+    //       {
+    //         month: 4,
+    //         sales: 1,
+    //         income: 3150.2,
+    //       },
+    //       {
+    //         month: 1,
+    //         sales: 65,
+    //         income: 39959.2,
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     _id: "Cancelled",
+    //     totalIncome: 12999.1,
+    //     totalSales: 90,
+    //     monthly: [
+    //       {
+    //         month: 11,
+    //         sales: 2,
+    //         income: 0,
+    //       },
+    //       {
+    //         month: 3,
+    //         sales: 15,
+    //         income: 1540,
+    //       },
+    //       {
+    //         month: 5,
+    //         sales: 50,
+    //         income: 9000,
+    //       },
+    //     ],
+    //   },
+    // ];
 
     const chartBase = MONTHS.map((m) => ({
       month: m,
       income: 0,
       sales: 0,
     }));
+    const allMonthly = stats.flatMap((item) => item.monthly || []);
 
-    stats.monthly.forEach((m) => {
-      const i = m.month - 1;
-      chartBase[i].income = Number(m.income?.toFixed(2)) || 0;
-      chartBase[i].sales = m.sales ?? 0;
+    // stats?.forEach((m) => {
+    //   const i = m.month - 1;
+    //   chartBase[i].income = Number(m.income?.toFixed(2)) || 0;
+    //   chartBase[i].sales = m.sales ?? 0;
+    // });
+
+    allMonthly.forEach((m) => {
+      const i = (m.month || 1) - 1;
+      chartBase[i].income += Number(m.income?.toFixed(2)) || 0;
+      chartBase[i].sales += m.sales ?? 0;
     });
 
     setIncomeChartData(chartBase);
@@ -126,6 +187,23 @@ const Dashboard = () => {
         if (item._id === "Cancelled") base[i].cancelled += m.count;
       });
     });
+
+    // console.log(base);
+
+    // const base1 = [
+    //   { month: "January", delivered: 1, cancelled: 1 },
+    //   { month: "February", delivered: 15, cancelled: 3 },
+    //   { month: "March", delivered: 5, cancelled: 0 },
+    //   { month: "April", delivered: 9, cancelled: 0 },
+    //   { month: "May", delivered: 4, cancelled: 5 },
+    //   { month: "June", delivered: 2, cancelled: 3 },
+    //   { month: "July", delivered: 0, cancelled: 3 },
+    //   { month: "August", delivered: 5, cancelled: 4 },
+    //   { month: "September", delivered: 15, cancelled: 2 },
+    //   { month: "October", delivered: 6, cancelled: 1 },
+    //   { month: "November", delivered: 1, cancelled: 2 },
+    //   { month: "December", delivered: 8, cancelled: 2 },
+    // ];
 
     setOrderChartData(base);
   }, [orderStats]);
@@ -164,7 +242,7 @@ const Dashboard = () => {
                 alt="icon"
                 className="sm:w-8 w-5 h-5 sm:h-8 object-cover"
               />
-              Pending PR's
+              Pending Order's
             </span>{" "}
             <span className="text-2xl font-bold w-full text-end">
               {(products?.pending ?? 0).toString()}
@@ -177,7 +255,7 @@ const Dashboard = () => {
                 alt="icon"
                 className="sm:w-8 w-5 h-5 sm:h-8 object-cover"
               />
-              Ongoing PR's
+              Ongoing Order's
             </span>{" "}
             <span className="text-2xl font-bold text-end">
               {(products?.shipped ?? 0).toString()}
@@ -203,7 +281,20 @@ const Dashboard = () => {
                 alt="icon"
                 className="sm:w-8 w-5 h-5 sm:h-8 object-cover"
               />
-              Total PR's
+              Move To cancelled
+            </span>
+            <span className="text-2xl font-bold text-end">
+              {(products?.cancelled ?? 0).toString()}
+            </span>
+          </div>
+          <div className="border border-gray-400 p-5 rounded-sm font-medium flex flex-col w-full gap-5">
+            <span className="flex items-center gap-3">
+              <img
+                src="https://img.icons8.com/?size=96&id=QDgOnr6UAOmg&format=png"
+                alt="icon"
+                className="sm:w-8 w-5 h-5 sm:h-8 object-cover"
+              />
+              Total Order's
             </span>
             <span className="text-2xl font-bold text-end">
               {(
@@ -516,7 +607,7 @@ const Dashboard = () => {
                   <CartesianGrid strokeDasharray="4 4" horizontal={false} />
 
                   {/* Month Axis */}
-                  <YAxis
+                  {/* <YAxis
                     dataKey="month"
                     type="category"
                     tick={{ fontSize: 12, fill: "#374151", fontWeight: 500 }}
@@ -525,7 +616,7 @@ const Dashboard = () => {
                     width={90}
                   />
 
-                  {/* Number Axis */}
+                  
                   <XAxis
                     type="number"
                     // Show tick labels with formatting
@@ -539,19 +630,25 @@ const Dashboard = () => {
                     tickLine={false}
                     domain={[0, "dataMax"]}
                     tickCount={5}
+                  /> */}
+
+                  <YAxis
+                    dataKey="month"
+                    type="category"
+                    tick={{ fontSize: 12, fill: "#6b7280" }}
+                    axisLine={false}
+                    tickLine={false}
+                    width={80}
                   />
 
-                  {/* Tooltip */}
-                  {/* <Tooltip
-                    contentStyle={{
-                      background: "white",
-                      borderRadius: "10px",
-                      border: "1px solid #e5e7eb",
-                      padding: "8px",
-                      boxShadow: "0 4px 8px rgba(0,0,0,0.08)",
-                    }}
-                    cursor={{ fill: "rgba(0,0,0,0.06)" }}
-                  /> */}
+                  <XAxis
+                    type="number"
+                    tick={{ fontSize: 12, fill: "#6b7280" }}
+                    axisLine={false}
+                    tickLine={false}
+                    allowDecimals={false}
+                  />
+
                   <Tooltip
                     contentStyle={{
                       background: "#111827",

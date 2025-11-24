@@ -47,7 +47,11 @@ const [cart, setCart] = useState([]);
       // console.log("Payment method for order:", paymentMethod);
       const res =  await createOrder({shipping_address:address, payment_method:paymentMethod, items}).unwrap();
       console.log("Order created successfully:", res);
-      window.location.href = res.url;
+      if(res.url){
+        window.location.href = res.url;
+      } else {
+        navigate("/user/orders");
+      }
       // navigate("/user/orders");
     } catch(error) {
       console.error("Error creating order:", error);

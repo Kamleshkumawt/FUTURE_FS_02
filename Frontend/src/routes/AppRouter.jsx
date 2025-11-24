@@ -28,6 +28,7 @@ import CategoryProduct from '../screens/CategoryProduct'
 import Order from '../screens/Order'
 import ShowAllPendingOrders from '../screens/sellerPanel/ShowAllPendingOrders'
 import ShowAllDeliveredOrders from '../screens/sellerPanel/ShowAllDeliveredOrders'
+import ShowAllCancelledOrders from '../screens/sellerPanel/ShowAllCancelledOrders'
 import ShowAllShippedOrders from '../screens/sellerPanel/ShowAllShippedOrders'
 import ReviewOrder from '../screens/ReviewOrder'
 import AdminLayout from '../screens/adminPanel/Layout'
@@ -98,7 +99,7 @@ const AppRouter = () => {
                 <Route path="list-orders" element={<ShowAllPendingOrders/>} />
                 <Route path="list-del-orders" element={<ShowAllDeliveredOrders/>} />
                 <Route path="list-ship-orders" element={<ShowAllShippedOrders/>} />
-                {/* <Route path="list-ret-orders" element={<ShowAllReturnsOrders/>} /> */}
+                <Route path="list-canc-orders" element={<ShowAllCancelledOrders/>} />
                 <Route path="list-ret-stting" element={<SellerSettings/>} /> 
             </Route>
             

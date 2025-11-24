@@ -4,6 +4,7 @@ import Title from '../../components/sellerPanel/Title';
 import {Link} from 'react-router-dom'
 import {useDeleteProductByAdminMutation, useGetAllProductsForAdminQuery } from '../../store/api/admin/adminApi';
 import {toast} from 'react-hot-toast';
+import Loading from '../../components/Loading';
 
 const ShowAllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -30,7 +31,7 @@ const ShowAllProducts = () => {
     }
   }, [data]);
 
-  return !isLoading && (
+  return !isLoading ? (
     <>
       <Title text1="Products" text2="List" />
       <div className="max-w-7xl mt-6 overflow-x-auto">
@@ -86,7 +87,7 @@ const ShowAllProducts = () => {
         </table>
       </div>
     </>
-  )
+  ) : <Loading />;
 }
 
 export default ShowAllProducts

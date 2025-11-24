@@ -109,7 +109,7 @@ const EditCategory = () => {
       {isOpen && (
           <div className="absolute top-0 left-0 w-screen h-screen bg-gray-500/50 flex items-center justify-center">
             <div className="bg-white dark:bg-[#2A1C20] rounded-lg p-6 flex flex-col items-center gap-5 min-w-xs">
-              <h2 className="text-lg font-semibold mb-4 w-full flex items-center justify-between">Add Category  <span onClick={() => setIsOpen(false)} className="text-xl cursor-pointer hover:text-red-500">&times;</span></h2>
+              <h2 className="text-lg font-semibold mb-4 w-full flex items-center justify-between">Update Category  <span onClick={() => setIsOpen(false)} className="text-xl cursor-pointer hover:text-red-500">&times;</span></h2>
 
             {/* Name Field */}
             <div className="relative w-full">

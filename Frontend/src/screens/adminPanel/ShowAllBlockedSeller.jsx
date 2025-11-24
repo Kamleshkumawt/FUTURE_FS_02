@@ -3,6 +3,7 @@ import { dateFormat } from '../../lib/dateFormat';
 import Title from '../../components/sellerPanel/Title';
 import { useBlockSellerMutation, useGetAllSellersQuery } from '../../store/api/admin/adminApi';
 import { toast } from 'react-hot-toast';
+import Loading from '../../components/Loading';
 
 
 const ShowAllBlockedSeller = () => {
@@ -31,7 +32,7 @@ const ShowAllBlockedSeller = () => {
     }
   }
 
-  return !isLoading && (
+  return !isLoading ? (
     <>
       <Title text1="Blocked Sellers" text2="List" />
       <div className="max-w-7xl mt-6 overflow-x-auto">
@@ -76,7 +77,7 @@ const ShowAllBlockedSeller = () => {
         </table>
       </div>
     </>
-  )
+  ) : <Loading/>;
 }
 
 export default ShowAllBlockedSeller

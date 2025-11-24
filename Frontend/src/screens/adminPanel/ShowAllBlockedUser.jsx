@@ -3,6 +3,7 @@ import { dateFormat } from '../../lib/dateFormat';
 import Title from '../../components/sellerPanel/Title';
 import { useBlockUserMutation, useGetAllUsersQuery } from '../../store/api/admin/adminApi';
 import { toast } from 'react-hot-toast';
+import Loading from '../../components/Loading';
 
 
 const ShowAllBlockedUser = () => {
@@ -32,7 +33,7 @@ const ShowAllBlockedUser = () => {
     }
   }
 
-  return !isLoading && (
+  return !isLoading ? (
     <>
       <Title text1="Blocked Users" text2="List" />
       <div className="max-w-7xl mt-6 overflow-x-auto">
@@ -73,7 +74,7 @@ const ShowAllBlockedUser = () => {
         </table>
       </div>
     </>
-  )
+  ) : <Loading/>;
 }
 
 export default ShowAllBlockedUser

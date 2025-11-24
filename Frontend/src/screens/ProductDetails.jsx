@@ -371,10 +371,12 @@ const maxCount = Math.max(...ratings.map((r) => r.count));
             <h1 className="text-gray-800 dark:text-gray-300 text-xl font-semibold  ">
               Select Size
             </h1>
-            <div className="flex items-center justify-start ">
-              <div className="text-purple-600 dark:text-purple-200 font-medium bg-purple-200/40 px-2 p-1 border border-purple-500 rounded-xl text-center ">
-                {show?.size}
+            <div className="flex flex-wrap items-center gap-2 ">
+              {show?.size?.length > 0 && (show?.size.map((size, index) => (
+                <div key={index} className="text-purple-600 dark:text-purple-200 font-medium bg-purple-200/40 px-2 p-1 border border-purple-500 rounded-xl text-center ">
+                {size}
               </div>
+              )))}
             </div>
           </div>
 
@@ -451,7 +453,7 @@ const maxCount = Math.max(...ratings.map((r) => r.count));
               </div>
 
               <div className="flex flex-col items-start text-gray-500 font-medium w-full">
-                <p className="flex items-center gap-1 text-black w-full">
+                <p className="flex items-center gap-1 text-black dark:text-gray-300 w-full">
                   {!deliveryInfo ? (
                     <span>Enter Pincode for Estimated Delivery Date</span>
                   ) : deliveryInfo.message ===
@@ -479,7 +481,7 @@ const maxCount = Math.max(...ratings.map((r) => r.count));
                     </span>
                   ) : (
                     <div className="flex flex-col items-start gap-1">
-                      <p className="text-black flex items-center gap-2">
+                      <p className="text-black dark:text-gray-200 flex items-center gap-2">
                         <svg
                           viewBox="0 0 20 20"
                           fill="none"
@@ -506,7 +508,7 @@ const maxCount = Math.max(...ratings.map((r) => r.count));
                         </svg>
                         Delivery by {deliveryInfo.date}
                       </p>
-                      <p className="text-black flex items-center gap-2">
+                      <p className="text-black dark:text-gray-200 flex items-center gap-2">
                         {" "}
                         <svg
                           viewBox="0 0 20 20"

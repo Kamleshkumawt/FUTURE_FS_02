@@ -103,15 +103,15 @@ const Navbar = () => {
 
   return !isLoading ? (
     <div className="fixed w-full z-50 bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-gray-100">
-      <ThemeToggle />
-      <div className=" w-full h-[70px] flex items-center justify-between px-20 py-2 border-b-2 border-gray-300 dark:border-gray-600 z-50">
+      <div className=" w-full h-[70px] flex items-center justify-between sm:px-20 px-5 py-2 border-b-2 border-gray-300 dark:border-gray-600 z-50">
         <span
           onClick={() => {
             navigate("/");
             scrollTo(0, 0);
           }}
-          className="text-2xl cursor-pointer "
+          className="text-xl sm:text-2xl  cursor-pointer "
         >
+          {/* <ThemeToggle /> */}
           ApanaStore
         </span>
         <div
@@ -234,11 +234,11 @@ const Navbar = () => {
               navigate("/seller/SignUp");
               scrollTo(0, 0);
             }}
-            className="text-[16px] cursor-pointer"
+            className="text-[16px] hidden sm:flex cursor-pointer"
           >
             Become a Supplier
           </span>
-          <span className=" h-9 w-[1px] bg-gray-300 dark:bg-gray-400"></span>
+          <span className=" h-9 w-px bg-gray-300 dark:bg-gray-400 sm:flex hidden"></span>
           {/* <span className="text-[16px] cursor-pointer">Investor Relations</span>
           <span className="w-[2px] h-9 bg-gray-300"></span> */}
 
@@ -254,7 +254,7 @@ const Navbar = () => {
             {/* Cart Icon */}
             <Link
               to="/cart"
-              className="flex flex-col items-center gap-1 cursor-pointer"
+              className=" flex-col items-center gap-1 sm:flex hidden cursor-pointer"
               aria-label="Cart"
             >
               <svg
